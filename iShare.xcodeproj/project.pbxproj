@@ -90,6 +90,7 @@
 		22C8C93F15CEC66200916E94 /* FilePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8C93D15CEC66200916E94 /* FilePickerViewController.m */; };
 		22C8C94015CEC66200916E94 /* FilePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22C8C93E15CEC66200916E94 /* FilePickerViewController.xib */; };
 		22C8C94315CEC67000916E94 /* FilePickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8C94215CEC67000916E94 /* FilePickerDataSource.m */; };
+		22C8C94715CED45C00916E94 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22C8C94915CED45C00916E94 /* Localizable.strings */; };
 		22FC34BE15C7E6D00051AA21 /* AppIcon-057.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348015C7E6D00051AA21 /* AppIcon-057.png */; };
 		22FC34BF15C7E6D00051AA21 /* AppIcon-072.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348115C7E6D00051AA21 /* AppIcon-072.png */; };
 		22FC34C015C7E6D00051AA21 /* AppIcon-114.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348215C7E6D00051AA21 /* AppIcon-114.png */; };
@@ -244,6 +245,8 @@
 		22C8C94115CEC67000916E94 /* FilePickerDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePickerDataSource.h; sourceTree = "<group>"; };
 		22C8C94215CEC67000916E94 /* FilePickerDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilePickerDataSource.m; sourceTree = "<group>"; };
 		22C8C94415CECCF500916E94 /* FileBrowserNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileBrowserNotifications.h; sourceTree = "<group>"; };
+		22C8C94815CED45C00916E94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		22C8C94A15CED45D00916E94 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		22FC348015C7E6D00051AA21 /* AppIcon-057.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-057.png"; sourceTree = "<group>"; };
 		22FC348115C7E6D00051AA21 /* AppIcon-072.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-072.png"; sourceTree = "<group>"; };
 		22FC348215C7E6D00051AA21 /* AppIcon-114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-114.png"; sourceTree = "<group>"; };
@@ -399,6 +402,7 @@
 			children = (
 				222F3D8615CB6C9600E495FE /* image */,
 				222F3D8715CB6CA800E495FE /* image@2x */,
+				22C8C94915CED45C00916E94 /* Localizable.strings */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -879,6 +883,7 @@
 				22287EDB15CE1AB9000C1395 /* bg_swipe_inner_shadow_top.png in Resources */,
 				22287EDC15CE1AB9000C1395 /* bg_swipe_inner_shadow.png in Resources */,
 				22C8C94015CEC66200916E94 /* FilePickerViewController.xib in Resources */,
+				22C8C94715CED45C00916E94 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -950,6 +955,15 @@
 				222F3DF815CC9F9800E495FE /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		22C8C94915CED45C00916E94 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				22C8C94815CED45C00916E94 /* en */,
+				22C8C94A15CED45D00916E94 /* zh-Hans */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
