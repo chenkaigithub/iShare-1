@@ -19,12 +19,12 @@
     NSTimer *_timer;
     QuadCurveMenuItem *_addButton;
     
-    id<QuadCurveMenuDelegate> _delegate;
+    __weak id<QuadCurveMenuDelegate> _delegate;
 
 }
 @property (nonatomic, copy) NSArray *menusArray;
 @property (nonatomic, getter = isExpanding) BOOL expanding;
-@property (nonatomic, assign) id<QuadCurveMenuDelegate> delegate;
+@property (nonatomic, weak) id<QuadCurveMenuDelegate> delegate;
 
 @property (nonatomic, retain) UIImage *image;
 @property (nonatomic, retain) UIImage *highlightedImage;

@@ -7,6 +7,7 @@
 //
 
 #import "FilePickerViewController.h"
+#import "FileBrowserNotifications.h"
 
 @interface FilePickerViewController ()
 

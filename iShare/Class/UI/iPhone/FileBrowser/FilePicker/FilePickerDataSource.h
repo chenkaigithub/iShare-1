@@ -8,6 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    FilePickerTypeFile,
+    FilePickerTypeDirectory,
+} FilePickerType;
+
 @interface FilePickerDataSource : NSObject
+
+@property (nonatomic, assign) FilePickerType pickerType;
+
+-(id)initWithFilePath:(NSString*)filePath;
 
 @end

@@ -10,4 +10,9 @@
 
 @implementation FileListItem
 
+-(void)setFilePath:(NSString *)filePath{
+    _filePath = filePath;
+    self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:_filePath error:NULL];
+}
+
 @end

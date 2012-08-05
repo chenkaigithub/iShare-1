@@ -12,12 +12,6 @@ static inline CGRect ScaleRect(CGRect rect, float n) {return CGRectMake((rect.si
 
 @synthesize contentImageView = _contentImageView;
 
-@synthesize startPoint = _startPoint;
-@synthesize endPoint = _endPoint;
-@synthesize nearPoint = _nearPoint;
-@synthesize farPoint = _farPoint;
-@synthesize delegate  = _delegate;
-
 #pragma mark - initialization & cleaning up
 - (id)initWithImage:(UIImage *)img 
    highlightedImage:(UIImage *)himg
@@ -36,11 +30,6 @@ highlightedContentImage:(UIImage *)hcimg;
     return self;
 }
 
-- (void)dealloc
-{
-    [_contentImageView release];
-    [super dealloc];
-}
 #pragma mark - UIView's methods
 - (void)layoutSubviews
 {

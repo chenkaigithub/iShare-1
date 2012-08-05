@@ -1,7 +1,43 @@
 /* 
-  localizable.strings
+  Localizable.strings
   iShare
 
   Created by Jin Jin on 12-8-4.
   Copyright (c) 2012年 Jin Jin. All rights reserved.
 */
+
+"btn_title_operate" = "Edit";
+"btn_title_cancel" = "Cancel";
+"btn_title_confirm" = "Confirm";
+"btn_title_ok" = "OK";
+"btn_title_delete" = "Delete";
+"btn_title_move" = "Move";
+"btn_title_copy" = "Copy";
+
+"tab_title_myfiles" = "My Files";
+"tab_title_music" = "Music";
+
+"alert_title_inputdirectoryname" = "Please input name of new folder";
+"alert_title_inputtextfilename" = "Please input name of new text file";
+"alert_title_deleteconfirm" = "Delete files";
+"alert_message_deleteconfirm" = "Deleted files can't be found back. Do you confirm deletion?";
+"alert_message_nosuitableapp" = "No App that can open this file";
+"alert_message_nomailaccount" = "No mail account found in your device";
+
+"status_message_newfoldercreated" = "Folder is created";
+"status_message_newfoldercreatefailed" = "Failed to create folder";
+"status_message_newimagecreated" = "Image is created";
+"status_message_newimagecreatefailed" = "Failed to create image";
+"status_message_newtextcreated" = "Text file is created";
+"status_message_newtextcreatefailed" = "Failed to create text file";
+"status_message_savingimage" = "Saving image...";
+"status_message_savingfailed" = "Failed!";
+"status_message_savingsuccess" = "Image saved";
+
+"search_placeholder" = "Search";
+
+"seg_title_name" = "Name";
+"seg_title_type" = "Type";
+"seg_title_date" = "Date";
+
+"newimagename_template" = "New image %@";

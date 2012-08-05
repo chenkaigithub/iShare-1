@@ -10,24 +10,44 @@
 
 @implementation CustomUIComponents
 
-+(UIBarButtonItem*)customBarButtonWithTitle:(NSString*)title target:(id)target action:(SEL)action{
++(void)customizeBarButton{
+    UIEdgeInsets barBtnInsets = UIEdgeInsetsMake(0, 4, 0, 4);
+    
     UIImage* originNormal = [UIImage imageNamed:@"btn_title_bar_rect"];
-    UIImage* resizableNormal = [originNormal resizableImageWithCapInsets:UIEdgeInsetsMake(0, 4, 0, 4)];
-    
+    UIImage* resizableNormal = [originNormal resizableImageWithCapInsets:barBtnInsets];
     UIImage* originPressed = [UIImage imageNamed:@"btn_title_bar_rect_pressed"];
-    UIImage* resizablePressed = [originPressed resizableImageWithCapInsets:UIEdgeInsetsMake(0, 4, 0, 4)];[UIImage imageNamed:@""];
+    UIImage* resizablePressed = [originPressed resizableImageWithCapInsets:barBtnInsets];
     
-    
-    UIBarButtonItem* barButton = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStyleBordered target:target action:action];
-    
-    [barButton setBackgroundImage:resizableNormal forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
-    [barButton setBackgroundImage:resizablePressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
-    
-    return barButton;
+    [[UIBarButtonItem appearance] setBackgroundImage:resizableNormal forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackgroundImage:resizablePressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
 }
 
-+(UIBarButtonItem*)customBackButton{
++(void)customizeBackButton{
+    UIEdgeInsets backBtnInsets = UIEdgeInsetsMake(0, 14, 0, 5);
     
+    UIImage* originNormal = [UIImage imageNamed:@"btn_title_bar_back"];
+    UIImage* resizableNormal = [originNormal resizableImageWithCapInsets:backBtnInsets];
+    UIImage* originPressed = [UIImage imageNamed:@"btn_title_bar_back_pressed"];
+    UIImage* resizablePressed = [originPressed resizableImageWithCapInsets:backBtnInsets];
+    
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:resizableNormal forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UIBarButtonItem appearance] setBackButtonBackgroundImage:resizablePressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+}
+
++(void)customizeNavigationBar{
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg_title_bar"] forBarMetrics:UIBarMetricsDefault];
+}
+
++(void)customizeTableView{
+//    [[UITableView appearance] setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]]];
+//    [[UITableView appearance] setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_texture"]]];
+}
+
++(void)customizeUI{
+    [self customizeBackButton];
+    [self customizeBarButton];
+    [self customizeNavigationBar];
+    [self customizeTableView];
 }
 
 @end

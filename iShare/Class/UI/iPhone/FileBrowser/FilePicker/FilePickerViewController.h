@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FilePickerDataSource.h"
 
 @interface FilePickerViewController : UIViewController
+
+@property (nonatomic, assign) FilePickerType pickerType;
 
 @end

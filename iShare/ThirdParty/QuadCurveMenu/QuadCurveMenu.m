@@ -37,10 +37,7 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 
 @implementation QuadCurveMenu
 
-@synthesize nearRadius, endRadius, farRadius, timeOffset, rotateAngle, menuWholeAngle, startPoint;
 @synthesize expanding = _expanding;
-@synthesize delegate = _delegate;
-@synthesize menusArray = _menusArray;
 
 #pragma mark - initialization & cleaning up
 - (id)initWithFrame:(CGRect)frame menus:(NSArray *)aMenusArray
@@ -70,13 +67,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         [self addSubview:_addButton];
     }
     return self;
-}
-
-- (void)dealloc
-{
-    [_addButton release];
-    [_menusArray release];
-    [super dealloc];
 }
 
 
@@ -137,6 +127,19 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
     self.expanding = !self.isExpanding;
+    [self.nextResponder touchesBegan:touches withEvent:event];
+}
+
+-(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    [self.nextResponder touchesEnded:touches withEvent:event];
+}
+
+-(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event{
+    [self.nextResponder touchesMoved:touches withEvent:event];
+}
+
+-(void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event{
+    [self.nextResponder touchesCancelled:touches withEvent:event];
 }
 
 #pragma mark - QuadCurveMenuItem delegates
@@ -192,7 +195,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     {
         return;
     }
-    [_menusArray release];
     _menusArray = [aMenusArray copy];
     
     
@@ -213,13 +215,13 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     {
         QuadCurveMenuItem *item = [_menusArray objectAtIndex:i];
         item.tag = 1000 + i;
-        item.startPoint = startPoint;
-        CGPoint endPoint = CGPointMake(startPoint.x + endRadius * sinf(i * menuWholeAngle / count), startPoint.y - endRadius * cosf(i * menuWholeAngle / count));
-        item.endPoint = RotateCGPointAroundCenter(endPoint, startPoint, rotateAngle);
-        CGPoint nearPoint = CGPointMake(startPoint.x + nearRadius * sinf(i * menuWholeAngle / count), startPoint.y - nearRadius * cosf(i * menuWholeAngle / count));
-        item.nearPoint = RotateCGPointAroundCenter(nearPoint, startPoint, rotateAngle);
-        CGPoint farPoint = CGPointMake(startPoint.x + farRadius * sinf(i * menuWholeAngle / count), startPoint.y - farRadius * cosf(i * menuWholeAngle / count));
-        item.farPoint = RotateCGPointAroundCenter(farPoint, startPoint, rotateAngle);  
+        item.startPoint = _startPoint;
+        CGPoint endPoint = CGPointMake(_startPoint.x + _endRadius * sinf(i * _menuWholeAngle / count), _startPoint.y - _endRadius * cosf(i * _menuWholeAngle / count));
+        item.endPoint = RotateCGPointAroundCenter(endPoint, _startPoint, _rotateAngle);
+        CGPoint nearPoint = CGPointMake(_startPoint.x + _nearRadius * sinf(i * _menuWholeAngle / count), _startPoint.y - _nearRadius * cosf(i * _menuWholeAngle / count));
+        item.nearPoint = RotateCGPointAroundCenter(nearPoint, _startPoint, _rotateAngle);
+        CGPoint farPoint = CGPointMake(_startPoint.x + _farRadius * sinf(i * _menuWholeAngle / count), _startPoint.y - _farRadius * cosf(i * _menuWholeAngle / count));
+        item.farPoint = RotateCGPointAroundCenter(farPoint, _startPoint, _rotateAngle);
         item.center = item.startPoint;
         item.delegate = self;
 		[self insertSubview:item belowSubview:_addButton];
@@ -252,10 +254,16 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
         SEL selector = self.isExpanding ? @selector(_expand) : @selector(_close);
 
         // Adding timer to runloop to make sure UI event won't block the timer from firing
-        _timer = [[NSTimer timerWithTimeInterval:timeOffset target:self selector:selector userInfo:nil repeats:YES] retain];
+        _timer = [NSTimer timerWithTimeInterval:_timeOffset target:self selector:selector userInfo:nil repeats:YES];
         [[NSRunLoop currentRunLoop] addTimer:_timer forMode:NSRunLoopCommonModes];
     }
 }
+
+-(void)setStartPoint:(CGPoint)startPoint{
+    _startPoint = startPoint;
+    _addButton.center = startPoint;
+}
+
 #pragma mark - private methods
 - (void)_expand
 {
@@ -263,7 +271,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     if (_flag == [_menusArray count])
     {
         [_timer invalidate];
-        [_timer release];
         _timer = nil;
         return;
     }
@@ -305,7 +312,6 @@ static CGPoint RotateCGPointAroundCenter(CGPoint point, CGPoint center, float an
     if (_flag == -1)
     {
         [_timer invalidate];
-        [_timer release];
         _timer = nil;
         return;
     }

@@ -334,7 +334,7 @@
 #pragma mark - Master show/dismiss methods
 
 - (void)showWithStatus:(NSString*)string maskType:(SVProgressHUDMaskType)hudMaskType networkIndicator:(BOOL)show {
-    dispatch_async(dispatch_get_main_queue(), ^{
+//    dispatch_async(dispatch_get_main_queue(), ^{
         if(!self.superview)
             [self.overlayWindow addSubview:self];
         
@@ -369,7 +369,7 @@
         }
         
         [self setNeedsDisplay];
-    });
+//    });
 }
 
 

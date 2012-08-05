@@ -65,7 +65,7 @@
 
 -(void)customizeUI{
     self.tabBar.backgroundImage = [UIImage imageNamed:@"bg_tab_bar"];
-    self.tabBar.selectedImageTintColor = [UIColor grayColor];
+//    self.tabBar.selectedImageTintColor = [UIColor greenColor];
 }
 
 @end

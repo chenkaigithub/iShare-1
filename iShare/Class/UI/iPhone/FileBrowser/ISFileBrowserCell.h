@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ISFileBrowserCellInterface.h"
 
-@interface ISFileListCell : UITableViewCell
+@interface ISFileBrowserCell : UITableViewCell<ISFileBrowserCellInterface>
 
 @end

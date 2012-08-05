@@ -19,9 +19,9 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        self.title = @"Music Player";
-        self.tabBarItem.title = @"Music Player";
-        self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_profile"];
+        self.title = NSLocalizedString(@"tab_title_music", nil);
+        self.tabBarItem.title = NSLocalizedString(@"tab_title_music", nil);
+        self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_music"];
     }
     return self;
 }

@@ -18,7 +18,7 @@
     CGPoint _nearPoint; // near
     CGPoint _farPoint; // far
     
-    id<QuadCurveMenuItemDelegate> _delegate;
+    __weak id<QuadCurveMenuItemDelegate> _delegate;
 }
 
 @property (nonatomic, retain, readonly) UIImageView *contentImageView;
@@ -28,7 +28,7 @@
 @property (nonatomic) CGPoint nearPoint;
 @property (nonatomic) CGPoint farPoint;
 
-@property (nonatomic, assign) id<QuadCurveMenuItemDelegate> delegate;
+@property (nonatomic, weak) id<QuadCurveMenuItemDelegate> delegate;
 
 - (id)initWithImage:(UIImage *)img 
    highlightedImage:(UIImage *)himg

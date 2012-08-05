@@ -7,14 +7,14 @@
 //
 
 #import "AppDelegate.h"
-
 #import "MainTabBarController.h"
+#import "CustomUIComponents.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self customizeUI];
+    [CustomUIComponents customizeUI];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
@@ -22,10 +22,6 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     return YES;
-}
-
--(void)customizeUI{
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg_title_bar"] forBarMetrics:UIBarMetricsDefault];
 }
 
 @end

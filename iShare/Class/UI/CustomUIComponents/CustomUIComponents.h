@@ -10,7 +10,6 @@
 
 @interface CustomUIComponents : NSObject
 
-+(UIBarButtonItem*)customBarButtonWithTitle:(NSString*)title target:(id)target action:(SEL)action;
-+(UIBarButtonItem*)customBackButton;
++(void)customizeUI;
 
 @end

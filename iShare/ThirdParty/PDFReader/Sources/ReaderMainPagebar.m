@@ -124,7 +124,7 @@
 	{
 		NSInteger pages = [document.pageCount integerValue]; // Total pages
 
-		NSString *format = NSLocalizedString(@"%d of %d", @"format"); // Format
+		NSString *format = NSLocalizedStringFromTable(@"%d of %d",@"PDFReaderLocalizable", @"format"); // Format
 
 		NSString *number = [NSString stringWithFormat:format, page, pages]; // Text
 

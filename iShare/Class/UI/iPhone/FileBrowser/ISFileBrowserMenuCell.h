@@ -7,7 +7,22 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ISFileBrowserCellInterface.h"
 
-@interface ISFileBrowserMenuCell : UITableViewCell
+@interface ISFileBrowserMenuCell : UITableViewCell<ISFileBrowserCellInterface>
+
+@property (nonatomic, strong) IBOutlet UIView* containerView;
+
+@property (nonatomic, strong) IBOutlet UIButton* deleteButton;
+@property (nonatomic, strong) IBOutlet UIButton* openButton;
+@property (nonatomic, strong) IBOutlet UIButton* mailButton;
+@property (nonatomic, strong) IBOutlet UIButton* zipButton;
+@property (nonatomic, strong) IBOutlet UIButton* renameButton;
+
+-(IBAction)deleteButtonClicked:(id)sender;
+-(IBAction)openButtonClicked:(id)sender;
+-(IBAction)mailButtonClicked:(id)sender;
+-(IBAction)renameButtonClicked:(id)sender;
+-(IBAction)zipButtonClicked:(id)sender;
 
 @end

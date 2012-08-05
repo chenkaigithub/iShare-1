@@ -8,6 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    FileListItemTypeFilePath,
+    FileListItemTypeActionMenu
+} FileListItemType;
+
 @interface FileListItem : NSObject
+
+@property (nonatomic, assign) FileListItemType type;
+@property (nonatomic, copy) NSString* filePath;
+@property (nonatomic, strong) NSDictionary* attributes;
 
 @end
