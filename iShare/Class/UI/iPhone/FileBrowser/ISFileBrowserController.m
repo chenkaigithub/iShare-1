@@ -21,6 +21,7 @@
 @property (nonatomic, strong) NSString* filePath;
 @property (nonatomic, strong) FileBrowserDataSource* dataSource;
 @property (nonatomic, strong) QuadCurveMenu* pathMenu;
+@property (nonatomic, strong) UIDocumentInteractionController* documentInteractionController;
 
 @end
 
@@ -418,10 +419,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
             if (buttonIndex == 1){
                 //confirm deletion
                 //show waiting alert view
-//                [SVProgressHUD showWithStatus:@"Deleting..."];
                 [self removeFilesForSelectedIndexPaths];
-//                [SVProgressHUD showSuccessWithStatus:@"Done"];
-//                [self.tableView reloadData];
+                [self disableActionButtons];
             }
         }
             break;
@@ -436,20 +435,13 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 #pragma mark - document interaction delegate
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller willBeginSendingToApplication:(NSString *)application{
-    NSLog(@"will send to %@", application);
-}
-
-- (void)documentInteractionController:(UIDocumentInteractionController *)controller didEndSendingToApplication:(NSString *)application{
-    NSLog(@"did send to %@", application);    
-}
-
-- (void)documentInteractionControllerDidDismissOpenInMenu:(UIDocumentInteractionController *)controller{
-    NSLog(@"did send to ");    
-}
 
 -(UIViewController*)documentInteractionControllerViewControllerForPreview:(UIDocumentInteractionController *)controller{
     return self;
+}
+
+- (BOOL)documentInteractionController:(UIDocumentInteractionController *)controller canPerformAction:(SEL)action{
+    return YES;
 }
 
 #pragma mark - create file and folder
@@ -532,15 +524,15 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 -(void)openFileNotificationReceived:(NSNotification*)notification{
     FileListItem* item = [notification.userInfo objectForKey:@"item"];
     NSURL* URL = [NSURL fileURLWithPath:item.filePath];
-    UIDocumentInteractionController* documentController = [UIDocumentInteractionController interactionControllerWithURL:URL];
-    documentController.delegate = self;
+
+    [self setupDocumentInteractionWithURL:URL];
+
     UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    [documentController presentPreviewAnimated:YES];
-//    BOOL result = [documentController presentOpenInMenuFromRect:window.frame inView:window animated:YES];
-//    if (result == NO){
+    BOOL result = [self.documentInteractionController presentOpenInMenuFromRect:window.frame inView:window animated:YES];
+    if (result == NO){
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"alert_message_nosuitableapp", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [alert show];
-//    }
+    }
 }
 
 -(void)mailFileNotificationReceived:(NSNotification*)notification{
@@ -584,6 +576,16 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     }
     
     [self.tableView endUpdates];
+}
+
+#pragma mark - document interaction
+-(void)setupDocumentInteractionWithURL:(NSURL*)URL{
+    if (self.documentInteractionController == nil){
+        self.documentInteractionController = [UIDocumentInteractionController interactionControllerWithURL:URL];
+        self.documentInteractionController.delegate = self;
+    }else{
+        self.documentInteractionController.URL = URL;
+    }
 }
 
 @end

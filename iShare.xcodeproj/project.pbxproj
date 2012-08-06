@@ -91,6 +91,8 @@
 		22C8C94015CEC66200916E94 /* FilePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22C8C93E15CEC66200916E94 /* FilePickerViewController.xib */; };
 		22C8C94315CEC67000916E94 /* FilePickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8C94215CEC67000916E94 /* FilePickerDataSource.m */; };
 		22C8C94715CED45C00916E94 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22C8C94915CED45C00916E94 /* Localizable.strings */; };
+		22C8C94C15CF469C00916E94 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C8C94B15CF469C00916E94 /* CoreAudio.framework */; };
+		22C8C94E15CF474600916E94 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C8C94D15CF474600916E94 /* AVFoundation.framework */; };
 		22FC34BE15C7E6D00051AA21 /* AppIcon-057.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348015C7E6D00051AA21 /* AppIcon-057.png */; };
 		22FC34BF15C7E6D00051AA21 /* AppIcon-072.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348115C7E6D00051AA21 /* AppIcon-072.png */; };
 		22FC34C015C7E6D00051AA21 /* AppIcon-114.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348215C7E6D00051AA21 /* AppIcon-114.png */; };
@@ -247,6 +249,8 @@
 		22C8C94415CECCF500916E94 /* FileBrowserNotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileBrowserNotifications.h; sourceTree = "<group>"; };
 		22C8C94815CED45C00916E94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		22C8C94A15CED45D00916E94 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		22C8C94B15CF469C00916E94 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		22C8C94D15CF474600916E94 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		22FC348015C7E6D00051AA21 /* AppIcon-057.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-057.png"; sourceTree = "<group>"; };
 		22FC348115C7E6D00051AA21 /* AppIcon-072.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-072.png"; sourceTree = "<group>"; };
 		22FC348215C7E6D00051AA21 /* AppIcon-114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-114.png"; sourceTree = "<group>"; };
@@ -315,6 +319,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22C8C94E15CF474600916E94 /* AVFoundation.framework in Frameworks */,
+				22C8C94C15CF469C00916E94 /* CoreAudio.framework in Frameworks */,
 				22FC34F115C7E8200051AA21 /* QuickLook.framework in Frameworks */,
 				22FC34EF15C7E80E0051AA21 /* ImageIO.framework in Frameworks */,
 				22FC34E915C7E7D00051AA21 /* MessageUI.framework in Frameworks */,
@@ -603,13 +609,15 @@
 		2253856D15C7B6F900D8B4B7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				22FC34F015C7E8200051AA21 /* QuickLook.framework */,
+				22C8C94D15CF474600916E94 /* AVFoundation.framework */,
+				22C8C94B15CF469C00916E94 /* CoreAudio.framework */,
+				2253857215C7B6F900D8B4B7 /* CoreGraphics.framework */,
+				2253857015C7B6F900D8B4B7 /* Foundation.framework */,
 				22FC34EE15C7E80E0051AA21 /* ImageIO.framework */,
 				22FC34E815C7E7D00051AA21 /* MessageUI.framework */,
 				22FC34E615C7E7AA0051AA21 /* QuartzCore.framework */,
+				22FC34F015C7E8200051AA21 /* QuickLook.framework */,
 				2253856E15C7B6F900D8B4B7 /* UIKit.framework */,
-				2253857015C7B6F900D8B4B7 /* Foundation.framework */,
-				2253857215C7B6F900D8B4B7 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

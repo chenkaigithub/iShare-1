@@ -42,6 +42,7 @@
     }else{
         self.accessoryType = UITableViewCellAccessoryNone;
     }
+    
 }
 
 -(FileListItem*)cellItem{
