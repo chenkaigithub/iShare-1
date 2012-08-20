@@ -35,7 +35,7 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
 }
 
 @property (nonatomic, strong) NSMutableArray* fileListItems;
-@property (nonatomic, strong) NSArray* allFileItems;
+@property (nonatomic, strong) NSMutableArray* allFileItems;
 @property (nonatomic, copy) NSString* filePath;
 @property (nonatomic, assign) FileBrowserDataSourceOrder orderType;
 @property (nonatomic, copy) NSString* searchKeyword;
@@ -67,6 +67,10 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     return [self.fileListItems objectAtIndex:indexPath.row];
 }
 
+-(NSIndexPath*)indexPathOfObject:(FileListItem*)item{
+    return [NSIndexPath indexPathForRow:[self.fileListItems indexOfObject:item] inSection:0];
+}
+
 -(void)refresh{
     NSArray* fileItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.filePath error:NULL];
     NSMutableArray* allItems = [NSMutableArray array];
@@ -91,13 +95,23 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_FILEBROWSER_MENUGONE object:self];
 }
 
+-(void)removeFileItem:(FileListItem*)item{
+    [self.fileListItems removeObject:item];
+    [self.allFileItems removeObject:item];
+}
+
+-(NSIndexPath*)menuIndex{
+    return [self indexPathOfObject:self.menuItem];
+}
+
 #pragma mark - filter
 -(void)getFilteredItems{
     NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(FileListItem* fileItem, NSDictionary* bindings){
         if (self.searchKeyword.length == 0){
             return YES;
         }else{
-            NSRange range = [[fileItem.filePath lastPathComponent] rangeOfString:self.searchKeyword];
+            NSString *filename = [[fileItem.filePath lastPathComponent] lowercaseString];
+            NSRange range = [filename rangeOfString:[self.searchKeyword lowercaseString]];
             return range.length != 0;
         }
     }];
@@ -128,14 +142,20 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
             cell = [tableView dequeueReusableCellWithIdentifier:FileItemCellIdentifier];
             if (cell == nil){
                 cell = [[[NSBundle mainBundle] loadNibNamed:FileItemCellIdentifier owner:nil options:nil] objectAtIndex:0];
-                UISwipeGestureRecognizer* swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
-                [cell addGestureRecognizer:swipeGesture];
+                UISwipeGestureRecognizer* rightSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
+                rightSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+                UISwipeGestureRecognizer* leftSwipte = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeGestureAction:)];
+                leftSwipte.direction = UISwipeGestureRecognizerDirectionLeft;
+                [cell addGestureRecognizer:rightSwipe];
+                [cell addGestureRecognizer:leftSwipte];
             }
             break;
         case FileListItemTypeActionMenu:
             cell = [tableView dequeueReusableCellWithIdentifier:ActionMenuCellIdentifier];
             if (cell == nil){
                 cell = [[[NSBundle mainBundle] loadNibNamed:ActionMenuCellIdentifier owner:nil options:nil] objectAtIndex:0];
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                ((ISFileBrowserMenuCell*)cell).dataSource = self;
             }
             break;
         default:

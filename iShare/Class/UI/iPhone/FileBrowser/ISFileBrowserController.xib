@@ -44,7 +44,6 @@
 						<string key="NSFrameSize">{320, 480}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">1</int>
@@ -89,8 +88,6 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{187, 10}, {128, 30}}</string>
 						<reference key="NSSuperview" ref="607580038"/>
-						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
@@ -132,7 +129,6 @@
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{8, 3}, {173, 44}}</string>
 						<reference key="NSSuperview" ref="607580038"/>
-						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="58948331"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<bool key="IBUIOpaque">NO</bool>
@@ -164,7 +160,6 @@
 				</array>
 				<string key="NSFrameSize">{320, 50}</string>
 				<reference key="NSSuperview"/>
-				<reference key="NSWindow"/>
 				<reference key="NSNextKeyView" ref="677033337"/>
 				<string key="NSReuseIdentifierKey">_NS:9</string>
 				<object class="NSColor" key="IBUIBackgroundColor">
@@ -195,6 +190,11 @@
 			</object>
 			<object class="IBUIBarButtonItem" id="155823485">
 				<string key="IBUITitle">delete</string>
+				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
+				<int key="IBUIStyle">1</int>
+			</object>
+			<object class="IBUIBarButtonItem" id="42984213">
+				<string key="IBUITitle">Item</string>
 				<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 				<int key="IBUIStyle">1</int>
 			</object>
@@ -283,6 +283,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">selectAllButton</string>
+						<reference key="source" ref="372490531"/>
+						<reference key="destination" ref="42984213"/>
+					</object>
+					<int key="connectionID">50</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="872307640"/>
 						<reference key="destination" ref="372490531"/>
@@ -332,11 +340,11 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
-						<string key="label">cuplicateButtonClicked:</string>
+						<string key="label">duplicateButtonClicked:</string>
 						<reference key="source" ref="760668298"/>
 						<reference key="destination" ref="372490531"/>
 					</object>
-					<int key="connectionID">46</int>
+					<int key="connectionID">48</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBCocoaTouchEventConnection" key="connection">
@@ -345,6 +353,14 @@
 						<reference key="destination" ref="372490531"/>
 					</object>
 					<int key="connectionID">47</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchEventConnection" key="connection">
+						<string key="label">selectAllButtonClicked:</string>
+						<reference key="source" ref="42984213"/>
+						<reference key="destination" ref="372490531"/>
+					</object>
+					<int key="connectionID">51</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -428,6 +444,11 @@
 						<reference key="object" ref="155823485"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">49</int>
+						<reference key="object" ref="42984213"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -444,6 +465,7 @@
 				<string key="4.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="40.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="41.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
+				<string key="49.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="7.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 				<string key="8.IBPluginDependency">com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 			</dictionary>
@@ -451,7 +473,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">47</int>
+			<int key="maxID">51</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -460,25 +482,17 @@
 					<string key="superclassName">UIViewController</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="actionButtonIsClicked:">id</string>
-						<string key="compressButtonClicked:">id</string>
-						<string key="cuplicateButtonClicked:">id</string>
 						<string key="deleteButtonClicked:">id</string>
 						<string key="doneEditButtonClicked:">id</string>
+						<string key="duplicateButtonClicked:">id</string>
 						<string key="moveButtonClicked:">id</string>
 						<string key="searchFieldValueChanged:">id</string>
+						<string key="selectAllButtonClicked:">id</string>
 						<string key="typeSegmentClicked:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="actionButtonIsClicked:">
 							<string key="name">actionButtonIsClicked:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="compressButtonClicked:">
-							<string key="name">compressButtonClicked:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="cuplicateButtonClicked:">
-							<string key="name">cuplicateButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="deleteButtonClicked:">
@@ -489,12 +503,20 @@
 							<string key="name">doneEditButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="duplicateButtonClicked:">
+							<string key="name">duplicateButtonClicked:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="moveButtonClicked:">
 							<string key="name">moveButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="searchFieldValueChanged:">
 							<string key="name">searchFieldValueChanged:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="selectAllButtonClicked:">
+							<string key="name">selectAllButtonClicked:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="typeSegmentClicked:">
@@ -504,12 +526,12 @@
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="actionButton">UIBarButtonItem</string>
-						<string key="compressButton">UIBarButtonItem</string>
 						<string key="deleteButton">UIBarButtonItem</string>
 						<string key="doneEditButton">UIBarButtonItem</string>
 						<string key="duplicateButton">UIBarButtonItem</string>
 						<string key="moveButton">UIBarButtonItem</string>
 						<string key="searchField">UITextField</string>
+						<string key="selectAllButton">UIBarButtonItem</string>
 						<string key="tableHeaderView">UIView</string>
 						<string key="tableView">UITableView</string>
 						<string key="typeSegmented">UISegmentedControl</string>
@@ -517,10 +539,6 @@
 					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
 						<object class="IBToOneOutletInfo" key="actionButton">
 							<string key="name">actionButton</string>
-							<string key="candidateClassName">UIBarButtonItem</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="compressButton">
-							<string key="name">compressButton</string>
 							<string key="candidateClassName">UIBarButtonItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="deleteButton">
@@ -542,6 +560,10 @@
 						<object class="IBToOneOutletInfo" key="searchField">
 							<string key="name">searchField</string>
 							<string key="candidateClassName">UITextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="selectAllButton">
+							<string key="name">selectAllButton</string>
+							<string key="candidateClassName">UIBarButtonItem</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="tableHeaderView">
 							<string key="name">tableHeaderView</string>

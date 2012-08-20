@@ -7,13 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <QuickLook/QuickLook.h>
 
 typedef enum {
     FileListItemTypeFilePath,
     FileListItemTypeActionMenu
 } FileListItemType;
 
-@interface FileListItem : NSObject
+@interface FileListItem : NSObject<QLPreviewItem>
 
 @property (nonatomic, assign) FileListItemType type;
 @property (nonatomic, copy) NSString* filePath;

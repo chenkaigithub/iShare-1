@@ -15,4 +15,8 @@
     self.attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:_filePath error:NULL];
 }
 
+-(NSURL*)previewItemURL{
+    return [NSURL fileURLWithPath:self.filePath];
+}
+
 @end

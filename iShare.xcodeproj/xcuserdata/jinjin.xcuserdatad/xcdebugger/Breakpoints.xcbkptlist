@@ -2,9 +2,63 @@
 <Bucket
    type = "1"
    version = "1.0">
+   <FileBreakpoints>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "iShare/Class/UI/iPhone/FileBrowser/FileBrowserDataSource.m"
+         timestampString = "366101535.858716"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "93"
+         endingLineNumber = "93"
+         landmarkName = "-hideMenu"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "iShare/Class/UI/iPhone/FileBrowser/FileBrowserDataSource.m"
+         timestampString = "366104680.756264"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "208"
+         endingLineNumber = "208"
+         landmarkName = "-swipeGestureAction:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "iShare/Class/Model/FileOperationWrap.m"
+         timestampString = "366619126.737371"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "156"
+         endingLineNumber = "156"
+         landmarkName = "+fileTypeWithFilePath:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "iShare/ThirdParty/MPAudioPlayer/MDAudioPlayerController.m"
+         timestampString = "367078722.248989"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "173"
+         endingLineNumber = "173"
+         landmarkName = "-viewDidLoad"
+         landmarkType = "5">
+      </FileBreakpoint>
+   </FileBreakpoints>
    <ExceptionBreakpoints>
       <ExceptionBreakpoint
-         shouldBeEnabled = "Yes"
+         shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          scope = "0"

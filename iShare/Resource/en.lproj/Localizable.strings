@@ -12,7 +12,8 @@
 "btn_title_ok" = "OK";
 "btn_title_delete" = "Delete";
 "btn_title_move" = "Move";
-"btn_title_copy" = "Copy";
+"btn_title_copyto" = "Copy to";
+"btn_title_selectall" = "Select all";
 
 "tab_title_myfiles" = "My Files";
 "tab_title_music" = "Music";
@@ -20,9 +21,12 @@
 "alert_title_inputdirectoryname" = "Please input name of new folder";
 "alert_title_inputtextfilename" = "Please input name of new text file";
 "alert_title_deleteconfirm" = "Delete files";
+"alert_title_rename" = "Rename";
 "alert_message_deleteconfirm" = "Deleted files can't be found back. Do you confirm deletion?";
 "alert_message_nosuitableapp" = "No App that can open this file";
 "alert_message_nomailaccount" = "No mail account found in your device";
+"alert_message_renamefailed" = "Renaming failed";
+"btn_title_iknow" = "I know";
 
 "status_message_newfoldercreated" = "Folder is created";
 "status_message_newfoldercreatefailed" = "Failed to create folder";
@@ -33,6 +37,15 @@
 "status_message_savingimage" = "Saving image...";
 "status_message_savingfailed" = "Failed!";
 "status_message_savingsuccess" = "Image saved";
+
+"actionsheet_cancel" = "Cancel";
+"actionsheet_save" = "Save";
+"actionsheet_copy" = "Copy";
+"actionsheet_email" = "Email";
+
+"process_message_zipping" = "Compressing file now, please waiting";
+"process_message_unzipping" = "Uncompressing file";
+"process_message_unzippingfailed" = "Uncompressing failed";
 
 "search_placeholder" = "Search";
 

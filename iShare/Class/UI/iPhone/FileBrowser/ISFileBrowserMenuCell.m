@@ -42,6 +42,21 @@
 
 -(void)configCell:(FileListItem *)item{
     self.item = item;
+    if ([[item.attributes fileType] isEqualToString:NSFileTypeDirectory]){
+        self.mailButton.enabled = NO;
+        self.openButton.enabled = NO;
+        self.zipButton.enabled = NO;
+        self.mailButton.alpha = 0.5;
+        self.openButton.alpha = 0.5;
+        self.zipButton.alpha = 0.5;
+    }else{
+        self.mailButton.enabled = YES;
+        self.openButton.enabled = YES;
+        self.zipButton.enabled = YES;
+        self.mailButton.alpha = 1;
+        self.openButton.alpha = 1;
+        self.zipButton.alpha = 1;
+    }
 }
 
 -(FileListItem*)cellItem{
@@ -69,8 +84,9 @@
 }
 
 -(void)postNotificationName:(NSString*)name{
+    NSLog(@"post open in notification");
     NSDictionary* userInfo = @{ @"item" : self.item };
-    [[NSNotificationCenter defaultCenter] postNotificationName:name object:nil userInfo:userInfo];
+    [[NSNotificationCenter defaultCenter] postNotificationName:name object:self.dataSource userInfo:userInfo];
 }
 
 @end

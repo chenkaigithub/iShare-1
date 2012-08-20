@@ -26,8 +26,11 @@ typedef enum {
 -(void)refresh;
 -(void)sortListByOrder:(FileBrowserDataSourceOrder)order;
 -(void)hideMenu;
+-(void)removeFileItem:(FileListItem*)item;
 
 -(FileListItem*)objectAtIndexPath:(NSIndexPath*)indexPath;
+-(NSIndexPath*)indexPathOfObject:(FileListItem*)item;
+-(NSIndexPath*)menuIndex;
 
 -(void)setFilterKeyword:(NSString*)keyword;
 

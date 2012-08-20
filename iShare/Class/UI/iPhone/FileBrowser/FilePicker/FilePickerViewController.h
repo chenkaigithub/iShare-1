@@ -9,8 +9,26 @@
 #import <UIKit/UIKit.h>
 #import "FilePickerDataSource.h"
 
-@interface FilePickerViewController : UIViewController
+typedef void(^FilePickerCompletionBlock)(NSString*);
 
-@property (nonatomic, assign) FilePickerType pickerType;
+@class FilePickerViewController;
+
+@protocol FilePickerViewControllerDelegate <NSObject>
+
+@optional
+-(void)filePickerCancelled:(FilePickerViewController*)filePicker;
+-(void)filePicker:(FilePickerViewController*)filePicker finishedWithPickedPaths:(NSArray*)pickedPaths;
+
+@end
+
+@interface FilePickerViewController : UIViewController<UITableViewDelegate>
+
+-(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type;
+
+@property (nonatomic, copy) FilePickerCompletionBlock completionBlock;
+
+@property (nonatomic, readonly) NSString* currentDirectory;
+@property (nonatomic, weak) id<FilePickerViewControllerDelegate> delegate;
+
 
 @end

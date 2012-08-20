@@ -13,10 +13,13 @@ typedef enum {
     FilePickerTypeDirectory,
 } FilePickerType;
 
-@interface FilePickerDataSource : NSObject
+@interface FilePickerDataSource : NSObject<UITableViewDataSource>
 
 @property (nonatomic, assign) FilePickerType pickerType;
 
--(id)initWithFilePath:(NSString*)filePath;
+-(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type;
+-(void)refresh;
+
+-(id)objectAtIndexPath:(NSIndexPath*)indexPath;
 
 @end

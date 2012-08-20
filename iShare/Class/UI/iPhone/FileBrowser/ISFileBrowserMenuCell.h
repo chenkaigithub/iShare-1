@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "ISFileBrowserCellInterface.h"
 
+@class FileBrowserDataSource;
+
 @interface ISFileBrowserMenuCell : UITableViewCell<ISFileBrowserCellInterface>
 
 @property (nonatomic, strong) IBOutlet UIView* containerView;
@@ -18,6 +20,8 @@
 @property (nonatomic, strong) IBOutlet UIButton* mailButton;
 @property (nonatomic, strong) IBOutlet UIButton* zipButton;
 @property (nonatomic, strong) IBOutlet UIButton* renameButton;
+
+@property (nonatomic, weak) FileBrowserDataSource* dataSource;
 
 -(IBAction)deleteButtonClicked:(id)sender;
 -(IBAction)openButtonClicked:(id)sender;

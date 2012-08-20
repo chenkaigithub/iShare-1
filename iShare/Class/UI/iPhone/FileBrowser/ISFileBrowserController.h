@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MessageUI/MessageUI.h>
+#import "ReaderViewController.h"
 #import "QuadCurveMenu.h"
 
-@interface ISFileBrowserController : UIViewController<UITableViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate, UIDocumentInteractionControllerDelegate, QuadCurveMenuDelegate>
+@interface ISFileBrowserController : UIViewController<UITableViewDelegate, UIAlertViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UITextFieldDelegate, UIDocumentInteractionControllerDelegate, MFMailComposeViewControllerDelegate, QuadCurveMenuDelegate, ReaderViewControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView* tableView;
 @property (nonatomic, strong) IBOutlet UIView* tableHeaderView;
@@ -21,6 +23,7 @@
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* moveButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* deleteButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* duplicateButton;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem* selectAllButton;
 
 -(id)initWithFilePath:(NSString*)filePath;
 
@@ -30,6 +33,7 @@
 -(IBAction)doneEditButtonClicked:(id)sender;
 -(IBAction)moveButtonClicked:(id)sender;
 -(IBAction)deleteButtonClicked:(id)sender;
--(IBAction)cuplicateButtonClicked:(id)sender;
+-(IBAction)duplicateButtonClicked:(id)sender;
+-(IBAction)selectAllButtonClicked:(id)sender;
 
 @end

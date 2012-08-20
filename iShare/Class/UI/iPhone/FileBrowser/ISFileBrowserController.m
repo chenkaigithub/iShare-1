@@ -10,13 +10,25 @@
 #import "FileBrowserDataSource.h"
 #import "BWStatusBarOverlay.h"
 #import "SVProgressHUD.h"
+#import "FileOperationWrap.h"
+#import "FilePickerViewController.h"
+#import "ISFileQuickPreviewController.h"
+#import "MWPhotoBrowser.h"
+#import "ISPhotoBrowserDelegate.h"
+#import "CustomUIComponents.h"
+#import "MDAudioPlayerController.h"
+#import "MDAudioFile.h"
+#import <MediaPlayer/MediaPlayer.h>
 #import <MessageUI/MessageUI.h>
 
 #define kNewDirectoryNameAlertViewTag 100
 #define kNewTextFileNameAlertViewTag 200
 #define kDeleteFilesConfirmAlertViewTag 300
+#define kRenameAlertViewTag 400
 
-@interface ISFileBrowserController ()
+@interface ISFileBrowserController (){
+    NSString* _filePathToBeMoved;
+}
 
 @property (nonatomic, strong) NSString* filePath;
 @property (nonatomic, strong) FileBrowserDataSource* dataSource;
@@ -42,7 +54,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
         BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory];
         
         if (filePath == nil || exists == NO || (exists == YES && isDirectory == NO)){
-            self.filePath = [self defaultFilePath];
+            self.filePath = [FileOperationWrap homePath];
             self.title = NSLocalizedString(@"tab_title_myfiles", nil);
         }else{
             self.filePath = filePath;
@@ -51,6 +63,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
         
         self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_myfiles"];
         self.tabBarItem.title = self.title;
+        
+        self.dataSource = [[FileBrowserDataSource alloc] initWithFilePath:self.filePath];
         
         [self registorNotifications];
         
@@ -70,7 +84,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     [self.actionButton setTitle:NSLocalizedString(@"btn_title_operate", nil)];
     [self.deleteButton setTitle:NSLocalizedString(@"btn_title_delete",nil)];
     [self.moveButton setTitle:NSLocalizedString(@"btn_title_move", nil)];
-    [self.duplicateButton setTitle:NSLocalizedString(@"btn_title_copy", nil)];
+    [self.duplicateButton setTitle:NSLocalizedString(@"btn_title_copyto", nil)];
+    [self.selectAllButton setTitle:NSLocalizedString(@"btn_title_selectall", nil)];
     
     [self.doneEditButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [self.deleteButton setBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
@@ -98,11 +113,11 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.tableHeaderView = self.tableHeaderView;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
     
 //    self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
-    FileBrowserDataSource* dataSource = [[FileBrowserDataSource alloc] initWithFilePath:self.filePath];
-    self.dataSource = dataSource;
-    self.tableView.dataSource = dataSource;
+
+    self.tableView.dataSource = self.dataSource;
     [self.tableView reloadData];
 
     // Do any additional setup after loading the view from its nib.
@@ -141,30 +156,86 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
-}
-
--(NSString*)defaultFilePath{
-    NSString* defaultFilePath = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"];
-    DebugLog(@"%@", defaultFilePath);
-    return defaultFilePath;
+//    [CustomUIComponents customizeUI];
+    if (self.tableView.editing == NO){
+        [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+    }
 }
 
 #pragma mark - tableview delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.searchField resignFirstResponder];
-    [self.dataSource hideMenu];
     if (tableView.editing == NO){
-        //normal mode
         FileListItem* item = [self.dataSource objectAtIndexPath:indexPath];
-        if ([[item.attributes fileType] isEqualToString:NSFileTypeDirectory]){
-            ISFileBrowserController* fileBrowser = [[ISFileBrowserController alloc] initWithFilePath:item.filePath];
-            [self.navigationController pushViewController:fileBrowser animated:YES];
-        }else{
-            //preview files by file type
-            UIDocumentInteractionController* documentController = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:item.filePath]];
-            documentController.delegate = self;
-            [documentController presentPreviewAnimated:YES];
+        if (item.type == FileListItemTypeActionMenu){
+            return;
+        }
+        FileContentType fileType = [FileOperationWrap fileTypeWithFilePath:item.filePath];
+        //normal mode
+        switch (fileType) {
+            case FileContentTypeDirectory:
+            {
+                ISFileBrowserController* fileBrowser = [[ISFileBrowserController alloc] initWithFilePath:item.filePath];
+                [self.navigationController pushViewController:fileBrowser animated:YES];
+            }
+                break;
+            case FileContentTypePDF:
+            {
+                ReaderDocument* document = [ReaderDocument withDocumentFilePath:item.filePath password:nil];
+                ReaderViewController* pdfReader = [[ReaderViewController alloc] initWithReaderDocument:document];
+                pdfReader.delegate = self;
+                self.hidesBottomBarWhenPushed = YES;
+                [self.navigationController setNavigationBarHidden:YES animated:YES];
+                [self.navigationController pushViewController:pdfReader animated:YES];
+            }
+                break;
+            case FileContentTypeImage:
+            {
+                NSArray* imagePaths = [FileOperationWrap allImagePathsInFolder:self.filePath];
+                NSInteger startIndex = [imagePaths indexOfObject:item.filePath];
+                ISPhotoBrowserDelegate* delegate = [[ISPhotoBrowserDelegate alloc] initWithImageFilePaths:imagePaths];
+                MWPhotoBrowser* photoBrowser = [[MWPhotoBrowser alloc] initWithDelegate:delegate];
+                photoBrowser.displayActionButton = YES;
+                [photoBrowser setInitialPageIndex:startIndex];
+                [self.navigationController pushViewController:photoBrowser animated:YES];
+            }
+                break;
+            case FileContentTypeCompress:
+            {
+                //should be unzip...
+                [self unzipFileItem:item];
+            }
+                break;
+            case FileContentTypeMovie:
+            {
+                //当前先调用系统自带视频播放器
+                MPMoviePlayerViewController* moviePlayer = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL fileURLWithPath:item.filePath]];
+                [self presentMoviePlayerViewControllerAnimated:moviePlayer];
+            }
+                break;
+            case FileContentTypeMusic:
+            {
+                NSArray* allFiles = [FileOperationWrap allFilesWithFileContentType:FileContentTypeMusic inFolder:self.filePath];
+                NSMutableArray* songs = [NSMutableArray array];
+                [allFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL* stop){
+                    [songs addObject:[[MDAudioFile alloc] initWithPath:[NSURL fileURLWithPath:filePath]]];
+                }];
+                
+                MDAudioPlayerController* musicPlayer = [[MDAudioPlayerController alloc] initWithSoundFiles:songs atPath:self.filePath andSelectedIndex:[allFiles indexOfObject:item.filePath]];
+//                [self.navigationController presentModalViewController:musicPlayer animated:YES];
+                [self.navigationController pushViewController:musicPlayer animated:YES];
+//                [self presentViewController:musicPlayer animated:YES completion:NULL];
+            }
+                break;
+            case FileContentTypeOther:
+            {
+                if ([QLPreviewController canPreviewItem:item]){
+                    ISFileQuickPreviewController* previewController = [[ISFileQuickPreviewController alloc] initWithPreviewItems:@[item]];
+                    [self.navigationController pushViewController:previewController animated:YES];
+                }
+            }
+            default:
+                break;
         }
     }else{
         //editing mode
@@ -173,6 +244,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
             [self enableActionButtons];
         }
     }
+    
+    [self.dataSource hideMenu];
 }
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -230,7 +303,51 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(IBAction)moveButtonClicked:(id)sender{
+    FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
+    picker.completionBlock = ^(NSString* toPath){
+        if ([self.filePath isEqualToString:toPath] == NO && toPath.length > 0){
+            NSArray* indexPaths = [self.tableView indexPathsForSelectedRows];
+            [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
+                NSString* file = [self.dataSource objectAtIndexPath:indexPath].filePath;
+                NSString* filename = [file lastPathComponent];
+                [[NSFileManager defaultManager] moveItemAtPath:file toPath:[toPath stringByAppendingPathComponent:filename] error:NULL];
+            }];
+            
+            [self.dataSource refresh];
+            [self.tableView reloadData];
+            double delayInSeconds = 0.1;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self endEditingMode];
+            });
+        }
+    };
     
+    [self presentViewController:picker animated:YES completion:NULL];
+}
+
+-(IBAction)duplicateButtonClicked:(id)sender{
+    FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
+    picker.completionBlock = ^(NSString* toPath){
+        if ([self.filePath isEqualToString:toPath] == NO && toPath.length > 0){
+            NSArray* indexPaths = [self.tableView indexPathsForSelectedRows];
+            [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
+                NSString* file = [self.dataSource objectAtIndexPath:indexPath].filePath;
+                NSString* filename = [file lastPathComponent];
+                [[NSFileManager defaultManager] copyItemAtPath:file toPath:[toPath stringByAppendingPathComponent:filename] error:NULL];
+            }];
+            
+            [self.dataSource refresh];
+            [self.tableView reloadData];
+            double delayInSeconds = 0.1;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self endEditingMode];
+            });
+        }
+    };
+    
+    [self presentViewController:picker animated:YES completion:NULL];
 }
 
 -(IBAction)deleteButtonClicked:(id)sender{
@@ -241,12 +358,15 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     [deleteConfirmAlert show];
 }
 
--(IBAction)cuplicateButtonClicked:(id)sender{
+-(IBAction)selectAllButtonClicked:(id)sender{
+    for (int section = 0; section < [self.dataSource numberOfSectionsInTableView:self.tableView]; section++){
+        for (int row = 0; row < [self.dataSource tableView:self.tableView numberOfRowsInSection:section]; row++){
+            NSIndexPath* indexPath = [NSIndexPath indexPathForRow:row inSection:section];
+            [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
+        }
+    }
     
-}
-
--(IBAction)compressButtonClicked:(id)sender{
-    
+    [self enableActionButtons];
 }
 
 #pragma mark - Quad Cure Menu
@@ -345,7 +465,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     
     [SVProgressHUD showWithStatus:NSLocalizedString(@"status_message_savingimage", nil)];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        BOOL result = [self saveFile:imageData withName:fileName];
+        BOOL result = [FileOperationWrap saveFile:imageData withName:fileName path:self.filePath];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (result){
                 [BWStatusBarOverlay showSuccessWithMessage:NSLocalizedString(@"status_message_newimagecreated", nil) duration:kMessageTransitionDuration animated:YES];
@@ -379,7 +499,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 //confirm
                 UITextField* textField = [alertView textFieldAtIndex:0];
                 NSString* folderName = textField.text;
-                if ([self createDirectoryWithName:folderName]){
+                if ([FileOperationWrap createDirectoryWithName:folderName path:self.filePath]){
                     //notify create success
                     [BWStatusBarOverlay showSuccessWithMessage:NSLocalizedString(@"status_message_newfoldercreated", nil) duration:kMessageTransitionDuration animated:YES];
                     //reload tableview
@@ -401,7 +521,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 NSString* fileName = textField.text;
                 NSString* fullname = [fileName stringByAppendingPathExtension:@"txt"];
                 
-                if ([self createFileWithName:fullname]){
+                if ([FileOperationWrap createFileWithName:fullname path:self.filePath]){
                     //notify create success
                     [BWStatusBarOverlay showSuccessWithMessage:NSLocalizedString(@"status_message_newtextcreated", nil) duration:kMessageTransitionDuration animated:YES];
                     //reload tableview
@@ -421,6 +541,31 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 //show waiting alert view
                 [self removeFilesForSelectedIndexPaths];
                 [self disableActionButtons];
+            }
+        }
+            break;
+        case kRenameAlertViewTag:
+        {
+            if (buttonIndex == 1){
+                UITextField* textField = [alertView textFieldAtIndex:0];
+                NSString* newFilePath = [self.filePath stringByAppendingPathComponent:textField.text];
+                
+                //did rename for no change and empty
+                if ([newFilePath compare:_filePathToBeMoved] == NSOrderedSame || textField.text.length == 0){
+                    return;
+                }
+                
+                NSError* error = nil;
+                
+                if ([[NSFileManager defaultManager] moveItemAtPath:_filePathToBeMoved toPath:newFilePath error:&error]){
+                    //success
+                    [self.dataSource refresh];
+                    [self.tableView reloadData];
+                }else{
+                    //failed
+                    UIAlertView* renameFailed = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"alert_message_renamefailed", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"btn_title_iknow", nil) otherButtonTitles: nil];
+                    [renameFailed show];
+                }
             }
         }
             break;
@@ -445,35 +590,19 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 #pragma mark - create file and folder
--(BOOL)createDirectoryWithName:(NSString*)name{
-    NSString* folderPath = [self.filePath stringByAppendingPathComponent:name];
-    return [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:NO attributes:nil error:NULL];
-}
-
--(BOOL)createFileWithName:(NSString*)name{
-    NSString* filePath = [self.filePath stringByAppendingPathComponent:name];
-    NSString* fileContent = @"";
-    return [[NSFileManager defaultManager] createFileAtPath:filePath contents:[fileContent dataUsingEncoding:NSUTF8StringEncoding] attributes:nil];
-}
-
--(BOOL)saveFile:(NSData*)fileData withName:(NSString*)name{
-    NSString* filePath = [self.filePath stringByAppendingPathComponent:name];
-    return [[NSFileManager defaultManager] createFileAtPath:filePath contents:fileData attributes:nil];
-}
 
 -(void)removeFilesForSelectedIndexPaths{
     NSArray* selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
-    NSFileManager* fm = [NSFileManager defaultManager];
+    NSMutableArray* filePaths = [NSMutableArray array];
     [selectedIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
         FileListItem* item = [self.dataSource objectAtIndexPath:indexPath];
-        [fm removeItemAtPath:item.filePath error:NULL];
+        [filePaths addObject:item.filePath];
     }];
     
-    [self.dataSource refresh];
-    
-//    [self.tableView beginUpdates];
-    [self.tableView deleteRowsAtIndexPaths:selectedIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-//    [self.tableView endUpdates];
+    [FileOperationWrap removeFileItems:filePaths withCompletionBlock:^(BOOL finished){
+        [self.dataSource refresh];
+        [self.tableView deleteRowsAtIndexPaths:selectedIndexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+    }];
 }
 
 #pragma mark - editing mode
@@ -481,7 +610,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     //show top bar buttons
     self.navigationItem.title = nil;
     [self.navigationItem setRightBarButtonItem:self.doneEditButton animated:YES];
-    NSArray* leftItems = @[self.moveButton, self.duplicateButton, self.deleteButton];
+    NSArray* leftItems = @[self.duplicateButton, self.moveButton, self.deleteButton, self.selectAllButton];
     [self.navigationItem setLeftBarButtonItems:leftItems animated:YES];
     [self disableActionButtons];
     //hide path menu
@@ -510,15 +639,28 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(shouldShowMenu:) name:NOTIFICATION_FILEBROWSER_MENUSHOWN object:self.dataSource];
     [nc addObserver:self selector:@selector(shouldHideMenu:) name:NOTIFICATION_FILEBROWSER_MENUGONE object:self.dataSource];
-    [nc addObserver:self selector:@selector(deleteFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_DELETEBUTTONCLICKED object:nil];
-    [nc addObserver:self selector:@selector(openFileNotificationReceived:) name:NOTIFICAITON_FILEBROWSER_OPENINBUTTONCLICKED object:nil];
-    [nc addObserver:self selector:@selector(mailFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_MAILBUTTONCLICKED object:nil];
-    [nc addObserver:self selector:@selector(renameFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_RENAMEBUTTONCLICKED object:nil];
-    [nc addObserver:self selector:@selector(zipFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_ZIPBUTTONCLICKED object:nil];
+    [nc addObserver:self selector:@selector(deleteFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_DELETEBUTTONCLICKED object:self.dataSource];
+    [nc addObserver:self selector:@selector(openFileNotificationReceived:) name:NOTIFICAITON_FILEBROWSER_OPENINBUTTONCLICKED object:self.dataSource];
+    [nc addObserver:self selector:@selector(mailFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_MAILBUTTONCLICKED object:self.dataSource];
+    [nc addObserver:self selector:@selector(renameFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_RENAMEBUTTONCLICKED object:self.dataSource];
+    [nc addObserver:self selector:@selector(zipFileNotificationReceived:) name:NOTIFICATION_FILEBROWSER_ZIPBUTTONCLICKED object:self.dataSource];
 }
 
 -(void)deleteFileNotificationReceived:(NSNotification*)notification{
+    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    NSArray* filePaths = [NSArray arrayWithObject:item.filePath];
     
+    [FileOperationWrap removeFileItems:filePaths withCompletionBlock:^(BOOL finished){
+        
+        NSIndexPath* menuRow = [self.dataSource menuIndex];
+        NSIndexPath* fileRow = [NSIndexPath indexPathForRow:menuRow.row - 1 inSection:menuRow.section];
+        
+        FileListItem* fileItem = [self.dataSource objectAtIndexPath:fileRow];
+        [self.dataSource removeFileItem:item];
+        [self.dataSource removeFileItem:fileItem];
+        
+        [self.tableView deleteRowsAtIndexPaths:@[fileRow, menuRow] withRowAnimation:UITableViewRowAnimationFade];
+    }];
 }
 
 -(void)openFileNotificationReceived:(NSNotification*)notification{
@@ -537,21 +679,101 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 
 -(void)mailFileNotificationReceived:(NSNotification*)notification{
     FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    NSString* filename = [[item filePath] lastPathComponent];
     if ([MFMailComposeViewController canSendMail]){
-        MFMailComposeViewController* controller = [[MFMailComposeViewController alloc] init];
-#warning TODO
+        //get zipped file
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"process_message_zipping", nil)];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString* zippedFilePath = [FileOperationWrap zipFileAtFilePath:item.filePath toPath:[FileOperationWrap tempFolder]];
+            NSData* zippedData = [NSData dataWithContentsOfFile:zippedFilePath];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [SVProgressHUD dismiss];
+                MFMailComposeViewController* mailController = [[MFMailComposeViewController alloc] init];
+                mailController.mailComposeDelegate = self;
+                [mailController setSubject:filename];
+                [mailController addAttachmentData:zippedData mimeType:@"application/zip" fileName:[filename stringByAppendingPathExtension:@"zip"]];
+                
+                [self presentViewController:mailController animated:YES completion:NULL];
+            });
+        });
+
     }else{
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"alert_message_nomailaccount", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [alert show];
     }
 }
 
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+    [self dismissViewControllerAnimated:YES completion:NULL];
+    [self.dataSource refresh];
+    [self.tableView reloadData];
+}
+
 -(void)renameFileNotificationReceived:(NSNotification*)notification{
+    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    _filePathToBeMoved = item.filePath;
     
+    UIAlertView* renameAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_rename", nil) message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"btn_title_cancel", nil) otherButtonTitles:NSLocalizedString(@"btn_title_confirm", nil), nil];
+    renameAlert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    renameAlert.tag = kRenameAlertViewTag;
+    
+    UITextField* textField = [renameAlert textFieldAtIndex:0];
+    
+    NSString* fileName = [item.filePath lastPathComponent];
+    NSString* fileExtension = [fileName pathExtension];
+    
+    NSInteger selectLength = 0;
+    if (fileExtension.length > 0){
+        selectLength = [fileName length] - [fileExtension length] - 1;
+    }
+    
+    textField.text = fileName;
+    UITextPosition* start = [textField beginningOfDocument];
+    UITextPosition* end = [textField positionFromPosition:start offset:selectLength];
+    UITextRange* selectRange = [textField textRangeFromPosition:start toPosition:end];
+    
+    [textField setSelectedTextRange:selectRange];
+    
+    [renameAlert show];
 }
 
 -(void)zipFileNotificationReceived:(NSNotification*)notification{
+    FileListItem* item = [notification.userInfo objectForKey:@"item"];
     
+    [self zipFileItem:item];
+}
+
+-(void)zipFileItem:(FileListItem*)item{
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"process_message_zipping", nil)];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString* zippedFilename = [FileOperationWrap zipFileAtFilePath:item.filePath toPath:self.filePath];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (zippedFilename.length >0){
+                [self.dataSource refresh];
+                [self.tableView reloadData];
+            }
+            [SVProgressHUD dismiss];
+        });
+    });
+}
+
+-(void)unzipFileItem:(FileListItem*)item{
+    
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"process_message_unzipping", nil)];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        BOOL result = [FileOperationWrap unzipFileAtFilePath:item.filePath toPath:self.filePath];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (result){
+                [self.dataSource refresh];
+                [self.tableView reloadData];
+                [SVProgressHUD dismiss];
+            }else{
+                [SVProgressHUD dismissWithError:NSLocalizedString(@"process_message_unzippingfailed", nil)];
+            }
+        });
+    });
 }
 
 -(void)shouldShowMenu:(NSNotification*)notification{
@@ -586,6 +808,13 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     }else{
         self.documentInteractionController.URL = URL;
     }
+}
+
+#pragma mark - PDF reader delegate
+-(void)dismissReaderViewController:(ReaderViewController *)viewController{
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+    self.hidesBottomBarWhenPushed = NO;
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end
