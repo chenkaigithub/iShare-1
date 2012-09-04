@@ -48,7 +48,8 @@
             self.tableView.allowsMultipleSelection = NO;
             break;
         case FilePickerTypeFile:
-            self.tableView.allowsMultipleSelection = YES;
+            self.tableView.allowsMultipleSelectionDuringEditing = YES;
+            self.tableView.editing = YES;
             break;
         default:
             break;
@@ -79,12 +80,18 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+-(NSArray*)selectedFilePath{
+    NSArray* selectedIndexs = [self.tableView indexPathsForSelectedRows];
+    return [self.dataSource objectsForIndexPaths:selectedIndexs];
+}
+
 #pragma mark - table vie delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     FileListItem* item = [self.dataSource objectAtIndexPath:indexPath];
     if ([[item.attributes fileType] isEqualToString:NSFileTypeDirectory]){
         FilePickerContentController* controller = [[FilePickerContentController alloc] initWithFilePath:item.filePath pickerType:self.type];
         [self.navigationController pushViewController:controller animated:YES];
+        [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 

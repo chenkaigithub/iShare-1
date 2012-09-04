@@ -70,11 +70,22 @@
     return contentController.filePath;
 }
 
+-(NSArray*)selectedFiles{
+    FilePickerContentController* contentController = (FilePickerContentController*)[self.contentNavigation topViewController];
+    return contentController.selectedFilePath;
+}
+
 #pragma mark - notification
 -(void)doneActionReceived:(NSNotification*)notification{
-    [self dismissViewControllerAnimated:YES completion:^{
-        self.completionBlock([self currentDirectory]);
-    }];
+    NSArray* pathArray = nil;
+    if (self.pickerType == FilePickerTypeDirectory){
+        pathArray = @[[self currentDirectory]];
+    }else{
+        pathArray = [self selectedFiles];
+    }
+    
+    self.completionBlock(pathArray);
+    [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
 -(void)cancelActionReceived:(NSNotification*)notification{

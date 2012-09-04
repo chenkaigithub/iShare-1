@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FilePickerDataSource.h"
 
-typedef void(^FilePickerCompletionBlock)(NSString*);
+typedef void(^FilePickerCompletionBlock)(NSArray*);
 
 @class FilePickerViewController;
 

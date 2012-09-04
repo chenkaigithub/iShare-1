@@ -16,6 +16,7 @@
 @interface FilePickerContentController : UITableViewController
 
 @property (nonatomic, copy) NSString* filePath;
+@property (nonatomic, readonly) NSArray* selectedFilePath;
 
 -(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type;
 

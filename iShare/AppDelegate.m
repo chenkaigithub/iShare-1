@@ -11,6 +11,7 @@
 #import "CustomUIComponents.h"
 #import "FileOperationWrap.h"
 #import "JJAudioPlayerManager.h"
+#import <DropboxSDK/DropboxSDK.h>
 
 @implementation AppDelegate
 
@@ -27,10 +28,22 @@
     return YES;
 }
 
+
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+	if ([[DBSession sharedSession] handleOpenURL:url]) {
+//		if ([[DBSession sharedSession] isLinked]) {
+//			[navigationController pushViewController:rootViewController.photoViewController animated:YES];
+//		}
+		return YES;
+	}
+	
+	return NO;
+}
+
+//for music player
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event
 
 {
-    JJAudioPlayerManager* audioManager = [JJAudioPlayerManager sharedManager];
     
     //NSLog(@"UIEventTypeRemoteControl: %d - %d", event.type, event.subtype);
     
@@ -38,7 +51,12 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlTogglePlayPause");
         
-        [audioManager playMusic];
+        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        if (player.isPlaying){
+            [player stop];
+        }else{
+            [player play];
+        }
         
     }
     
@@ -46,7 +64,8 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlPlay");
         
-        [audioManager playMusic];
+        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        [player play];
         
     }
     
@@ -54,7 +73,8 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlPause");
         
-        [audioManager stopMusic];
+        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        [player stop];
         
     }
     
@@ -62,7 +82,8 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlStop");
         
-        [audioManager stopMusic];
+        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        [player stop];
         
     }
     
@@ -70,7 +91,8 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlNextTrack");
         
-        [audioManager playNext];
+        AVAudioPlayer* player = [[JJAudioPlayerManager sharedManager] playerForNextMusic];
+        [player play];
         
     }
     
@@ -78,7 +100,8 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlPreviousTrack");
         
-        [audioManager playPrevious];
+        AVAudioPlayer* player = [[JJAudioPlayerManager sharedManager] playerForPreviousMusic];
+        [player play];
         
     }
     

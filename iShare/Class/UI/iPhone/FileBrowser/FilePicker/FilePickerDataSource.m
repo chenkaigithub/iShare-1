@@ -44,8 +44,28 @@
         }
     }];
     
+    [allItems sortUsingComparator:^(FileListItem* item1, FileListItem* item2){
+        NSString* fileType1 = [item1.attributes fileType];
+        NSString* fileType2 = [item2.attributes fileType];
+        if ([fileType1 isEqualToString:NSFileTypeDirectory] && ![fileType2 isEqualToString:NSFileTypeDirectory]){
+            return NSOrderedAscending;
+        }else if (![fileType1 isEqualToString:NSFileTypeDirectory] && [fileType2 isEqualToString:NSFileTypeDirectory]){
+            return NSOrderedDescending;
+        }else{
+            return [[[item1.filePath lastPathComponent] lowercaseString] compare:[[item2.filePath lastPathComponent] lowercaseString]];
+        }
+    }];
+    
     self.fileItems = allItems;
 
+}
+
+-(NSArray*)objectsForIndexPaths:(NSArray*)indexPaths{
+    NSMutableArray* filteredItems = [NSMutableArray array];
+    [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
+        [filteredItems addObject:[self.fileItems objectAtIndex:indexPath.row]];
+    }];
+    return filteredItems;
 }
 
 -(id)objectAtIndexPath:(NSIndexPath*)indexPath{
@@ -71,6 +91,11 @@
     [cell configCell:[self.fileItems objectAtIndex:indexPath.row]];
     
     return cell;
+}
+
+-(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
+    FileListItem* item = [self objectAtIndexPath:indexPath];
+    return [[item.attributes fileType] isEqualToString:NSFileTypeDirectory] == NO;
 }
 
 @end

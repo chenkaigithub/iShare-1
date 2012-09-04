@@ -304,7 +304,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 
 -(IBAction)moveButtonClicked:(id)sender{
     FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
-    picker.completionBlock = ^(NSString* toPath){
+    picker.completionBlock = ^(NSArray* selectedPaths){
+        NSString* toPath = [selectedPaths lastObject];
         if ([self.filePath isEqualToString:toPath] == NO && toPath.length > 0){
             NSArray* indexPaths = [self.tableView indexPathsForSelectedRows];
             [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
@@ -328,7 +329,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 
 -(IBAction)duplicateButtonClicked:(id)sender{
     FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
-    picker.completionBlock = ^(NSString* toPath){
+    picker.completionBlock = ^(NSArray* selectedPaths){
+        NSString* toPath = [selectedPaths lastObject];
         if ([self.filePath isEqualToString:toPath] == NO && toPath.length > 0){
             NSArray* indexPaths = [self.tableView indexPathsForSelectedRows];
             [indexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
@@ -682,7 +684,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     NSString* filename = [[item filePath] lastPathComponent];
     if ([MFMailComposeViewController canSendMail]){
         //get zipped file
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"process_message_zipping", nil)];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_zipping", nil)];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString* zippedFilePath = [FileOperationWrap zipFileAtFilePath:item.filePath toPath:[FileOperationWrap tempFolder]];
             NSData* zippedData = [NSData dataWithContentsOfFile:zippedFilePath];
@@ -744,7 +746,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(void)zipFileItem:(FileListItem*)item{
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"process_message_zipping", nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_zipping", nil)];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString* zippedFilename = [FileOperationWrap zipFileAtFilePath:item.filePath toPath:self.filePath];
@@ -760,7 +762,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 
 -(void)unzipFileItem:(FileListItem*)item{
     
-    [SVProgressHUD showWithStatus:NSLocalizedString(@"process_message_unzipping", nil)];
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_unzipping", nil)];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         BOOL result = [FileOperationWrap unzipFileAtFilePath:item.filePath toPath:self.filePath];
@@ -770,7 +772,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 [self.tableView reloadData];
                 [SVProgressHUD dismiss];
             }else{
-                [SVProgressHUD dismissWithError:NSLocalizedString(@"process_message_unzippingfailed", nil)];
+                [SVProgressHUD dismissWithError:NSLocalizedString(@"progress_message_unzippingfailed", nil)];
             }
         });
     });

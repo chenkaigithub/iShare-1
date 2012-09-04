@@ -505,6 +505,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 		shuffle = YES;
 		[shuffleButton setImage:[UIImage imageNamed:@"AudioPlayerShuffleOn"] forState:UIControlStateNormal];
 	}
+    
+    [JJAudioPlayerManager sharedManager].playerMode ^= JJAudioPlayerModeShuffle;
 	
 	[self updateViewForPlayerInfo:player];
 	[self updateViewForPlayerState:player];
@@ -518,6 +520,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 					  forState:UIControlStateNormal];
 		repeatOne = NO;
 		repeatAll = NO;
+        [JJAudioPlayerManager sharedManager].playerMode  = JJAudioPlayerModeSequence;
 	}
 	else if (repeatAll)
 	{
@@ -525,6 +528,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 					  forState:UIControlStateNormal];
 		repeatOne = YES;
 		repeatAll = NO;
+        [JJAudioPlayerManager sharedManager].playerMode = JJAudioPlayerModeRepeatOne;
 	}
 	else
 	{
@@ -532,6 +536,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 					  forState:UIControlStateNormal];
 		repeatOne = NO;
 		repeatAll = YES;
+        [JJAudioPlayerManager sharedManager].playerMode = JJAudioPlayerModeSequenceLoop;
 	}
 	
 	[self updateViewForPlayerInfo:player];
@@ -540,18 +545,12 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 
 - (BOOL)canGoToNextTrack
 {
-	if (selectedIndex + 1 == [self.soundFiles count]) 
-		return NO;
-	else
-		return YES;
+	return [[JJAudioPlayerManager sharedManager] canGoNextTrack];
 }
 
 - (BOOL)canGoToPreviousTrack
 {
-	if (selectedIndex == 0)
-		return NO;
-	else
-		return YES;
+	return [[JJAudioPlayerManager sharedManager] canGoPreviouseTrack];
 }
 
 -(void)play
@@ -579,10 +578,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 
 - (void)previous
 {
-	NSUInteger newIndex = selectedIndex - 1;
-	selectedIndex = newIndex;
 		
-	AVAudioPlayer *newAudioPlayer =[self audioPlayerForMusicAtIndex:selectedIndex];
+	AVAudioPlayer *newAudioPlayer =[[JJAudioPlayerManager sharedManager] playerForPreviousMusic];
 	
 	[self stopMusic];
 	self.player = newAudioPlayer;
@@ -599,31 +596,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 
 - (void)next
 {
-	NSUInteger newIndex;
-	
-	if (shuffle)
-	{
-		newIndex = rand() % [soundFiles count];
-	}
-	else if (repeatOne)
-	{
-		newIndex = selectedIndex;
-	}
-	else if (repeatAll)
-	{
-		if (selectedIndex + 1 == [self.soundFiles count])
-			newIndex = 0;
-		else
-			newIndex = selectedIndex + 1;
-	}
-	else
-	{
-		newIndex = selectedIndex + 1;
-	}
-	
-	selectedIndex = newIndex;
-		
-	AVAudioPlayer *newAudioPlayer =[self audioPlayerForMusicAtIndex:selectedIndex];
+	AVAudioPlayer *newAudioPlayer =[[JJAudioPlayerManager sharedManager] playerForNextMusic];
 
 	[self stopMusic];
 	self.player = newAudioPlayer;
@@ -640,13 +613,13 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 
 - (void)volumeSliderMoved:(UISlider *)sender
 {
-	player.volume = [sender value];
+	self.player.volume = [sender value];
 	[[NSUserDefaults standardUserDefaults] setFloat:[sender value] forKey:@"PlayerVolume"];
 }
 
 - (void)progressSliderMoved:(UISlider *)sender
 {
-	player.currentTime = sender.value;
+	self.player.currentTime = sender.value;
 	[self updateCurrentTimeForPlayer:player];
 }
 
@@ -773,8 +746,8 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	[self.player setNumberOfLoops:0];
 	[self playMusic];
 	
-	[self updateViewForPlayerInfo:player];
-	[self updateViewForPlayerState:player];
+	[self updateViewForPlayerInfo:self.player];
+	[self updateViewForPlayerState:self.player];
 }
 
 - (BOOL)tableView:(UITableView *)table canEditRowAtIndexPath:(NSIndexPath *)indexPath 
@@ -866,17 +839,9 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 }
 
 -(AVAudioPlayer*)audioPlayerForMusicAtIndex:(NSInteger)index{
-    AVAudioPlayer* audioPlayer = [[JJAudioPlayerManager sharedManager] playerWithMusicURLs:self.soundFiles Index:index];
+    AVAudioPlayer* audioPlayer = [[JJAudioPlayerManager sharedManager] playerWithMusicItems:self.soundFiles Index:index];
     audioPlayer.delegate = self;
     return audioPlayer;
-}
-
--(AVAudioPlayer*)audioPlayerWithFilePath:(NSURL*)filePath{
-//    NSError* error = nil;
-//    AVAudioPlayer* audioPlayer = [[JJAudioPlayerManager sharedManager] playerWithContentOfURL:filePath error:&error];
-//    audioPlayer.delegate = self;
-//    
-//    return audioPlayer;
 }
 
 -(BOOL)playMusic{

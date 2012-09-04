@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220A18F015EA768D00F5D47B /* FileShareServiceItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 220A18EF15EA768D00F5D47B /* FileShareServiceItem.m */; };
+		22184CA715EA700A00BED798 /* ISShareServiceBaseController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22184CA515EA700A00BED798 /* ISShareServiceBaseController.m */; };
+		22184CAF15EA707400BED798 /* ISiCloudServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22184CAD15EA707400BED798 /* ISiCloudServiceViewController.m */; };
+		22184CB015EA707400BED798 /* ISiCloudServiceViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22184CAE15EA707400BED798 /* ISiCloudServiceViewController.xib */; };
+		22184CB415EA708A00BED798 /* ISSkydriveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22184CB215EA708A00BED798 /* ISSkydriveViewController.m */; };
+		22184CB515EA708A00BED798 /* ISSkydriveViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22184CB315EA708A00BED798 /* ISSkydriveViewController.xib */; };
+		22184CB915EA709500BED798 /* ISDropBoxViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22184CB715EA709500BED798 /* ISDropBoxViewController.m */; };
+		22184CBA15EA709500BED798 /* ISDropBoxViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22184CB815EA709500BED798 /* ISDropBoxViewController.xib */; };
+		22184CBD15EA724700BED798 /* ISShareServiceBaseDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22184CBC15EA724700BED798 /* ISShareServiceBaseDataSource.m */; };
 		22287E1515CCA0AC000C1395 /* PDFReaderLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22287E1715CCA0AC000C1395 /* PDFReaderLocalizable.strings */; };
 		22287E1E15CCA43C000C1395 /* ic_tab_myfiles@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22287E1D15CCA43C000C1395 /* ic_tab_myfiles@2x.png */; };
 		22287E2015CCA445000C1395 /* ic_tab_myfiles.png in Resources */ = {isa = PBXBuildFile; fileRef = 22287E1F15CCA445000C1395 /* ic_tab_myfiles.png */; };
@@ -171,16 +180,50 @@
 		2267A62115D7CB0F00F59717 /* ISFileQuickPreviewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2267A62015D7CB0D00F59717 /* ISFileQuickPreviewController.m */; };
 		2270F4AB15D240FC005C036B /* FileOperationWrap.m in Sources */ = {isa = PBXBuildFile; fileRef = 2270F4AA15D240FC005C036B /* FileOperationWrap.m */; };
 		2270F4C015D2B562005C036B /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2270F4BF15D2B562005C036B /* libz.dylib */; };
+		22759CF715EBBCA000D45165 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22759CF615EBBCA000D45165 /* DropboxSDK.framework */; };
+		22759CFA15EBBF5400D45165 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22759CF915EBBF5400D45165 /* Security.framework */; };
+		22759CFD15EBBFB400D45165 /* ISDropBoxDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22759CFC15EBBFB300D45165 /* ISDropBoxDataSource.m */; };
+		227B83B115ED03FC00C2BE59 /* ISShareServiceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 227B83B015ED03FB00C2BE59 /* ISShareServiceTableViewCell.m */; };
 		2284B57815DA263500AD4A7A /* MDAudioPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2284B57715DA263500AD4A7A /* MDAudioPlayerController.m */; };
 		2284B57915DA286000AD4A7A /* MDAudioFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 225147B015D93E36008AB38B /* MDAudioFile.m */; };
 		2284B57A15DA286000AD4A7A /* MDAudioPlayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2284B57715DA263500AD4A7A /* MDAudioPlayerController.m */; };
 		2284B57B15DA286000AD4A7A /* MDAudioPlayerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 225147B415D93E36008AB38B /* MDAudioPlayerTableViewCell.m */; };
 		2284B58015DA299A00AD4A7A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2284B57F15DA299A00AD4A7A /* AudioToolbox.framework */; };
+		22AEE02015EE130900CB8432 /* ISDownloadWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE01F15EE130900CB8432 /* ISDownloadWorker.m */; };
+		22AEE02315EE134500CB8432 /* ISTransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE02215EE134500CB8432 /* ISTransferManager.m */; };
+		22AEE02615EE135100CB8432 /* ISUploadWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE02515EE135100CB8432 /* ISUploadWorker.m */; };
+		22AEE02A15EE1F0800CB8432 /* ISTransferWorker.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE02915EE1F0700CB8432 /* ISTransferWorker.m */; };
+		22AEE07515EE5D2F00CB8432 /* JsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE03C15EE5D2F00CB8432 /* JsonParser.m */; };
+		22AEE07615EE5D2F00CB8432 /* JsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE03E15EE5D2F00CB8432 /* JsonWriter.m */; };
+		22AEE07715EE5D2F00CB8432 /* LiveApiHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04015EE5D2F00CB8432 /* LiveApiHelper.m */; };
+		22AEE07815EE5D2F00CB8432 /* LiveAuthHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04215EE5D2F00CB8432 /* LiveAuthHelper.m */; };
+		22AEE07915EE5D2F00CB8432 /* LiveConnectionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04515EE5D2F00CB8432 /* LiveConnectionHelper.m */; };
+		22AEE07A15EE5D2F00CB8432 /* StreamReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04715EE5D2F00CB8432 /* StreamReader.m */; };
+		22AEE07B15EE5D2F00CB8432 /* StringHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04915EE5D2F00CB8432 /* StringHelper.m */; };
+		22AEE07C15EE5D2F00CB8432 /* UrlHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04B15EE5D2F00CB8432 /* UrlHelper.m */; };
+		22AEE07D15EE5D2F00CB8432 /* LiveAuthDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE04D15EE5D2F00CB8432 /* LiveAuthDialog.m */; };
+		22AEE07E15EE5D2F00CB8432 /* LiveAuthDialog_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22AEE04E15EE5D2F00CB8432 /* LiveAuthDialog_iPad.xib */; };
+		22AEE07F15EE5D2F00CB8432 /* LiveAuthDialog_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22AEE04F15EE5D2F00CB8432 /* LiveAuthDialog_iPhone.xib */; };
+		22AEE08015EE5D2F00CB8432 /* LiveAuthRefreshRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE05215EE5D2F00CB8432 /* LiveAuthRefreshRequest.m */; };
+		22AEE08115EE5D2F00CB8432 /* LiveAuthRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE05415EE5D2F00CB8432 /* LiveAuthRequest.m */; };
+		22AEE08215EE5D2F00CB8432 /* LiveAuthStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE05615EE5D2F00CB8432 /* LiveAuthStorage.m */; };
+		22AEE08315EE5D2F00CB8432 /* LiveConnectClientCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE05815EE5D2F00CB8432 /* LiveConnectClientCore.m */; };
+		22AEE08415EE5D2F00CB8432 /* LiveDownloadOperationCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE05B15EE5D2F00CB8432 /* LiveDownloadOperationCore.m */; };
+		22AEE08515EE5D2F00CB8432 /* LiveOperationCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE05E15EE5D2F00CB8432 /* LiveOperationCore.m */; };
+		22AEE08615EE5D2F00CB8432 /* LiveUploadOperationCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE06115EE5D2F00CB8432 /* LiveUploadOperationCore.m */; };
+		22AEE08715EE5D2F00CB8432 /* backArrow_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 22AEE06315EE5D2F00CB8432 /* backArrow_black.png */; };
+		22AEE08815EE5D2F00CB8432 /* LiveConnectClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE06715EE5D2F00CB8432 /* LiveConnectClient.m */; };
+		22AEE08915EE5D2F00CB8432 /* LiveConnectSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE06915EE5D2F00CB8432 /* LiveConnectSession.m */; };
+		22AEE08A15EE5D2F00CB8432 /* LiveDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE06C15EE5D2F00CB8432 /* LiveDownloadOperation.m */; };
+		22AEE08B15EE5D2F00CB8432 /* LiveOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE06F15EE5D2F00CB8432 /* LiveOperation.m */; };
+		22AEE08C15EE5D2F00CB8432 /* LiveOperationProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AEE07215EE5D2F00CB8432 /* LiveOperationProgress.m */; };
 		22C8C93F15CEC66200916E94 /* FilePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8C93D15CEC66200916E94 /* FilePickerViewController.m */; };
 		22C8C94015CEC66200916E94 /* FilePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 22C8C93E15CEC66200916E94 /* FilePickerViewController.xib */; };
 		22C8C94315CEC67000916E94 /* FilePickerDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8C94215CEC67000916E94 /* FilePickerDataSource.m */; };
 		22C8C94715CED45C00916E94 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22C8C94915CED45C00916E94 /* Localizable.strings */; };
 		22C8C94E15CF474600916E94 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C8C94D15CF474600916E94 /* AVFoundation.framework */; };
+		22C8E51715F25087008944B6 /* ISSkydriveDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8E51615F25087008944B6 /* ISSkydriveDataSource.m */; };
+		22C8E53415F393D6008944B6 /* ISiCouldDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C8E53315F393D6008944B6 /* ISiCouldDataSource.m */; };
 		22FC34BE15C7E6D00051AA21 /* AppIcon-057.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348015C7E6D00051AA21 /* AppIcon-057.png */; };
 		22FC34BF15C7E6D00051AA21 /* AppIcon-072.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348115C7E6D00051AA21 /* AppIcon-072.png */; };
 		22FC34C015C7E6D00051AA21 /* AppIcon-114.png in Resources */ = {isa = PBXBuildFile; fileRef = 22FC348215C7E6D00051AA21 /* AppIcon-114.png */; };
@@ -245,6 +288,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		220A18EE15EA768D00F5D47B /* FileShareServiceItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileShareServiceItem.h; sourceTree = "<group>"; };
+		220A18EF15EA768D00F5D47B /* FileShareServiceItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileShareServiceItem.m; sourceTree = "<group>"; };
+		22184CA415EA700A00BED798 /* ISShareServiceBaseController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISShareServiceBaseController.h; sourceTree = "<group>"; };
+		22184CA515EA700A00BED798 /* ISShareServiceBaseController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISShareServiceBaseController.m; sourceTree = "<group>"; };
+		22184CAC15EA707400BED798 /* ISiCloudServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISiCloudServiceViewController.h; sourceTree = "<group>"; };
+		22184CAD15EA707400BED798 /* ISiCloudServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISiCloudServiceViewController.m; sourceTree = "<group>"; };
+		22184CAE15EA707400BED798 /* ISiCloudServiceViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISiCloudServiceViewController.xib; sourceTree = "<group>"; };
+		22184CB115EA708A00BED798 /* ISSkydriveViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISSkydriveViewController.h; sourceTree = "<group>"; };
+		22184CB215EA708A00BED798 /* ISSkydriveViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISSkydriveViewController.m; sourceTree = "<group>"; };
+		22184CB315EA708A00BED798 /* ISSkydriveViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISSkydriveViewController.xib; sourceTree = "<group>"; };
+		22184CB615EA709500BED798 /* ISDropBoxViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISDropBoxViewController.h; sourceTree = "<group>"; };
+		22184CB715EA709500BED798 /* ISDropBoxViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISDropBoxViewController.m; sourceTree = "<group>"; };
+		22184CB815EA709500BED798 /* ISDropBoxViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISDropBoxViewController.xib; sourceTree = "<group>"; };
+		22184CBB15EA724700BED798 /* ISShareServiceBaseDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISShareServiceBaseDataSource.h; sourceTree = "<group>"; };
+		22184CBC15EA724700BED798 /* ISShareServiceBaseDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISShareServiceBaseDataSource.m; sourceTree = "<group>"; };
 		22287E1615CCA0AC000C1395 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PDFReaderLocalizable.strings; sourceTree = "<group>"; };
 		22287E1815CCA0B0000C1395 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/PDFReaderLocalizable.strings"; sourceTree = "<group>"; };
 		22287E1D15CCA43C000C1395 /* ic_tab_myfiles@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_tab_myfiles@2x.png"; sourceTree = "<group>"; };
@@ -474,9 +532,79 @@
 		2270F4A915D240FC005C036B /* FileOperationWrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOperationWrap.h; sourceTree = "<group>"; };
 		2270F4AA15D240FC005C036B /* FileOperationWrap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOperationWrap.m; sourceTree = "<group>"; };
 		2270F4BF15D2B562005C036B /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		22759CF615EBBCA000D45165 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
+		22759CF915EBBF5400D45165 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		22759CFB15EBBFB300D45165 /* ISDropBoxDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISDropBoxDataSource.h; sourceTree = "<group>"; };
+		22759CFC15EBBFB300D45165 /* ISDropBoxDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISDropBoxDataSource.m; sourceTree = "<group>"; };
+		227B83AF15ED03FB00C2BE59 /* ISShareServiceTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISShareServiceTableViewCell.h; sourceTree = "<group>"; };
+		227B83B015ED03FB00C2BE59 /* ISShareServiceTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISShareServiceTableViewCell.m; sourceTree = "<group>"; };
 		2284B57615DA263500AD4A7A /* MDAudioPlayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MDAudioPlayerController.h; sourceTree = "<group>"; };
 		2284B57715DA263500AD4A7A /* MDAudioPlayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MDAudioPlayerController.m; sourceTree = "<group>"; };
 		2284B57F15DA299A00AD4A7A /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		22AEE01E15EE130800CB8432 /* ISDownloadWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISDownloadWorker.h; sourceTree = "<group>"; };
+		22AEE01F15EE130900CB8432 /* ISDownloadWorker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISDownloadWorker.m; sourceTree = "<group>"; };
+		22AEE02115EE134500CB8432 /* ISTransferManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISTransferManager.h; sourceTree = "<group>"; };
+		22AEE02215EE134500CB8432 /* ISTransferManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISTransferManager.m; sourceTree = "<group>"; };
+		22AEE02415EE135100CB8432 /* ISUploadWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISUploadWorker.h; sourceTree = "<group>"; };
+		22AEE02515EE135100CB8432 /* ISUploadWorker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISUploadWorker.m; sourceTree = "<group>"; };
+		22AEE02815EE1F0600CB8432 /* ISTransferWorker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISTransferWorker.h; sourceTree = "<group>"; };
+		22AEE02915EE1F0700CB8432 /* ISTransferWorker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISTransferWorker.m; sourceTree = "<group>"; };
+		22AEE03B15EE5D2F00CB8432 /* JsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonParser.h; sourceTree = "<group>"; };
+		22AEE03C15EE5D2F00CB8432 /* JsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonParser.m; sourceTree = "<group>"; };
+		22AEE03D15EE5D2F00CB8432 /* JsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JsonWriter.h; sourceTree = "<group>"; };
+		22AEE03E15EE5D2F00CB8432 /* JsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JsonWriter.m; sourceTree = "<group>"; };
+		22AEE03F15EE5D2F00CB8432 /* LiveApiHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveApiHelper.h; sourceTree = "<group>"; };
+		22AEE04015EE5D2F00CB8432 /* LiveApiHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveApiHelper.m; sourceTree = "<group>"; };
+		22AEE04115EE5D2F00CB8432 /* LiveAuthHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthHelper.h; sourceTree = "<group>"; };
+		22AEE04215EE5D2F00CB8432 /* LiveAuthHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveAuthHelper.m; sourceTree = "<group>"; };
+		22AEE04315EE5D2F00CB8432 /* LiveConnectionCreatorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConnectionCreatorDelegate.h; sourceTree = "<group>"; };
+		22AEE04415EE5D2F00CB8432 /* LiveConnectionHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConnectionHelper.h; sourceTree = "<group>"; };
+		22AEE04515EE5D2F00CB8432 /* LiveConnectionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveConnectionHelper.m; sourceTree = "<group>"; };
+		22AEE04615EE5D2F00CB8432 /* StreamReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamReader.h; sourceTree = "<group>"; };
+		22AEE04715EE5D2F00CB8432 /* StreamReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StreamReader.m; sourceTree = "<group>"; };
+		22AEE04815EE5D2F00CB8432 /* StringHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringHelper.h; sourceTree = "<group>"; };
+		22AEE04915EE5D2F00CB8432 /* StringHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringHelper.m; sourceTree = "<group>"; };
+		22AEE04A15EE5D2F00CB8432 /* UrlHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlHelper.h; sourceTree = "<group>"; };
+		22AEE04B15EE5D2F00CB8432 /* UrlHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UrlHelper.m; sourceTree = "<group>"; };
+		22AEE04C15EE5D2F00CB8432 /* LiveAuthDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthDialog.h; sourceTree = "<group>"; };
+		22AEE04D15EE5D2F00CB8432 /* LiveAuthDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveAuthDialog.m; sourceTree = "<group>"; };
+		22AEE04E15EE5D2F00CB8432 /* LiveAuthDialog_iPad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LiveAuthDialog_iPad.xib; sourceTree = "<group>"; };
+		22AEE04F15EE5D2F00CB8432 /* LiveAuthDialog_iPhone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LiveAuthDialog_iPhone.xib; sourceTree = "<group>"; };
+		22AEE05015EE5D2F00CB8432 /* LiveAuthDialogDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthDialogDelegate.h; sourceTree = "<group>"; };
+		22AEE05115EE5D2F00CB8432 /* LiveAuthRefreshRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthRefreshRequest.h; sourceTree = "<group>"; };
+		22AEE05215EE5D2F00CB8432 /* LiveAuthRefreshRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveAuthRefreshRequest.m; sourceTree = "<group>"; };
+		22AEE05315EE5D2F00CB8432 /* LiveAuthRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthRequest.h; sourceTree = "<group>"; };
+		22AEE05415EE5D2F00CB8432 /* LiveAuthRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveAuthRequest.m; sourceTree = "<group>"; };
+		22AEE05515EE5D2F00CB8432 /* LiveAuthStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthStorage.h; sourceTree = "<group>"; };
+		22AEE05615EE5D2F00CB8432 /* LiveAuthStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveAuthStorage.m; sourceTree = "<group>"; };
+		22AEE05715EE5D2F00CB8432 /* LiveConnectClientCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConnectClientCore.h; sourceTree = "<group>"; };
+		22AEE05815EE5D2F00CB8432 /* LiveConnectClientCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveConnectClientCore.m; sourceTree = "<group>"; };
+		22AEE05915EE5D2F00CB8432 /* LiveConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConstants.h; sourceTree = "<group>"; };
+		22AEE05A15EE5D2F00CB8432 /* LiveDownloadOperationCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveDownloadOperationCore.h; sourceTree = "<group>"; };
+		22AEE05B15EE5D2F00CB8432 /* LiveDownloadOperationCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveDownloadOperationCore.m; sourceTree = "<group>"; };
+		22AEE05C15EE5D2F00CB8432 /* LiveDownloadOperationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveDownloadOperationInternal.h; sourceTree = "<group>"; };
+		22AEE05D15EE5D2F00CB8432 /* LiveOperationCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveOperationCore.h; sourceTree = "<group>"; };
+		22AEE05E15EE5D2F00CB8432 /* LiveOperationCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveOperationCore.m; sourceTree = "<group>"; };
+		22AEE05F15EE5D2F00CB8432 /* LiveOperationInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveOperationInternal.h; sourceTree = "<group>"; };
+		22AEE06015EE5D2F00CB8432 /* LiveUploadOperationCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveUploadOperationCore.h; sourceTree = "<group>"; };
+		22AEE06115EE5D2F00CB8432 /* LiveUploadOperationCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveUploadOperationCore.m; sourceTree = "<group>"; };
+		22AEE06315EE5D2F00CB8432 /* backArrow_black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backArrow_black.png; sourceTree = "<group>"; };
+		22AEE06515EE5D2F00CB8432 /* LiveAuthDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveAuthDelegate.h; sourceTree = "<group>"; };
+		22AEE06615EE5D2F00CB8432 /* LiveConnectClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConnectClient.h; sourceTree = "<group>"; };
+		22AEE06715EE5D2F00CB8432 /* LiveConnectClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveConnectClient.m; sourceTree = "<group>"; };
+		22AEE06815EE5D2F00CB8432 /* LiveConnectSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConnectSession.h; sourceTree = "<group>"; };
+		22AEE06915EE5D2F00CB8432 /* LiveConnectSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveConnectSession.m; sourceTree = "<group>"; };
+		22AEE06A15EE5D2F00CB8432 /* LiveConnectSessionStatus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveConnectSessionStatus.h; sourceTree = "<group>"; };
+		22AEE06B15EE5D2F00CB8432 /* LiveDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveDownloadOperation.h; sourceTree = "<group>"; };
+		22AEE06C15EE5D2F00CB8432 /* LiveDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveDownloadOperation.m; sourceTree = "<group>"; };
+		22AEE06D15EE5D2F00CB8432 /* LiveDownloadOperationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveDownloadOperationDelegate.h; sourceTree = "<group>"; };
+		22AEE06E15EE5D2F00CB8432 /* LiveOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveOperation.h; sourceTree = "<group>"; };
+		22AEE06F15EE5D2F00CB8432 /* LiveOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveOperation.m; sourceTree = "<group>"; };
+		22AEE07015EE5D2F00CB8432 /* LiveOperationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveOperationDelegate.h; sourceTree = "<group>"; };
+		22AEE07115EE5D2F00CB8432 /* LiveOperationProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveOperationProgress.h; sourceTree = "<group>"; };
+		22AEE07215EE5D2F00CB8432 /* LiveOperationProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LiveOperationProgress.m; sourceTree = "<group>"; };
+		22AEE07315EE5D2F00CB8432 /* LiveUploadOperationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveUploadOperationDelegate.h; sourceTree = "<group>"; };
+		22AEE07415EE5D2F00CB8432 /* LiveUploadOverwriteOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LiveUploadOverwriteOption.h; sourceTree = "<group>"; };
 		22C8C93C15CEC66200916E94 /* FilePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePickerViewController.h; sourceTree = "<group>"; };
 		22C8C93D15CEC66200916E94 /* FilePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FilePickerViewController.m; sourceTree = "<group>"; };
 		22C8C93E15CEC66200916E94 /* FilePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilePickerViewController.xib; sourceTree = "<group>"; };
@@ -486,6 +614,11 @@
 		22C8C94815CED45C00916E94 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		22C8C94A15CED45D00916E94 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		22C8C94D15CF474600916E94 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		22C8E51515F25087008944B6 /* ISSkydriveDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISSkydriveDataSource.h; sourceTree = "<group>"; };
+		22C8E51615F25087008944B6 /* ISSkydriveDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISSkydriveDataSource.m; sourceTree = "<group>"; };
+		22C8E52A15F348BB008944B6 /* iShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = iShare.entitlements; sourceTree = "<group>"; };
+		22C8E53215F393D6008944B6 /* ISiCouldDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISiCouldDataSource.h; sourceTree = "<group>"; };
+		22C8E53315F393D6008944B6 /* ISiCouldDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISiCouldDataSource.m; sourceTree = "<group>"; };
 		22FC348015C7E6D00051AA21 /* AppIcon-057.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-057.png"; sourceTree = "<group>"; };
 		22FC348115C7E6D00051AA21 /* AppIcon-072.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-072.png"; sourceTree = "<group>"; };
 		22FC348215C7E6D00051AA21 /* AppIcon-114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-114.png"; sourceTree = "<group>"; };
@@ -558,6 +691,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22759CFA15EBBF5400D45165 /* Security.framework in Frameworks */,
 				2284B58015DA299A00AD4A7A /* AudioToolbox.framework in Frameworks */,
 				22C8C94E15CF474600916E94 /* AVFoundation.framework in Frameworks */,
 				2251478115D8A5B9008AB38B /* MediaPlayer.framework in Frameworks */,
@@ -570,6 +704,7 @@
 				2253856F15C7B6F900D8B4B7 /* UIKit.framework in Frameworks */,
 				2253857115C7B6F900D8B4B7 /* Foundation.framework in Frameworks */,
 				2253857315C7B6F900D8B4B7 /* CoreGraphics.framework in Frameworks */,
+				22759CF715EBBCA000D45165 /* DropboxSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -586,6 +721,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22184CA215EA6F8200BED798 /* ShareServiceBaseController */ = {
+			isa = PBXGroup;
+			children = (
+				22184CA415EA700A00BED798 /* ISShareServiceBaseController.h */,
+				22184CA515EA700A00BED798 /* ISShareServiceBaseController.m */,
+				22184CBB15EA724700BED798 /* ISShareServiceBaseDataSource.h */,
+				22184CBC15EA724700BED798 /* ISShareServiceBaseDataSource.m */,
+				227B83AF15ED03FB00C2BE59 /* ISShareServiceTableViewCell.h */,
+				227B83B015ED03FB00C2BE59 /* ISShareServiceTableViewCell.m */,
+			);
+			path = ShareServiceBaseController;
+			sourceTree = "<group>";
+		};
+		22184CA915EA701500BED798 /* DropBoxController */ = {
+			isa = PBXGroup;
+			children = (
+				22184CB615EA709500BED798 /* ISDropBoxViewController.h */,
+				22184CB715EA709500BED798 /* ISDropBoxViewController.m */,
+				22184CB815EA709500BED798 /* ISDropBoxViewController.xib */,
+				22759CFB15EBBFB300D45165 /* ISDropBoxDataSource.h */,
+				22759CFC15EBBFB300D45165 /* ISDropBoxDataSource.m */,
+			);
+			path = DropBoxController;
+			sourceTree = "<group>";
+		};
+		22184CAA15EA702400BED798 /* iCloudController */ = {
+			isa = PBXGroup;
+			children = (
+				22184CAC15EA707400BED798 /* ISiCloudServiceViewController.h */,
+				22184CAD15EA707400BED798 /* ISiCloudServiceViewController.m */,
+				22184CAE15EA707400BED798 /* ISiCloudServiceViewController.xib */,
+				22C8E53215F393D6008944B6 /* ISiCouldDataSource.h */,
+				22C8E53315F393D6008944B6 /* ISiCouldDataSource.m */,
+			);
+			path = iCloudController;
+			sourceTree = "<group>";
+		};
+		22184CAB15EA703300BED798 /* SkydriveController */ = {
+			isa = PBXGroup;
+			children = (
+				22184CB115EA708A00BED798 /* ISSkydriveViewController.h */,
+				22184CB215EA708A00BED798 /* ISSkydriveViewController.m */,
+				22184CB315EA708A00BED798 /* ISSkydriveViewController.xib */,
+				22C8E51515F25087008944B6 /* ISSkydriveDataSource.h */,
+				22C8E51615F25087008944B6 /* ISSkydriveDataSource.m */,
+			);
+			path = SkydriveController;
+			sourceTree = "<group>";
+		};
 		22287E3015CCBB0A000C1395 /* QuadCurveMenu */ = {
 			isa = PBXGroup;
 			children = (
@@ -793,6 +977,10 @@
 				222F3DC515CC0BA200E495FE /* ISFileShareController.h */,
 				222F3DC615CC0BA200E495FE /* ISFileShareController.m */,
 				222F3DC715CC0BA200E495FE /* ISFileShareController.xib */,
+				22184CA915EA701500BED798 /* DropBoxController */,
+				22184CAA15EA702400BED798 /* iCloudController */,
+				22184CA215EA6F8200BED798 /* ShareServiceBaseController */,
+				22184CAB15EA703300BED798 /* SkydriveController */,
 			);
 			path = FileShare;
 			sourceTree = "<group>";
@@ -830,10 +1018,13 @@
 		222F3DD815CC22C200E495FE /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				22AEE01915EE12DA00CB8432 /* DownloadManager */,
 				22287E2515CCA85B000C1395 /* FileListItem.h */,
 				22287E2615CCA85B000C1395 /* FileListItem.m */,
 				2270F4A915D240FC005C036B /* FileOperationWrap.h */,
 				2270F4AA15D240FC005C036B /* FileOperationWrap.m */,
+				220A18EE15EA768D00F5D47B /* FileShareServiceItem.h */,
+				220A18EF15EA768D00F5D47B /* FileShareServiceItem.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1054,6 +1245,7 @@
 				2284B57F15DA299A00AD4A7A /* AudioToolbox.framework */,
 				22C8C94D15CF474600916E94 /* AVFoundation.framework */,
 				2253857215C7B6F900D8B4B7 /* CoreGraphics.framework */,
+				22759CF615EBBCA000D45165 /* DropboxSDK.framework */,
 				2253857015C7B6F900D8B4B7 /* Foundation.framework */,
 				22FC34EE15C7E80E0051AA21 /* ImageIO.framework */,
 				2270F4BF15D2B562005C036B /* libz.dylib */,
@@ -1062,6 +1254,7 @@
 				2267A61A15D79A9000F59717 /* MobileCoreServices.framework */,
 				22FC34E615C7E7AA0051AA21 /* QuartzCore.framework */,
 				22FC34F015C7E8200051AA21 /* QuickLook.framework */,
+				22759CF915EBBF5400D45165 /* Security.framework */,
 				2267A60915D793BD00F59717 /* SenTestingKit.framework */,
 				2253856E15C7B6F900D8B4B7 /* UIKit.framework */,
 			);
@@ -1071,6 +1264,7 @@
 		2253857415C7B6F900D8B4B7 /* iShare */ = {
 			isa = PBXGroup;
 			children = (
+				22C8E52A15F348BB008944B6 /* iShare.entitlements */,
 				222F3D7515CB6BCF00E495FE /* Class */,
 				222F3D7415CB530400E495FE /* Resource */,
 				2253858B15C7B84B00D8B4B7 /* ThirdParty */,
@@ -1095,6 +1289,7 @@
 		2253858B15C7B84B00D8B4B7 /* ThirdParty */ = {
 			isa = PBXGroup;
 			children = (
+				22AEE03815EE5D2F00CB8432 /* SkydriveSDK */,
 				2251479215D93DF8008AB38B /* MPAudioPlayer */,
 				22287E7415CD100C000C1395 /* BWStatusBarOverlay */,
 				225146DF15D7E80B008AB38B /* MWPhotoBrowser */,
@@ -1135,6 +1330,117 @@
 				2267A61615D793BE00F59717 /* iShareTest-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		22AEE01915EE12DA00CB8432 /* DownloadManager */ = {
+			isa = PBXGroup;
+			children = (
+				22AEE01E15EE130800CB8432 /* ISDownloadWorker.h */,
+				22AEE01F15EE130900CB8432 /* ISDownloadWorker.m */,
+				22AEE02115EE134500CB8432 /* ISTransferManager.h */,
+				22AEE02215EE134500CB8432 /* ISTransferManager.m */,
+				22AEE02415EE135100CB8432 /* ISUploadWorker.h */,
+				22AEE02515EE135100CB8432 /* ISUploadWorker.m */,
+				22AEE02815EE1F0600CB8432 /* ISTransferWorker.h */,
+				22AEE02915EE1F0700CB8432 /* ISTransferWorker.m */,
+			);
+			path = DownloadManager;
+			sourceTree = "<group>";
+		};
+		22AEE03815EE5D2F00CB8432 /* SkydriveSDK */ = {
+			isa = PBXGroup;
+			children = (
+				22AEE03915EE5D2F00CB8432 /* Internal */,
+				22AEE06415EE5D2F00CB8432 /* Public */,
+			);
+			name = SkydriveSDK;
+			path = Library;
+			sourceTree = "<group>";
+		};
+		22AEE03915EE5D2F00CB8432 /* Internal */ = {
+			isa = PBXGroup;
+			children = (
+				22AEE03A15EE5D2F00CB8432 /* Helpers */,
+				22AEE04C15EE5D2F00CB8432 /* LiveAuthDialog.h */,
+				22AEE04D15EE5D2F00CB8432 /* LiveAuthDialog.m */,
+				22AEE04E15EE5D2F00CB8432 /* LiveAuthDialog_iPad.xib */,
+				22AEE04F15EE5D2F00CB8432 /* LiveAuthDialog_iPhone.xib */,
+				22AEE05015EE5D2F00CB8432 /* LiveAuthDialogDelegate.h */,
+				22AEE05115EE5D2F00CB8432 /* LiveAuthRefreshRequest.h */,
+				22AEE05215EE5D2F00CB8432 /* LiveAuthRefreshRequest.m */,
+				22AEE05315EE5D2F00CB8432 /* LiveAuthRequest.h */,
+				22AEE05415EE5D2F00CB8432 /* LiveAuthRequest.m */,
+				22AEE05515EE5D2F00CB8432 /* LiveAuthStorage.h */,
+				22AEE05615EE5D2F00CB8432 /* LiveAuthStorage.m */,
+				22AEE05715EE5D2F00CB8432 /* LiveConnectClientCore.h */,
+				22AEE05815EE5D2F00CB8432 /* LiveConnectClientCore.m */,
+				22AEE05915EE5D2F00CB8432 /* LiveConstants.h */,
+				22AEE05A15EE5D2F00CB8432 /* LiveDownloadOperationCore.h */,
+				22AEE05B15EE5D2F00CB8432 /* LiveDownloadOperationCore.m */,
+				22AEE05C15EE5D2F00CB8432 /* LiveDownloadOperationInternal.h */,
+				22AEE05D15EE5D2F00CB8432 /* LiveOperationCore.h */,
+				22AEE05E15EE5D2F00CB8432 /* LiveOperationCore.m */,
+				22AEE05F15EE5D2F00CB8432 /* LiveOperationInternal.h */,
+				22AEE06015EE5D2F00CB8432 /* LiveUploadOperationCore.h */,
+				22AEE06115EE5D2F00CB8432 /* LiveUploadOperationCore.m */,
+				22AEE06215EE5D2F00CB8432 /* Resources */,
+			);
+			path = Internal;
+			sourceTree = "<group>";
+		};
+		22AEE03A15EE5D2F00CB8432 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				22AEE03B15EE5D2F00CB8432 /* JsonParser.h */,
+				22AEE03C15EE5D2F00CB8432 /* JsonParser.m */,
+				22AEE03D15EE5D2F00CB8432 /* JsonWriter.h */,
+				22AEE03E15EE5D2F00CB8432 /* JsonWriter.m */,
+				22AEE03F15EE5D2F00CB8432 /* LiveApiHelper.h */,
+				22AEE04015EE5D2F00CB8432 /* LiveApiHelper.m */,
+				22AEE04115EE5D2F00CB8432 /* LiveAuthHelper.h */,
+				22AEE04215EE5D2F00CB8432 /* LiveAuthHelper.m */,
+				22AEE04315EE5D2F00CB8432 /* LiveConnectionCreatorDelegate.h */,
+				22AEE04415EE5D2F00CB8432 /* LiveConnectionHelper.h */,
+				22AEE04515EE5D2F00CB8432 /* LiveConnectionHelper.m */,
+				22AEE04615EE5D2F00CB8432 /* StreamReader.h */,
+				22AEE04715EE5D2F00CB8432 /* StreamReader.m */,
+				22AEE04815EE5D2F00CB8432 /* StringHelper.h */,
+				22AEE04915EE5D2F00CB8432 /* StringHelper.m */,
+				22AEE04A15EE5D2F00CB8432 /* UrlHelper.h */,
+				22AEE04B15EE5D2F00CB8432 /* UrlHelper.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		22AEE06215EE5D2F00CB8432 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				22AEE06315EE5D2F00CB8432 /* backArrow_black.png */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		22AEE06415EE5D2F00CB8432 /* Public */ = {
+			isa = PBXGroup;
+			children = (
+				22AEE06515EE5D2F00CB8432 /* LiveAuthDelegate.h */,
+				22AEE06615EE5D2F00CB8432 /* LiveConnectClient.h */,
+				22AEE06715EE5D2F00CB8432 /* LiveConnectClient.m */,
+				22AEE06815EE5D2F00CB8432 /* LiveConnectSession.h */,
+				22AEE06915EE5D2F00CB8432 /* LiveConnectSession.m */,
+				22AEE06A15EE5D2F00CB8432 /* LiveConnectSessionStatus.h */,
+				22AEE06B15EE5D2F00CB8432 /* LiveDownloadOperation.h */,
+				22AEE06C15EE5D2F00CB8432 /* LiveDownloadOperation.m */,
+				22AEE06D15EE5D2F00CB8432 /* LiveDownloadOperationDelegate.h */,
+				22AEE06E15EE5D2F00CB8432 /* LiveOperation.h */,
+				22AEE06F15EE5D2F00CB8432 /* LiveOperation.m */,
+				22AEE07015EE5D2F00CB8432 /* LiveOperationDelegate.h */,
+				22AEE07115EE5D2F00CB8432 /* LiveOperationProgress.h */,
+				22AEE07215EE5D2F00CB8432 /* LiveOperationProgress.m */,
+				22AEE07315EE5D2F00CB8432 /* LiveUploadOperationDelegate.h */,
+				22AEE07415EE5D2F00CB8432 /* LiveUploadOverwriteOption.h */,
+			);
+			path = Public;
 			sourceTree = "<group>";
 		};
 		22C8C93A15CEA70700916E94 /* FilePicker */ = {
@@ -1411,6 +1717,12 @@
 				225147D015D94015008AB38B /* AudioPlayerPrevTrack@2x.png in Resources */,
 				22FEA7B115E07CFD00230346 /* AudioPlayerScrubberKnob.png in Resources */,
 				22FEA7B215E07CFD00230346 /* AudioPlayerScrubberKnob@2x.png in Resources */,
+				22184CB015EA707400BED798 /* ISiCloudServiceViewController.xib in Resources */,
+				22184CB515EA708A00BED798 /* ISSkydriveViewController.xib in Resources */,
+				22184CBA15EA709500BED798 /* ISDropBoxViewController.xib in Resources */,
+				22AEE07E15EE5D2F00CB8432 /* LiveAuthDialog_iPad.xib in Resources */,
+				22AEE07F15EE5D2F00CB8432 /* LiveAuthDialog_iPhone.xib in Resources */,
+				22AEE08715EE5D2F00CB8432 /* backArrow_black.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1546,6 +1858,41 @@
 				2251476E15D87494008AB38B /* uncompr.c in Sources */,
 				2251476F15D87494008AB38B /* zutil.c in Sources */,
 				22FEA7BD15E11C7900230346 /* JJAudioPlayerManager.m in Sources */,
+				22184CA715EA700A00BED798 /* ISShareServiceBaseController.m in Sources */,
+				22184CAF15EA707400BED798 /* ISiCloudServiceViewController.m in Sources */,
+				22184CB415EA708A00BED798 /* ISSkydriveViewController.m in Sources */,
+				22184CB915EA709500BED798 /* ISDropBoxViewController.m in Sources */,
+				22184CBD15EA724700BED798 /* ISShareServiceBaseDataSource.m in Sources */,
+				220A18F015EA768D00F5D47B /* FileShareServiceItem.m in Sources */,
+				22759CFD15EBBFB400D45165 /* ISDropBoxDataSource.m in Sources */,
+				227B83B115ED03FC00C2BE59 /* ISShareServiceTableViewCell.m in Sources */,
+				22AEE02015EE130900CB8432 /* ISDownloadWorker.m in Sources */,
+				22AEE02315EE134500CB8432 /* ISTransferManager.m in Sources */,
+				22AEE02615EE135100CB8432 /* ISUploadWorker.m in Sources */,
+				22AEE02A15EE1F0800CB8432 /* ISTransferWorker.m in Sources */,
+				22AEE07515EE5D2F00CB8432 /* JsonParser.m in Sources */,
+				22AEE07615EE5D2F00CB8432 /* JsonWriter.m in Sources */,
+				22AEE07715EE5D2F00CB8432 /* LiveApiHelper.m in Sources */,
+				22AEE07815EE5D2F00CB8432 /* LiveAuthHelper.m in Sources */,
+				22AEE07915EE5D2F00CB8432 /* LiveConnectionHelper.m in Sources */,
+				22AEE07A15EE5D2F00CB8432 /* StreamReader.m in Sources */,
+				22AEE07B15EE5D2F00CB8432 /* StringHelper.m in Sources */,
+				22AEE07C15EE5D2F00CB8432 /* UrlHelper.m in Sources */,
+				22AEE07D15EE5D2F00CB8432 /* LiveAuthDialog.m in Sources */,
+				22AEE08015EE5D2F00CB8432 /* LiveAuthRefreshRequest.m in Sources */,
+				22AEE08115EE5D2F00CB8432 /* LiveAuthRequest.m in Sources */,
+				22AEE08215EE5D2F00CB8432 /* LiveAuthStorage.m in Sources */,
+				22AEE08315EE5D2F00CB8432 /* LiveConnectClientCore.m in Sources */,
+				22AEE08415EE5D2F00CB8432 /* LiveDownloadOperationCore.m in Sources */,
+				22AEE08515EE5D2F00CB8432 /* LiveOperationCore.m in Sources */,
+				22AEE08615EE5D2F00CB8432 /* LiveUploadOperationCore.m in Sources */,
+				22AEE08815EE5D2F00CB8432 /* LiveConnectClient.m in Sources */,
+				22AEE08915EE5D2F00CB8432 /* LiveConnectSession.m in Sources */,
+				22AEE08A15EE5D2F00CB8432 /* LiveDownloadOperation.m in Sources */,
+				22AEE08B15EE5D2F00CB8432 /* LiveOperation.m in Sources */,
+				22AEE08C15EE5D2F00CB8432 /* LiveOperationProgress.m in Sources */,
+				22C8E51715F25087008944B6 /* ISSkydriveDataSource.m in Sources */,
+				22C8E53415F393D6008944B6 /* ISiCouldDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1659,6 +2006,13 @@
 		2253858915C7B6F900D8B4B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = iShare/iShare.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Jin Jin (65575TZ23L)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iShare/iShare-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1668,6 +2022,8 @@
 				);
 				INFOPLIST_FILE = "iShare/iShare-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "1E1ED504-5DE7-468E-8933-F5C71F80988F";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1E1ED504-5DE7-468E-8933-F5C71F80988F";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1675,10 +2031,19 @@
 		2253858A15C7B6F900D8B4B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = iShare/iShare.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iShare/iShare-Prefix.pch";
 				INFOPLIST_FILE = "iShare/iShare-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

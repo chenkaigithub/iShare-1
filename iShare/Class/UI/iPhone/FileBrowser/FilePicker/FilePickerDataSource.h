@@ -21,5 +21,6 @@ typedef enum {
 -(void)refresh;
 
 -(id)objectAtIndexPath:(NSIndexPath*)indexPath;
+-(NSArray*)objectsForIndexPaths:(NSArray*)indexPaths;
 
 @end
