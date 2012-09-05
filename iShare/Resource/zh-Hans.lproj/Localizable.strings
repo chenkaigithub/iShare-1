@@ -59,6 +59,10 @@
 "progress_message_actionfailed" = "操作失败";
 "progress_message_addtodownloadqueue" = "已加入到下载队列";
 "progress_message_startdownloadingfile" = "开始下载文件";
+"progress_message_uploadingfinished" = "文件上传结束";
+"progress_message_uploadingfailed" = "文件上传失败";
+"progress_message_downloadfinished" = "文件下载结束";
+"progress_message_downloadfailed" = "文件下载失败";
 "progress_message_noicloudsetup" = "这台设备上没有iCloud支持";
 
 "section_title_localshare" = "本地分享";

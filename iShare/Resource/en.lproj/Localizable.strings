@@ -59,6 +59,10 @@
 "progress_message_actionfailed" = "Action failed";
 "progress_message_addtodownloadqueue" = "Being added to download queue";
 "progress_message_startdownloadingfile" = "Start downloading file";
+"progress_message_uploadingfinished" = "File uploading finished";
+"progress_message_uploadingfailed" = "File uploading failed";
+"progress_message_downloadfailed" = "File downloading failed";
+"progress_message_downloadfinished" = "File donwloading finished";
 "progress_message_noicloudsetup" = "No iCloud support in this device";
 
 "section_title_localshare" = "Local Share";

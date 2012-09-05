@@ -721,6 +721,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2214609315F702A6008E4A73 /* BluetoothController */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = BluetoothController;
+			sourceTree = "<group>";
+		};
+		2214609515F702B3008E4A73 /* WIFIController */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = WIFIController;
+			sourceTree = "<group>";
+		};
 		22184CA215EA6F8200BED798 /* ShareServiceBaseController */ = {
 			isa = PBXGroup;
 			children = (
@@ -977,10 +991,12 @@
 				222F3DC515CC0BA200E495FE /* ISFileShareController.h */,
 				222F3DC615CC0BA200E495FE /* ISFileShareController.m */,
 				222F3DC715CC0BA200E495FE /* ISFileShareController.xib */,
+				2214609315F702A6008E4A73 /* BluetoothController */,
 				22184CA915EA701500BED798 /* DropBoxController */,
 				22184CAA15EA702400BED798 /* iCloudController */,
 				22184CA215EA6F8200BED798 /* ShareServiceBaseController */,
 				22184CAB15EA703300BED798 /* SkydriveController */,
+				2214609515F702B3008E4A73 /* WIFIController */,
 			);
 			path = FileShare;
 			sourceTree = "<group>";

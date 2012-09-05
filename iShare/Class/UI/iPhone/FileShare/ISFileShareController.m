@@ -123,6 +123,7 @@
             break;
         case 2:
             return NSLocalizedString(@"section_title_transferqueue", nil);
+            break;
         default:
             return nil;
             break;
@@ -148,7 +149,7 @@
 }
 
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 3;
+    return 2;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{

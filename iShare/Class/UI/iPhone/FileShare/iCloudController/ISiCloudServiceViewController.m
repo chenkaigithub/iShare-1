@@ -11,8 +11,8 @@
 #import "FileListItem.h"
 #import "SVProgressHUD.h"
 
-#define kDownloadAlertViewTag   0
-#define kUploadAlertViewTag     1
+#define kDownloadAlertViewTag   100
+#define kUploadAlertViewTag     200
 
 @interface ISiCloudServiceViewController ()
 
@@ -100,21 +100,54 @@
         self.downloadFilepath = remotePath;
         self.downloadToFolder = folder;
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"alert_message_filealreadyexists", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"btn_title_cancel", nil) otherButtonTitles:NSLocalizedString(@"btn_title_confirm", nil), nil];
+        alert.tag = kDownloadAlertViewTag;
         [alert show];
     }else{
-        [self downloadiCloudFile:remotePath toFolder:folder override:NO];
+        [self downloadiCloudFile:remotePath toFolder:folder needOverride:NO];
     }
 }
 
--(void)downloadiCloudFile:(NSString*)iCloudFile toFolder:(NSString*)folder override:(BOOL)override{
+-(void)downloadiCloudFile:(NSString*)iCloudFile toFolder:(NSString*)folder needOverride:(BOOL)needOverride{
     
     NSString* destinationFile = [folder stringByAppendingPathComponent:[iCloudFile lastPathComponent]];
                                  
-    if (override){
+    if (needOverride == YES){
         [[NSFileManager defaultManager] removeItemAtPath:destinationFile error:NULL];
     }
     
-    [[NSFileManager defaultManager] copyItemAtPath:iCloudFile toPath:destinationFile error:NULL];
+    NSURL* iCouldFileURL = [NSURL fileURLWithPath:iCloudFile];
+    
+    NSNumber* isDownloaded = nil;
+    [iCouldFileURL getResourceValue:&isDownloaded forKey:NSURLUbiquitousItemIsDownloadedKey error:NULL];
+    
+    if ([isDownloaded boolValue] == YES){
+        //already downloaded
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[NSFileManager defaultManager] removeItemAtPath:destinationFile error:NULL];
+            [[NSFileManager defaultManager] copyItemAtPath:iCloudFile toPath:destinationFile error:NULL];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self downloadFinished];
+            });
+        });
+    }else{
+        //start download
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            __block NSError* error;
+            NSFileCoordinator *coordinator = [[NSFileCoordinator alloc] initWithFilePresenter:nil];
+            [coordinator coordinateReadingItemAtURL:iCouldFileURL options:0 error:&error byAccessor:^(NSURL *newURL) {
+                [[NSFileManager defaultManager] removeItemAtPath:destinationFile error:NULL];
+                [[NSFileManager defaultManager] copyItemAtURL:newURL toURL:[NSURL fileURLWithPath:destinationFile] error:&error];
+            }];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error){
+                    [self downloadFailed:error];
+                }else{
+                    [self downloadFinished];
+                }
+            });
+        });
+    }
     
 }
 
@@ -133,21 +166,24 @@
     if (alreadyExists){
         self.selectedFiles = selectedFiles;
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"alert_message_filealreadyexists", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"btn_title_cancel", nil) otherButtonTitles:NSLocalizedString(@"btn_title_confirm", nil), nil];
+        alert.tag = kUploadAlertViewTag;
         [alert show];
     }else{
-        [self uploadFilesToiCloud:selectedFiles override:NO];
+        [self uploadFilesToiCloud:selectedFiles needOverride:NO];
     }
 }
 
--(void)uploadFilesToiCloud:(NSArray*)selectedFiles override:(BOOL)override{
+-(void)uploadFilesToiCloud:(NSArray*)selectedFiles needOverride:(BOOL)needOverride{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [selectedFiles enumerateObjectsUsingBlock:^(FileListItem* fileItem, NSUInteger idx, BOOL* stop){
             NSString* destinationFilepath = [self.workingPath stringByAppendingPathComponent:[fileItem.filePath lastPathComponent]];
             NSError* error = nil;
-            if (override){
+            if (needOverride){
                 [[NSFileManager defaultManager] removeItemAtPath:destinationFilepath error:NULL];
             }
+            
             [[NSFileManager defaultManager] copyItemAtPath:fileItem.filePath toPath:destinationFilepath error:&error];
+
             if (error){
                 NSLog(@"file upload error: %@", [error localizedDescription]);
             }
@@ -160,12 +196,13 @@
 
 #pragma mark - alert view delegate
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
+    [super alertView:alertView clickedButtonAtIndex:buttonIndex];
     switch (alertView.tag) {
         case kUploadAlertViewTag:
-            [self uploadFilesToiCloud:self.selectedFiles override:(buttonIndex == 1)];
+            [self uploadFilesToiCloud:self.selectedFiles needOverride:(buttonIndex == 1)];
             break;
         case kDownloadAlertViewTag:
-            [self downloadiCloudFile:self.downloadFilepath toFolder:self.downloadToFolder override:(buttonIndex == 1)];
+            [self downloadiCloudFile:self.downloadFilepath toFolder:self.downloadToFolder needOverride:(buttonIndex == 1)];
             break;
         default:
             break;

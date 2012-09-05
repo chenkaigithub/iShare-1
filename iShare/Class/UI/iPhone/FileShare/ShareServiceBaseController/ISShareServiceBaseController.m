@@ -118,23 +118,31 @@
         [self.navigationController pushViewController:[self controllerForChildFolder:item.filePath] animated:YES];
     }else{
         //show menu
+        self.selectedIndexPath = indexPath;
         [self showMenuInCell:[tableView cellForRowAtIndexPath:indexPath]];
     }
 }
 
-//-(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    FileShareServiceItem* item = [self.dataSource objectAtIndex:indexPath.row];
-//    return item.isDirectory;
-//}
-//
-//- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
-////    return action == @selector(delete:);
-//    return YES;
-//    
-//}
-//- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
-//    
-//}
+-(BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath{
+    [[UIMenuController sharedMenuController] setMenuVisible:NO animated:YES];
+    [self becomeFirstResponder];
+    UIMenuItem* deleteItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_title_delete", nil) action:@selector(deleteAction:)];
+//    UIMenuItem* renameItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_title_rename", nil) action:@selector(renameAction:)];
+//    UIMenuItem* downloadItem = [[UIMenuItem alloc] initWithTitle:NSLocalizedString(@"menu_title_download", nil) action:@selector(downloadAction:)];
+    [[UIMenuController sharedMenuController] setMenuItems:@[deleteItem]];
+    self.selectedIndexPath = indexPath;
+    
+    FileShareServiceItem* item = [self.dataSource objectAtIndexPath:indexPath];
+    return item.isDirectory;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
+    return action == @selector(delete:);
+    
+}
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
+    
+}
 
 #pragma mark - should override
 -(BOOL)serviceAutherized{
@@ -167,20 +175,20 @@
 }
 
 -(void)downloadFinished{
-    
+    [SVProgressHUD dismissWithSuccess:NSLocalizedString(@"progress_message_downloadfinished", nil) afterDelay:1];
 }
 
 -(void)downloadFailed:(NSError*)error{
-    
+    [SVProgressHUD dismissWithError:NSLocalizedString(@"progress_message_downloadfailed", nil) afterDelay:1];
 }
 
 -(void)uploadFinished{
-    [SVProgressHUD dismissWithSuccess:NSLocalizedString(@"progress_message_uploadingfinished", nil)];
+    [SVProgressHUD dismissWithSuccess:NSLocalizedString(@"progress_message_uploadingfinished", nil) afterDelay:1];
     [self.dataSource loadContent];
 }
 
 -(void)uploadFailed:(NSError*)error{
-    
+    [SVProgressHUD dismissWithSuccess:NSLocalizedString(@"progress_message_uploadingfinished", nil) afterDelay:1];
 }
 
 -(void)deleteFinished{
@@ -279,9 +287,12 @@
 -(void)deleteAction:(id)sender{
     //delete remote files
     [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_deleting", nil) maskType:SVProgressHUDMaskTypeClear];
-    self.selectedIndexPath = [self.tableView indexPathForSelectedRow];
     FileShareServiceItem* item = [self.dataSource objectAtIndexPath:self.selectedIndexPath];
     [self deleteFileAtPath:item.filePath];
+}
+
+-(void)renameAction:(id)sender{
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_deleting", nil) maskType:SVProgressHUDMaskTypeClear];
 }
 
 -(void)downloadAction:(id)sender{
@@ -289,7 +300,7 @@
     FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
     self.selectedIndexPath = [self.tableView indexPathForSelectedRow];
     filePicker.completionBlock = ^(NSArray* selectedFolder){
-        [SVProgressHUD showSuccessWithStatus:NSLocalizedString(@"progress_message_startdownloadingfile", nil) duration:1];
+        [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_startdownloadingfile", nil) maskType:SVProgressHUDMaskTypeClear];
         //start download
         FileShareServiceItem* item = [self.dataSource objectAtIndexPath:self.selectedIndexPath];
         self.selectedIndexPath = nil;
