@@ -14,10 +14,20 @@
 "btn_title_move" = "移动";
 "btn_title_copyto" = "复制到";
 "btn_title_selectall" = "全选";
+"btn_title_disconnect" = "断开连接";
+"btn_title_unlink" = "注销";
 
+"title_receivedfrombluetooth" = "接收自蓝牙";
+
+"tab_title_home" = "主目录";
 "tab_title_myfiles" = "我的文件";
 "tab_title_music" = "音乐";
 "tab_title_share" = "分享";
+"tab_title_config" = "设置";
+
+"nav_title_connected" = "已连接";
+"nav_title_bluetooth" = "蓝牙共享";
+"nav_title_wificontrol" = "HTTP共享";
 
 "alert_message_filealreadyexists" = "同名文件已存在，想要覆盖它吗？";
 "alert_title_inputdirectoryname" = "请输入新文件夹的名字";
@@ -43,6 +53,10 @@
 "status_message_savingimage" = "保存图像...";
 "status_message_savingfailed" = "保存失败!";
 "status_message_savingsuccess" = "图像已保存";
+"status_message_httpserverstartfinished" = "WIFI共享启动成功";
+"status_message_httpserverstartfailed" = "无法启动WIFI共享！请检查你的WIFI设置";
+"status_message_httpserverstopfinished" = "WIFI共享已停止";
+"status_message_httpserverstopfailed" = "WIFI共享无法停止!";
 
 "actionsheet_cancel" = "取消";
 "actionsheet_save" = "保存";
@@ -64,13 +78,31 @@
 "progress_message_downloadfinished" = "文件下载结束";
 "progress_message_downloadfailed" = "文件下载失败";
 "progress_message_noicloudsetup" = "这台设备上没有iCloud支持";
+"progress_message_dropboxunlinked" = "Dropbox已解除绑定";
 
 "section_title_localshare" = "本地分享";
 "section_title_cloudstorageservice" = "云存储服务";
 "section_title_transferqueue" = "传输队列";
+"section_title_wificonfig" = "共享的开关打开后，您可以通过在浏览器地址栏中输入 %@ 来访问您的设备上的文件。推荐使用Safari，Chrome和Firefox来访问";
 
 "cell_title_upload" = "上传";
 "cell_title_download" = "下载";
+"cell_title_wifishare" = "通过WIFI共享";
+"cell_title_bluetooth" = "通过蓝牙共享";
+
+"cell_title_enablehttp" = "启用共享";
+"cell_title_httpport" = "HTTP端口";
+"cell_title_authenable" = "身份验证";
+"cell_title_authusername" = "用户名";
+"cell_title_authpassword" = "密码";
+
+"cell_title_notconnected" = "未连接";
+
+"config_title_appearence" = "外观";
+"config_title_enableThumbnail" = "启用缩略图";
+"config_title_security" = "安全性";
+"config_title_enablepassword" = "启动密码";
+"config_title_rememberwifishare" = "记住WIFI共享状态";
 
 "search_placeholder" = "搜索";
 

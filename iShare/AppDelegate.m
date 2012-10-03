@@ -11,6 +11,8 @@
 #import "CustomUIComponents.h"
 #import "FileOperationWrap.h"
 #import "JJAudioPlayerManager.h"
+#import "ISUserPreferenceDefine.h"
+#import "JJHTTPSerivce.h"
 #import <DropboxSDK/DropboxSDK.h>
 
 @implementation AppDelegate
@@ -19,6 +21,23 @@
 {
     [CustomUIComponents customizeUI];
     [FileOperationWrap clearTempFolder];
+    
+    //dropbox init
+    NSString* appKey = @"u4pqeo7i6pfxnx1";
+    NSString* appSecret = @"1i6qgm4rywi0hrn";
+    NSString *root = kDBRootDropbox;
+    DBSession* session = [[DBSession alloc] initWithAppKey:appKey appSecret:appSecret root:root];
+    [DBSession setSharedSession:session];
+    //http server init
+    JJHTTPSerivce* service = [JJHTTPSerivce sharedSerivce];
+    [service setPort:[ISUserPreferenceDefine httpSharePort]];
+    service.authEnabled = [ISUserPreferenceDefine HttpShareAuthEnabled];
+    [service setUsername:[ISUserPreferenceDefine httpShareUsername]];
+    [service setPassword:[ISUserPreferenceDefine httpSharePassword]];
+    
+    if ([ISUserPreferenceDefine shouldAutoStartHTTPShare]){
+        [[JJHTTPSerivce sharedSerivce] startService];
+    }
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.

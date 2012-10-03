@@ -12,4 +12,8 @@
 
 @property (nonatomic, strong) IBOutlet UITableView* tableView;
 
+@property (nonatomic, strong) IBOutlet UIButton* unlinkButton;
+
+-(IBAction)unlinkDropbox:(id)sender;
+
 @end

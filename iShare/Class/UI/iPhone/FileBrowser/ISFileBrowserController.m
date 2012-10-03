@@ -55,14 +55,14 @@ static CGFloat kMessageTransitionDuration = 1.5f;
         
         if (filePath == nil || exists == NO || (exists == YES && isDirectory == NO)){
             self.filePath = [FileOperationWrap homePath];
-            self.title = NSLocalizedString(@"tab_title_myfiles", nil);
+            self.title = NSLocalizedString(@"tab_title_home", nil);
         }else{
             self.filePath = filePath;
             self.title = [filePath lastPathComponent];
         }
         
         self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_myfiles"];
-        self.tabBarItem.title = self.title;
+        self.tabBarItem.title = NSLocalizedString(@"tab_title_myfiles", nil);
         
         self.dataSource = [[FileBrowserDataSource alloc] initWithFilePath:self.filePath];
         
@@ -111,6 +111,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
     //table view
     self.tableView.backgroundColor = [UIColor clearColor];
+    self.tableView.backgroundView = nil;
     self.tableView.tableHeaderView = self.tableHeaderView;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
@@ -227,6 +228,12 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 //                [self presentViewController:musicPlayer animated:YES completion:NULL];
             }
                 break;
+            case FileContentTypeText:
+            {
+                ISFileQuickPreviewController* previewController = [[ISFileQuickPreviewController alloc] initWithPreviewItems:@[item]];
+                [self.navigationController pushViewController:previewController animated:YES];
+            }
+                break;
             case FileContentTypeOther:
             {
                 if ([QLPreviewController canPreviewItem:item]){
@@ -234,6 +241,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                     [self.navigationController pushViewController:previewController animated:YES];
                 }
             }
+                break;
             default:
                 break;
         }
@@ -322,6 +330,12 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 [self endEditingMode];
             });
         }
+        
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    };
+    
+    picker.cancellationBlock = ^{
+        [self dismissViewControllerAnimated:YES completion:NULL];
     };
     
     [self presentViewController:picker animated:YES completion:NULL];
@@ -347,6 +361,11 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 [self endEditingMode];
             });
         }
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    };
+    
+    picker.cancellationBlock = ^{
+        [self dismissViewControllerAnimated:YES completion:NULL];
     };
     
     [self presentViewController:picker animated:YES completion:NULL];

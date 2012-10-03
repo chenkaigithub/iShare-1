@@ -46,8 +46,10 @@
     
     FilePickerContentController* content = [[FilePickerContentController alloc] initWithFilePath:self.filePath pickerType:self.pickerType];
     self.contentNavigation = [[UINavigationController alloc] initWithRootViewController:content];
-    
+    self.contentNavigation.delegate = self;
+    [self.pathScroll addSubview:self.pathLabel];
     [self.view addSubview:self.contentNavigation.view];
+    [self.view addSubview:self.pathScroll];
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -56,12 +58,18 @@
 {
     [super viewDidUnload];
     self.contentNavigation = nil;
+    self.pathScroll = nil;
+    self.pathLabel = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
 
 -(void)viewWillLayoutSubviews{
     [super viewWillLayoutSubviews];
+    CGRect frame = self.pathScroll.frame;
+    frame.origin.x = 0;
+    frame.origin.y = self.view.frame.size.height - frame.size.height;
+    self.pathScroll.frame = frame;
 }
 
 #pragma mark - getter and setter
@@ -84,12 +92,38 @@
         pathArray = [self selectedFiles];
     }
     
-    self.completionBlock(pathArray);
-    [self dismissViewControllerAnimated:YES completion:NULL];
+    if (self.completionBlock){
+        self.completionBlock(pathArray);
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(filePicker:finishedWithPickedPaths:)]){
+        [self.delegate filePicker:self finishedWithPickedPaths:pathArray];
+    }
 }
 
 -(void)cancelActionReceived:(NSNotification*)notification{
-    [self dismissViewControllerAnimated:YES completion:NULL];
+    
+    if (self.cancellationBlock){
+        self.cancellationBlock();
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(filePickerCancelled:)]){
+        [self.delegate filePickerCancelled:self];
+    }
+}
+
+#pragma mark - navigation controller delegate
+-(void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    NSMutableString* workingPath = [NSMutableString stringWithString:[self currentDirectory]];
+    NSRange range = {0, [workingPath length]};
+    [workingPath replaceOccurrencesOfString:[FileOperationWrap homePath] withString:@"" options:NSLiteralSearch range:range];
+    if (workingPath.length == 0){
+        [workingPath appendString:@"/"];
+    }
+    self.pathLabel.text = workingPath;
+    [self.pathLabel sizeToFit];
+    self.pathScroll.contentSize = self.pathLabel.frame.size;
+    self.pathScroll.contentOffset = CGPointMake((self.pathLabel.frame.size.width - self.pathScroll.frame.size.width)/2, (self.pathLabel.frame.size.height - self.pathScroll.frame.size.height)/2);
 }
 
 @end

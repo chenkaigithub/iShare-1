@@ -251,8 +251,12 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	artworkView.adjustsImageWhenHighlighted = NO;
 	artworkView.backgroundColor = [UIColor clearColor];
 	[containerView addSubview:artworkView];
+    artworkView.center = CGPointMake(CGRectGetMidX(containerView.bounds), CGRectGetMidY(containerView.bounds) - 48);
 	
 	self.reflectionView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 320, 320, 96)];
+    CGRect frame = self.reflectionView.frame;
+    frame.origin.y = artworkView.frame.origin.y + artworkView.frame.size.height;
+    self.reflectionView.frame = frame;
 	reflectionView.image = [self reflectedImage:artworkView withHeight:artworkView.bounds.size.height * kDefaultReflectionFraction];
 	reflectionView.alpha = kDefaultReflectionFraction;
 	[self.containerView addSubview:reflectionView];
@@ -277,26 +281,27 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	[self.songTableView setTableFooterView:v];
 	v = nil;
 
-	UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 44 + 320, self.view.bounds.size.width, 96)];
+	UIImageView *buttonBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - 96, self.view.bounds.size.width, 96)];
 //	buttonBackground.image = [[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerBarBackground" ofType:@"png"]] stretchableImageWithLeftCapWidth:0 topCapHeight:0];
     buttonBackground.image = [UIImage imageNamed:@"AudioPlayerBarBackground"];
 	[self.view addSubview:buttonBackground];
-	buttonBackground  = nil;
 		
-	self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(144, 370, 40, 40)];
+//	self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(144, 370, 40, 40)];
+    CGFloat playControlButtonOriginY = buttonBackground.frame.origin.y + 5;
+    self.playButton = [[UIButton alloc] initWithFrame:CGRectMake(144, playControlButtonOriginY, 40, 40)];
 //	[playButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPlay" ofType:@"png"]] forState:UIControlStateNormal];
     [playButton setImage:[UIImage imageNamed:@"AudioPlayerPlay"] forState:UIControlStateNormal];
 	[playButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
 	playButton.showsTouchWhenHighlighted = YES;
 	[self.view addSubview:playButton];
 							  
-	self.pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(140, 370, 40, 40)];
+	self.pauseButton = [[UIButton alloc] initWithFrame:CGRectMake(140, playControlButtonOriginY, 40, 40)];
 //	[pauseButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPause" ofType:@"png"]] forState:UIControlStateNormal];
 	[pauseButton setImage:[UIImage imageNamed:@"AudioPlayerPause"] forState:UIControlStateNormal];
 	[pauseButton addTarget:self action:@selector(play) forControlEvents:UIControlEventTouchUpInside];
 	pauseButton.showsTouchWhenHighlighted = YES;
 	
-	self.nextButton = [[UIButton alloc] initWithFrame:CGRectMake(220, 370, 40, 40)];
+	self.nextButton = [[UIButton alloc] initWithFrame:CGRectMake(220, playControlButtonOriginY, 40, 40)];
 //	[nextButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNextTrack" ofType:@"png"]]
 //				forState:UIControlStateNormal];
     [nextButton setImage:[UIImage imageNamed:@"AudioPlayerNextTrack"]
@@ -306,7 +311,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	nextButton.enabled = [self canGoToNextTrack];
 	[self.view addSubview:nextButton];
 	
-	self.previousButton = [[UIButton alloc] initWithFrame:CGRectMake(60, 370, 40, 40)];
+	self.previousButton = [[UIButton alloc] initWithFrame:CGRectMake(60, playControlButtonOriginY, 40, 40)];
 //	[previousButton setImage:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerPrevTrack" ofType:@"png"]] 
 //				forState:UIControlStateNormal];
 	[previousButton setImage:[UIImage imageNamed:@"AudioPlayerPrevTrack"]
@@ -316,7 +321,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	previousButton.enabled = [self canGoToPreviousTrack];
 	[self.view addSubview:previousButton];
 	
-	self.volumeSlider = [[UISlider alloc] initWithFrame:CGRectMake(25, 420, 270, 9)];
+	self.volumeSlider = [[UISlider alloc] initWithFrame:CGRectMake(25, self.view.bounds.size.height - 35, 270, 9)];
 	[volumeSlider setThumbImage:[UIImage imageNamed:@"AudioPlayerVolumeKnob"]
 														forState:UIControlStateNormal];
 	[volumeSlider setMinimumTrackImage:[[UIImage imageNamed:@"AudioPlayerScrubberLeft"] stretchableImageWithLeftCapWidth:5 topCapHeight:3]
@@ -405,7 +410,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	}
 	else
 	{
-		[self.artworkView setImage:[UIImage imageNamed:@"AudioPlayerTableBackground"] forState:UIControlStateNormal];
+		[self.artworkView setImage:[[UIImage imageNamed:@"AudioPlayerTableBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)] forState:UIControlStateNormal];
 		[self.reflectionView removeFromSuperview];
 		[self.overlayView removeFromSuperview];
 		[self.containerView addSubview:songTableView];

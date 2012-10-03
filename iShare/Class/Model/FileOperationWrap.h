@@ -19,6 +19,7 @@ typedef enum{
     FileContentTypePDF,
     FileContentTypeDocument,
     FileContentTypeCompress,
+    FileContentTypeSourceCode,
     FileContentTypeOther
 } FileContentType;
 

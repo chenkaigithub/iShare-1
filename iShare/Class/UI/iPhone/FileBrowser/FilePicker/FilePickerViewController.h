@@ -10,6 +10,7 @@
 #import "FilePickerDataSource.h"
 
 typedef void(^FilePickerCompletionBlock)(NSArray*);
+typedef void(^FilePickerCancellationBlock)(void);
 
 @class FilePickerViewController;
 
@@ -21,11 +22,15 @@ typedef void(^FilePickerCompletionBlock)(NSArray*);
 
 @end
 
-@interface FilePickerViewController : UIViewController<UITableViewDelegate>
+@interface FilePickerViewController : UIViewController<UITableViewDelegate, UINavigationControllerDelegate>
 
 -(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type;
 
+@property (nonatomic, strong) IBOutlet UIScrollView* pathScroll;
+@property (nonatomic, strong) IBOutlet UILabel* pathLabel;
+
 @property (nonatomic, copy) FilePickerCompletionBlock completionBlock;
+@property (nonatomic, copy) FilePickerCancellationBlock cancellationBlock;
 
 @property (nonatomic, readonly) NSString* currentDirectory;
 @property (nonatomic, weak) id<FilePickerViewControllerDelegate> delegate;

@@ -18,8 +18,6 @@
 
 @property (nonatomic, strong) NSURL* baseURL;
 @property (nonatomic, strong) NSArray* selectedFiles;
-@property (nonatomic, copy) NSString* downloadFilepath;
-@property (nonatomic, copy) NSString* downloadToFolder;
 
 @end
 
@@ -113,6 +111,9 @@
                                  
     if (needOverride == YES){
         [[NSFileManager defaultManager] removeItemAtPath:destinationFile error:NULL];
+    }else if ([[NSFileManager defaultManager] fileExistsAtPath:destinationFile]){
+        [self downloadFinished];
+        return;
     }
     
     NSURL* iCouldFileURL = [NSURL fileURLWithPath:iCloudFile];

@@ -11,5 +11,6 @@
 @interface CustomUIComponents : NSObject
 
 +(void)customizeUI;
++(void)customizeButtonWithFixedBackgroundImages:(UIButton*)button;
 
 @end

@@ -8,7 +8,6 @@
 
 #import "ISShareServiceBaseController.h"
 #import "ISShareServiceTableViewCell.h"
-#import "FilePickerViewController.h"
 #import "SVProgressHUD.h"
 
 #define kNewFolderNameDirectory 999
@@ -22,6 +21,10 @@
 @end
 
 @implementation ISShareServiceBaseController
+
+-(void)dealloc{
+    [SVProgressHUD dismiss];
+}
 
 -(id)initWithWorkingPath:(NSString*)workingPath{
     self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil];
@@ -88,7 +91,8 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
+    [super viewDidAppear:animated];	
+    
     if ([self serviceAutherized] == NO){
         if (_firstAppear == NO){
             [self autherizeFailed];
@@ -103,7 +107,6 @@
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [SVProgressHUD dismiss];
 }
 
 -(void)viewWillLayoutSubviews{
@@ -237,12 +240,19 @@
 
 -(void)uploadButtonClicked:(id)sender{
     FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeFile];
-    filePicker.completionBlock = ^(NSArray* selectedFilePaths){
-        [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_uploadingfiles", nil) maskType:SVProgressHUDMaskTypeClear];
-        [self uploadSelectedFiles:selectedFilePaths];
-    };
+    filePicker.delegate = self;
     
     [self presentViewController:filePicker animated:YES completion:NULL];
+}
+
+#pragma mark - file picker delegate
+-(void)filePickerCancelled:(FilePickerViewController *)filePicker{
+    [filePicker dismissViewControllerAnimated:YES completion:NULL];
+}
+
+-(void)filePicker:(FilePickerViewController *)filePicker finishedWithPickedPaths:(NSArray *)pickedPaths{
+    [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_uploadingfiles", nil) maskType:SVProgressHUDMaskTypeClear];
+    [self uploadSelectedFiles:pickedPaths];
 }
 
 #pragma mark - alert view delegate
@@ -306,6 +316,11 @@
         self.selectedIndexPath = nil;
         
         [self downloadRemoteFile:item.filePath toFolder:[selectedFolder lastObject]];
+        [self dismissViewControllerAnimated:YES completion:NULL];
+    };
+    
+    filePicker.cancellationBlock = ^{
+        [self dismissViewControllerAnimated:YES completion:NULL];
     };
     
     [self presentViewController:filePicker animated:YES completion:NULL];

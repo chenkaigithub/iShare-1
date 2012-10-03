@@ -1,13 +1,13 @@
 //
-//  ISConfigUIController.h
+//  ISConfigUIViewController.h
 //  iShare
 //
-//  Created by Jin Jin on 12-8-3.
+//  Created by Jin Jin on 12-9-11.
 //  Copyright (c) 2012年 Jin Jin. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "BRSettingViewController.h"
 
-@interface ISConfigUIController : UIViewController
+@interface ISConfigUIController : BRSettingViewController
 
 @end

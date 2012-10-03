@@ -43,7 +43,32 @@
 //    [[UITableView appearance] setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_texture"]]];
 }
 
++(void)customizeButton{
+    UIEdgeInsets btnInsets = UIEdgeInsetsMake(4, 5, 4, 5);
+    
+    UIImage* originNormal = [UIImage imageNamed:@"btn_default"];
+    UIImage* resizableNormal = [originNormal resizableImageWithCapInsets:btnInsets];
+    UIImage* originPressed = [UIImage imageNamed:@"btn_pressed"];
+    UIImage* resizablePressed = [originPressed resizableImageWithCapInsets:btnInsets];
+    
+    [[UIButton appearance] setBackgroundImage:resizableNormal forState:UIControlStateNormal];
+    [[UIButton appearance] setBackgroundImage:resizablePressed forState:UIControlStateHighlighted];
+}
+
++(void)customizeButtonWithFixedBackgroundImages:(UIButton*)button{
+    UIEdgeInsets btnInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    
+    UIImage* originNormal = [UIImage imageNamed:@"btn_default"];
+    UIImage* resizableNormal = [originNormal resizableImageWithCapInsets:btnInsets];
+    UIImage* originPressed = [UIImage imageNamed:@"btn_pressed"];
+    UIImage* resizablePressed = [originPressed resizableImageWithCapInsets:btnInsets];
+    
+    [button setBackgroundImage:resizableNormal forState:UIControlStateNormal];
+    [button setBackgroundImage:resizablePressed forState:UIControlStateHighlighted];
+}
+
 +(void)customizeUI{
+//    [self customizeButton];
     [self customizeBackButton];
     [self customizeBarButton];
     [self customizeNavigationBar];

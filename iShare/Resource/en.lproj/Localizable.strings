@@ -14,10 +14,20 @@
 "btn_title_move" = "Move";
 "btn_title_copyto" = "Copy to";
 "btn_title_selectall" = "Select all";
+"btn_title_disconnect" = "Disconect";
+"btn_title_unlink" = "Unlink";
 
+"title_receivedfrombluetooth" = "Received from Bluetooth";
+
+"tab_title_home" = "Home";
 "tab_title_myfiles" = "My Files";
 "tab_title_music" = "Music";
 "tab_title_share" = "Share";
+"tab_title_config" = "Config";
+
+"nav_title_connected" = "Connected";
+"nav_title_bluetooth" = "Bluetooth share";
+"nav_title_wificontrol" = "HTTP Share";
 
 "alert_title_inputdirectoryname" = "Please input name of new folder";
 "alert_title_inputtextfilename" = "Please input name of new text file";
@@ -43,6 +53,10 @@
 "status_message_savingimage" = "Saving image...";
 "status_message_savingfailed" = "Failed!";
 "status_message_savingsuccess" = "Image saved";
+"status_message_httpserverstartfinished" = "WIFI share is started";
+"status_message_httpserverstartfailed" = "Can't start WIFI share! Please check you WIFI status";
+"status_message_httpserverstopfinished" = "WIFI share is stopped";
+"status_message_httpserverstopfailed" = "WIFI share can't be stopped!";
 
 "actionsheet_cancel" = "Cancel";
 "actionsheet_save" = "Save";
@@ -64,13 +78,31 @@
 "progress_message_downloadfailed" = "File downloading failed";
 "progress_message_downloadfinished" = "File donwloading finished";
 "progress_message_noicloudsetup" = "No iCloud support in this device";
+"progress_message_dropboxunlinked" = "Dropbox is unlinked";
 
 "section_title_localshare" = "Local Share";
 "section_title_cloudstorageservice" = "Cloud Storage Services";
 "section_title_transferqueue" = "Transfer Queue";
+"section_title_wificonfig" = "You could access files in your device by web browser via this address: %@, after enable share. Safari, Chrome and Firefox are recommanded.";
 
 "cell_title_upload" = "Upload";
 "cell_title_download" = "Download";
+"cell_title_wifishare" = "Share via WIFI";
+"cell_title_bluetooth" = "Share via Bluetooth";
+
+"cell_title_enablehttp" = "Enable share";
+"cell_title_httpport" = "HTTP port";
+"cell_title_authenable" = "Enable auth";
+"cell_title_authusername" = "Username";
+"cell_title_authpassword" = "Password";
+
+"cell_title_notconnected" = "Not connected";
+
+"config_title_appearence" = "Appearence";
+"config_title_enableThumbnail" = "Enable thumbnail";
+"config_title_security" = "Security";
+"config_title_enablepassword" = "Login password";
+"config_title_rememberwifishare" = "Remember status of Wifi share";
 
 "search_placeholder" = "Search";
 

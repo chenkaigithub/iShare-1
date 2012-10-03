@@ -28,7 +28,7 @@
         
         if (filePath == nil || exists == NO || (exists == YES && isDirectory == NO)){
             self.filePath = [FileOperationWrap homePath];
-            self.title = NSLocalizedString(@"tab_title_myfiles", nil);
+            self.title = NSLocalizedString(@"tab_title_home", nil);
         }else{
             self.filePath = filePath;
             self.title = [filePath lastPathComponent];
@@ -64,6 +64,7 @@
     self.dataSource = [[FilePickerDataSource alloc] initWithFilePath:self.filePath pickerType:self.type];
     [self.dataSource refresh];
     self.tableView.dataSource = self.dataSource;
+    self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 60, 0);
     [self.tableView reloadData];
 }
 

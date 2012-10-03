@@ -93,7 +93,7 @@
         return nil;
     }
     
-    NSUInteger newIndex;
+    NSUInteger newIndex = 0;
 	
     if (self.playerMode & JJAudioPlayerModeShuffle){
         newIndex = rand() % [self.musicItems count];
@@ -118,7 +118,7 @@
         return nil;
     }
     
-    NSUInteger newIndex;
+    NSUInteger newIndex = 0;
 	
     if (self.playerMode & JJAudioPlayerModeShuffle){
         newIndex = rand() % [self.musicItems count];

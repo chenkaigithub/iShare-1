@@ -26,7 +26,7 @@
 }
 
 +(BOOL)createDirectoryWithName:(NSString*)name path:(NSString*)path{
-    NSString* folderPath = [path stringByAppendingPathComponent:name];
+    NSString* folderPath = [self validFilePathForFilename:name atPath:path];
     return [[NSFileManager defaultManager] createDirectoryAtPath:folderPath withIntermediateDirectories:NO attributes:nil error:NULL];
 }
 
@@ -108,14 +108,19 @@
     NSString* extension = [filename pathExtension];
     NSRange extensionRange = [filename rangeOfString:[NSString stringWithFormat:@".%@", extension] options:NSBackwardsSearch];
     
-    NSString* realName = [filename substringToIndex:extensionRange.location];
+    NSString* realName = filename;
+    if (extensionRange.location != NSNotFound){
+        realName = [filename substringToIndex:extensionRange.location];
+    }
     
     NSString* validPath = [path stringByAppendingPathComponent:filename];
     
     int index =  1;
     
-    while([fm fileExistsAtPath:validPath] == YES){
-        NSString* tempname = [[NSString stringWithFormat:@"%@ %d", realName, index++] stringByAppendingPathExtension:extension];
+    BOOL isDir = NO;
+    while([fm fileExistsAtPath:validPath isDirectory:&isDir] == YES){
+        NSString* tempname = [NSString stringWithFormat:@"%@ %d", realName, index++];
+        tempname = (extension.length > 0)?[tempname stringByAppendingPathExtension:extension]:tempname;
         validPath = [path stringByAppendingPathComponent:tempname];
     }
     

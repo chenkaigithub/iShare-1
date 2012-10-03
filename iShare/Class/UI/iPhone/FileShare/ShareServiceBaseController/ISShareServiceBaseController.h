@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "ISShareServiceBaseDataSource.h"
+#import "FilePickerViewController.h"
 
-@interface ISShareServiceBaseController : UIViewController<UITableViewDelegate, UIAlertViewDelegate, ISShareServiceBaseDataSourceDelegate>
+@interface ISShareServiceBaseController : UIViewController<UITableViewDelegate, UIAlertViewDelegate, ISShareServiceBaseDataSourceDelegate, UINavigationControllerDelegate, FilePickerViewControllerDelegate>
 
 @property (nonatomic, strong) UITableView* tableView;
 @property (nonatomic, strong) ISShareServiceBaseDataSource* dataSource;
@@ -18,6 +19,9 @@
 @property (nonatomic, strong) UIBarButtonItem* uploadButton;
 
 @property (nonatomic, copy) NSString* workingPath;
+
+@property (nonatomic, copy) NSString* downloadFilepath;
+@property (nonatomic, copy) NSString* downloadToFolder;
 
 -(void)addDirectoryButtonClicked:(id)sender;
 -(void)uploadButtonClicked:(id)sender;
@@ -44,5 +48,7 @@
 -(void)folderCreateFinished;
 -(void)folderCreateFailed:(NSError*)error;
 -(UIViewController*)controllerForChildFolder:(NSString*)folderPath;
+
+-(void)startLoading;
 
 @end

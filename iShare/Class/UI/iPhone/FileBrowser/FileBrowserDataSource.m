@@ -18,7 +18,7 @@ static NSComparator SortBlockByType = ^(FileListItem* item1, FileListItem* item2
         return NSOrderedAscending;
     }
     
-    return [[item1.filePath pathExtension] compare:[item2.filePath pathExtension]];
+    return (NSInteger)[[item1.filePath pathExtension] compare:[item2.filePath pathExtension]];
 };
 
 static NSComparator SortBlockByName = ^(FileListItem* item1, FileListItem* item2) {
@@ -75,10 +75,12 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     NSArray* fileItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.filePath error:NULL];
     NSMutableArray* allItems = [NSMutableArray array];
     [fileItems enumerateObjectsUsingBlock:^(NSString* filename, NSUInteger idx, BOOL* stop){
-        FileListItem* item = [[FileListItem alloc] init];
-        item.filePath = [self.filePath stringByAppendingPathComponent:filename];
-        item.type = FileListItemTypeFilePath;
-        [allItems addObject:item];
+        if ([filename hasPrefix:@"."] == NO){
+            FileListItem* item = [[FileListItem alloc] init];
+            item.filePath = [self.filePath stringByAppendingPathComponent:filename];
+            item.type = FileListItemTypeFilePath;
+            [allItems addObject:item];
+        }
     }];
     
     self.allFileItems = allItems;

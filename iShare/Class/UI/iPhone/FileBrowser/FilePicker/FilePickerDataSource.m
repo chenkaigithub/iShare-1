@@ -52,7 +52,7 @@
         }else if (![fileType1 isEqualToString:NSFileTypeDirectory] && [fileType2 isEqualToString:NSFileTypeDirectory]){
             return NSOrderedDescending;
         }else{
-            return [[[item1.filePath lastPathComponent] lowercaseString] compare:[[item2.filePath lastPathComponent] lowercaseString]];
+            return (NSInteger)[[[item1.filePath lastPathComponent] lowercaseString] compare:[[item2.filePath lastPathComponent] lowercaseString]];
         }
     }];
     

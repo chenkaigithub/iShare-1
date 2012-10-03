@@ -35,6 +35,14 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+-(BOOL)shouldAutorotate{
+    return NO;
+}
+
+-(NSUInteger)supportedInterfaceOrientations{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
