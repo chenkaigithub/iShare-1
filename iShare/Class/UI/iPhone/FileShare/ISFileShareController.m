@@ -277,7 +277,6 @@
             UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"status_message_httpserverstartfailed", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"btn_title_cancel", nil) otherButtonTitles:nil];
             [alert show];
             [wifiSwitch setOn:NO animated:YES];
-//            [BWStatusBarOverlay showErrorWithMessage:NSLocalizedString(@"status_message_httpserverstartfailed", nil) duration:duration animated:YES];
         };
     }else{
         if ([[JJHTTPSerivce sharedSerivce] stopService]){

@@ -7,13 +7,13 @@
 //
 
 #import "FileBrowserDataSource.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 #import "ISFileBrowserCell.h"
 #import "ISFileBrowserMenuCell.h"
 #import "ISFileBrowserCellInterface.h"
 
 //comparators
-static NSComparator SortBlockByType = ^(FileListItem* item1, FileListItem* item2) {
+static NSComparator SortBlockByType = ^(FileItem* item1, FileItem* item2) {
     if ([[item1.attributes fileType] isEqualToString:NSFileTypeDirectory]){
         return NSOrderedAscending;
     }
@@ -21,11 +21,11 @@ static NSComparator SortBlockByType = ^(FileListItem* item1, FileListItem* item2
     return (NSInteger)[[item1.filePath pathExtension] compare:[item2.filePath pathExtension]];
 };
 
-static NSComparator SortBlockByName = ^(FileListItem* item1, FileListItem* item2) {
+static NSComparator SortBlockByName = ^(FileItem* item1, FileItem* item2) {
     return [[item1.filePath lowercaseString] compare:[item2.filePath lowercaseString]];
 };
 
-static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2) {
+static NSComparator SortBlockByDate = ^(FileItem* item1, FileItem* item2) {
     
     return [[item2.attributes fileModificationDate] compare:[item1.attributes fileModificationDate]];
 };
@@ -40,7 +40,7 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
 @property (nonatomic, assign) FileBrowserDataSourceOrder orderType;
 @property (nonatomic, copy) NSString* searchKeyword;
 //only one menu at one time
-@property (nonatomic, strong) FileListItem* menuItem;
+@property (nonatomic, strong) FileItem* menuItem;
 
 @end
 
@@ -52,9 +52,9 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
         self.filePath = filePath;
         self.orderType = FileBrowserDataSourceOrderFileName;
         self.searchKeyword = @"";
-        self.menuItem = [[FileListItem alloc] init];
+        self.menuItem = [[FileItem alloc] init];
         self.menuItem.filePath = nil;
-        self.menuItem.type = FileListItemTypeActionMenu;
+        self.menuItem.type = FileItemTypeActionMenu;
         self.removeIndex = NSNotFound;
         self.addIndex = NSNotFound;
         [self refresh];
@@ -63,11 +63,11 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     return self;
 }
 
--(FileListItem*)objectAtIndexPath:(NSIndexPath*)indexPath{
+-(FileItem*)objectAtIndexPath:(NSIndexPath*)indexPath{
     return [self.fileListItems objectAtIndex:indexPath.row];
 }
 
--(NSIndexPath*)indexPathOfObject:(FileListItem*)item{
+-(NSIndexPath*)indexPathOfObject:(FileItem*)item{
     return [NSIndexPath indexPathForRow:[self.fileListItems indexOfObject:item] inSection:0];
 }
 
@@ -76,9 +76,9 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     NSMutableArray* allItems = [NSMutableArray array];
     [fileItems enumerateObjectsUsingBlock:^(NSString* filename, NSUInteger idx, BOOL* stop){
         if ([filename hasPrefix:@"."] == NO){
-            FileListItem* item = [[FileListItem alloc] init];
+            FileItem* item = [[FileItem alloc] init];
             item.filePath = [self.filePath stringByAppendingPathComponent:filename];
-            item.type = FileListItemTypeFilePath;
+            item.type = FileItemTypeFilePath;
             [allItems addObject:item];
         }
     }];
@@ -97,7 +97,7 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_FILEBROWSER_MENUGONE object:self];
 }
 
--(void)removeFileItem:(FileListItem*)item{
+-(void)removeFileItem:(FileItem*)item{
     [self.fileListItems removeObject:item];
     [self.allFileItems removeObject:item];
 }
@@ -108,7 +108,7 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
 
 #pragma mark - filter
 -(void)getFilteredItems{
-    NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(FileListItem* fileItem, NSDictionary* bindings){
+    NSPredicate* predicate = [NSPredicate predicateWithBlock:^BOOL(FileItem* fileItem, NSDictionary* bindings){
         if (self.searchKeyword.length == 0){
             return YES;
         }else{
@@ -135,12 +135,12 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     static NSString* ActionMenuCellIdentifier = @"ISFileBrowserMenuCell";
     static NSString* FileItemCellIdentifier = @"ISFileBrowserCell";
     
-    FileListItem* item = [self.fileListItems objectAtIndex:indexPath.row];
+    FileItem* item = [self.fileListItems objectAtIndex:indexPath.row];
     
     UITableViewCell<ISFileBrowserCellInterface>* cell = nil;
     
     switch (item.type) {
-        case FileListItemTypeFilePath:
+        case FileItemTypeFilePath:
             cell = [tableView dequeueReusableCellWithIdentifier:FileItemCellIdentifier];
             if (cell == nil){
                 cell = [[[NSBundle mainBundle] loadNibNamed:FileItemCellIdentifier owner:nil options:nil] objectAtIndex:0];
@@ -152,7 +152,7 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
                 [cell addGestureRecognizer:leftSwipte];
             }
             break;
-        case FileListItemTypeActionMenu:
+        case FileItemTypeActionMenu:
             cell = [tableView dequeueReusableCellWithIdentifier:ActionMenuCellIdentifier];
             if (cell == nil){
                 cell = [[[NSBundle mainBundle] loadNibNamed:ActionMenuCellIdentifier owner:nil options:nil] objectAtIndex:0];
@@ -201,7 +201,7 @@ static NSComparator SortBlockByDate = ^(FileListItem* item1, FileListItem* item2
     if (cell.editing){
         return;
     }
-    FileListItem* item = [cell cellItem];
+    FileItem* item = [cell cellItem];
     
     self.removeIndex = [self.fileListItems indexOfObject:self.menuItem];
     [self.fileListItems removeObject:self.menuItem];

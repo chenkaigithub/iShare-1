@@ -7,11 +7,13 @@
 //
 
 #import "ISFileBrowserCell.h"
-#import "FileListItem.h"
+#import "FileItem.h"
+#import "FileOperationWrap.h"
+#import "ISUserPreferenceDefine.h"
 
 @interface ISFileBrowserCell ()
 
-@property (nonatomic, strong) FileListItem* item;
+@property (nonatomic, strong) FileItem* item;
 
 @end
 
@@ -28,10 +30,9 @@
 
 -(void)awakeFromNib{
     [super awakeFromNib];
-    self.textLabel.highlightedTextColor = [UIColor blackColor];
 }
 
--(void)configCell:(FileListItem *)item{
+-(void)configCell:(FileItem *)item{
     self.item = item;
     
     self.textLabel.text = [item.filePath lastPathComponent];
@@ -41,9 +42,11 @@
         self.accessoryType = UITableViewCellAccessoryNone;
     }
     
+    self.imageView.image = [FileOperationWrap thumbnailForFile:item.filePath previewEnabled:[ISUserPreferenceDefine enableThumbnail]];
+    
 }
 
--(FileListItem*)cellItem{
+-(FileItem*)cellItem{
     return self.item;
 }
 

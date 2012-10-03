@@ -8,7 +8,7 @@
 
 #import "ISDropBoxViewController.h"
 #import "ISDropBoxDataSource.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 
 #define kDropboxAuthFailedAlertViewTag 100
 #define kDropboxDownloadAlertViewTag 200
@@ -200,7 +200,7 @@
     _uploadFileCount = [selectedFiles count];
     
     
-    for (FileListItem* fileItem in selectedFiles){
+    for (FileItem* fileItem in selectedFiles){
         DBRestClient* restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
         restClient.delegate = self;
         [self.uploadDbClients addObject:restClient];

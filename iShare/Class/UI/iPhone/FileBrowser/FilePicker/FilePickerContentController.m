@@ -8,7 +8,7 @@
 
 #import "FilePickerContentController.h"
 #import "FileOperationWrap.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 
 @interface FilePickerContentController ()
 
@@ -88,7 +88,7 @@
 
 #pragma mark - table vie delegate
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    FileListItem* item = [self.dataSource objectAtIndexPath:indexPath];
+    FileItem* item = [self.dataSource objectAtIndexPath:indexPath];
     if ([[item.attributes fileType] isEqualToString:NSFileTypeDirectory]){
         FilePickerContentController* controller = [[FilePickerContentController alloc] initWithFilePath:item.filePath pickerType:self.type];
         [self.navigationController pushViewController:controller animated:YES];

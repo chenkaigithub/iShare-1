@@ -11,7 +11,7 @@
 #import "FileBrowserNotifications.h"
 #import "FilePickerDataSource.h"
 #import "FileOperationWrap.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 
 @interface FilePickerViewController ()
 

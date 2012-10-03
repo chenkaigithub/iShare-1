@@ -8,7 +8,7 @@
 
 #import "FilePickerDataSource.h"
 #import "ISFileBrowserCell.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 
 @interface FilePickerDataSource()
 
@@ -35,16 +35,16 @@
     NSArray* fileItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.filePath error:NULL];
     NSMutableArray* allItems = [NSMutableArray array];
     [fileItems enumerateObjectsUsingBlock:^(NSString* filename, NSUInteger idx, BOOL* stop){
-        FileListItem* item = [[FileListItem alloc] init];
+        FileItem* item = [[FileItem alloc] init];
         item.filePath = [self.filePath stringByAppendingPathComponent:filename];
-        item.type = FileListItemTypeFilePath;
+        item.type = FileItemTypeFilePath;
         
         if (!(self.pickerType == FilePickerTypeDirectory && [[item.attributes fileType] isEqualToString:NSFileTypeDirectory] == NO)){
             [allItems addObject:item];
         }
     }];
     
-    [allItems sortUsingComparator:^(FileListItem* item1, FileListItem* item2){
+    [allItems sortUsingComparator:^(FileItem* item1, FileItem* item2){
         NSString* fileType1 = [item1.attributes fileType];
         NSString* fileType2 = [item2.attributes fileType];
         if ([fileType1 isEqualToString:NSFileTypeDirectory] && ![fileType2 isEqualToString:NSFileTypeDirectory]){
@@ -94,7 +94,7 @@
 }
 
 -(BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
-    FileListItem* item = [self objectAtIndexPath:indexPath];
+    FileItem* item = [self objectAtIndexPath:indexPath];
     return [[item.attributes fileType] isEqualToString:NSFileTypeDirectory] == NO;
 }
 

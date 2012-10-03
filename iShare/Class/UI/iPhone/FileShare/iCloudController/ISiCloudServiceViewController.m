@@ -8,7 +8,7 @@
 
 #import "ISiCloudServiceViewController.h"
 #import "ISiCouldDataSource.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 #import "SVProgressHUD.h"
 
 #define kDownloadAlertViewTag   100
@@ -155,7 +155,7 @@
 -(void)uploadSelectedFiles:(NSArray*)selectedFiles{
     //判断是否存在同名文件
     __block BOOL alreadyExists = NO;
-    [selectedFiles enumerateObjectsUsingBlock:^(FileListItem* fileItem, NSUInteger idx, BOOL* stop){
+    [selectedFiles enumerateObjectsUsingBlock:^(FileItem* fileItem, NSUInteger idx, BOOL* stop){
         NSString* filename = [fileItem.filePath lastPathComponent];
         NSString* filePath = [self.workingPath stringByAppendingPathComponent:filename];
         if([[NSFileManager defaultManager] fileExistsAtPath:filePath] == YES){
@@ -176,7 +176,7 @@
 
 -(void)uploadFilesToiCloud:(NSArray*)selectedFiles needOverride:(BOOL)needOverride{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [selectedFiles enumerateObjectsUsingBlock:^(FileListItem* fileItem, NSUInteger idx, BOOL* stop){
+        [selectedFiles enumerateObjectsUsingBlock:^(FileItem* fileItem, NSUInteger idx, BOOL* stop){
             NSString* destinationFilepath = [self.workingPath stringByAppendingPathComponent:[fileItem.filePath lastPathComponent]];
             NSError* error = nil;
             if (needOverride){

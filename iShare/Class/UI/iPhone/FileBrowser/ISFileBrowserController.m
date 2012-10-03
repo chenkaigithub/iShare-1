@@ -110,7 +110,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     //view background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
     //table view
-    self.tableView.backgroundColor = [UIColor clearColor];
+//    self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.backgroundView = nil;
     self.tableView.tableHeaderView = self.tableHeaderView;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
@@ -167,8 +167,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.searchField resignFirstResponder];
     if (tableView.editing == NO){
-        FileListItem* item = [self.dataSource objectAtIndexPath:indexPath];
-        if (item.type == FileListItemTypeActionMenu){
+        FileItem* item = [self.dataSource objectAtIndexPath:indexPath];
+        if (item.type == FileItemTypeActionMenu){
             return;
         }
         FileContentType fileType = [FileOperationWrap fileTypeWithFilePath:item.filePath];
@@ -616,7 +616,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     NSArray* selectedIndexPaths = [self.tableView indexPathsForSelectedRows];
     NSMutableArray* filePaths = [NSMutableArray array];
     [selectedIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath* indexPath, NSUInteger idx, BOOL* stop){
-        FileListItem* item = [self.dataSource objectAtIndexPath:indexPath];
+        FileItem* item = [self.dataSource objectAtIndexPath:indexPath];
         [filePaths addObject:item.filePath];
     }];
     
@@ -668,7 +668,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(void)deleteFileNotificationReceived:(NSNotification*)notification{
-    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    FileItem* item = [notification.userInfo objectForKey:@"item"];
     NSArray* filePaths = [NSArray arrayWithObject:item.filePath];
     
     [FileOperationWrap removeFileItems:filePaths withCompletionBlock:^(BOOL finished){
@@ -676,7 +676,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
         NSIndexPath* menuRow = [self.dataSource menuIndex];
         NSIndexPath* fileRow = [NSIndexPath indexPathForRow:menuRow.row - 1 inSection:menuRow.section];
         
-        FileListItem* fileItem = [self.dataSource objectAtIndexPath:fileRow];
+        FileItem* fileItem = [self.dataSource objectAtIndexPath:fileRow];
         [self.dataSource removeFileItem:item];
         [self.dataSource removeFileItem:fileItem];
         
@@ -685,7 +685,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(void)openFileNotificationReceived:(NSNotification*)notification{
-    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    FileItem* item = [notification.userInfo objectForKey:@"item"];
     NSURL* URL = [NSURL fileURLWithPath:item.filePath];
 
     [self setupDocumentInteractionWithURL:URL];
@@ -699,7 +699,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(void)mailFileNotificationReceived:(NSNotification*)notification{
-    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    FileItem* item = [notification.userInfo objectForKey:@"item"];
     NSString* filename = [[item filePath] lastPathComponent];
     if ([MFMailComposeViewController canSendMail]){
         //get zipped file
@@ -731,7 +731,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(void)renameFileNotificationReceived:(NSNotification*)notification{
-    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    FileItem* item = [notification.userInfo objectForKey:@"item"];
     _filePathToBeMoved = item.filePath;
     
     UIAlertView* renameAlert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"alert_title_rename", nil) message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"btn_title_cancel", nil) otherButtonTitles:NSLocalizedString(@"btn_title_confirm", nil), nil];
@@ -759,12 +759,12 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(void)zipFileNotificationReceived:(NSNotification*)notification{
-    FileListItem* item = [notification.userInfo objectForKey:@"item"];
+    FileItem* item = [notification.userInfo objectForKey:@"item"];
     
     [self zipFileItem:item];
 }
 
--(void)zipFileItem:(FileListItem*)item{
+-(void)zipFileItem:(FileItem*)item{
     [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_zipping", nil)];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -779,7 +779,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     });
 }
 
--(void)unzipFileItem:(FileListItem*)item{
+-(void)unzipFileItem:(FileItem*)item{
     
     [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_unzipping", nil)];
     

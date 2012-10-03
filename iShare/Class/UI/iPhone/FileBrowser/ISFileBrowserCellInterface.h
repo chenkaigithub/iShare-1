@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@class FileListItem;
+@class FileItem;
 
 @protocol ISFileBrowserCellInterface <NSObject>
 
--(FileListItem*)cellItem;
--(void)configCell:(FileListItem*)item;
+-(FileItem*)cellItem;
+-(void)configCell:(FileItem*)item;
 
 @end

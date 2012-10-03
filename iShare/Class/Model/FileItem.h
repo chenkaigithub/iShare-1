@@ -1,5 +1,5 @@
 //
-//  FileListItem.h
+//  FileItem.h
 //  iShare
 //
 //  Created by Jin Jin on 12-8-4.
@@ -10,13 +10,13 @@
 #import <QuickLook/QuickLook.h>
 
 typedef enum {
-    FileListItemTypeFilePath,
-    FileListItemTypeActionMenu
-} FileListItemType;
+    FileItemTypeFilePath,
+    FileItemTypeActionMenu
+} FileItemType;
 
-@interface FileListItem : NSObject<QLPreviewItem>
+@interface FileItem : NSObject<QLPreviewItem>
 
-@property (nonatomic, assign) FileListItemType type;
+@property (nonatomic, assign) FileItemType type;
 @property (nonatomic, copy) NSString* filePath;
 @property (nonatomic, strong) NSDictionary* attributes;
 

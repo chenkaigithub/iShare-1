@@ -7,12 +7,12 @@
 //
 
 #import "ISFileBrowserMenuCell.h"
-#import "FileListItem.h"
+#import "FileItem.h"
 #import "FileBrowserNotifications.h"
 
 @interface ISFileBrowserMenuCell()
 
-@property (nonatomic, strong) FileListItem* item;
+@property (nonatomic, strong) FileItem* item;
 
 @end
 
@@ -40,7 +40,7 @@
     // Configure the view for the selected state
 }
 
--(void)configCell:(FileListItem *)item{
+-(void)configCell:(FileItem *)item{
     self.item = item;
     if ([[item.attributes fileType] isEqualToString:NSFileTypeDirectory]){
         self.mailButton.enabled = NO;
@@ -59,7 +59,7 @@
     }
 }
 
--(FileListItem*)cellItem{
+-(FileItem*)cellItem{
     return self.item;
 }
 

@@ -103,6 +103,15 @@
     return result;
 }
 
++(UIImage*)thumbnailForFile:(NSString*)filePath previewEnabled:(BOOL)previewEnabled{
+    if (previewEnabled){
+        
+        return nil;
+    }else{
+        return nil;
+    }
+}
+
 +(NSString*)validFilePathForFilename:(NSString*)filename atPath:(NSString*)path{
     NSFileManager* fm = [NSFileManager defaultManager];
     NSString* extension = [filename pathExtension];

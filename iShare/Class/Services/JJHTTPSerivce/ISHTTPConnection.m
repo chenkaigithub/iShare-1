@@ -35,6 +35,7 @@ typedef enum {
 @property (nonatomic, strong) NSMutableData* cacheData;
 
 @property (nonatomic, assign) PostMethodType postType;
+@property (nonatomic, assign) CFWriteStreamRef writeStream;
 
 @end
 
@@ -103,7 +104,7 @@ static NSString* CurrentFilePath = @"";
 
 - (NSObject<HTTPResponse> *)httpResponseForMethod:(NSString *)method URI:(NSString *)path
 {
-	
+	path = [path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 	if ([method isEqualToString:@"POST"])
 	{
         //重新刷新index？
@@ -116,7 +117,7 @@ static NSString* CurrentFilePath = @"";
 	}
 	if( [method isEqualToString:@"GET"]) {
         //如果文件存在，就下载文件
-        NSString* filePath = [[FileOperationWrap homePath] stringByAppendingPathComponent:[path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSString* filePath = [[FileOperationWrap homePath] stringByAppendingPathComponent:path];
         BOOL isDir;
         BOOL itemExists = [[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDir];
         if (itemExists && !isDir){
@@ -269,18 +270,16 @@ static NSString* CurrentFilePath = @"";
 
 #pragma mark - stream methods
 
-static CFWriteStreamRef writeStream = NULL;
-
 -(void)createWriteStreamWithFilePath:(NSString*)filePath{
     [[self streamLock] lock];
-    if (writeStream != NULL){
-        CFRelease(writeStream);
-        writeStream = NULL;
+    if (self.writeStream != NULL){
+        CFRelease(self.writeStream);
+        self.writeStream = NULL;
     }
     [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
     CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (__bridge CFStringRef)filePath, kCFURLPOSIXPathStyle, false);
-    writeStream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, fileURL);
-    CFWriteStreamOpen(writeStream);
+    self.writeStream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, fileURL);
+    CFWriteStreamOpen(self.writeStream);
     CFRelease(fileURL);
     [[self streamLock] unlock];
 }
@@ -291,9 +290,9 @@ static CFWriteStreamRef writeStream = NULL;
     
 //    [[self streamLock] lock];
     
-    CFIndex writeLength = CFWriteStreamWrite(writeStream, buff, length);
+    CFIndex writeLength = CFWriteStreamWrite(self.writeStream, buff, length);
     if (writeLength < 0){
-        CFStreamError error = CFWriteStreamGetError(writeStream);
+        CFStreamError error = CFWriteStreamGetError(self.writeStream);
         //report error
     }
     
@@ -302,9 +301,9 @@ static CFWriteStreamRef writeStream = NULL;
 
 -(void)closeStream{
     [[self streamLock] lock];
-    CFWriteStreamClose(writeStream);
-    CFRelease(writeStream);
-    writeStream = NULL;
+    CFWriteStreamClose(self.writeStream);
+    CFRelease(self.writeStream);
+    self.writeStream = NULL;
     [[self streamLock] unlock];
 }
 

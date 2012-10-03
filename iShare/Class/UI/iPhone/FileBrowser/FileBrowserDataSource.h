@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "FileListItem.h"
+#import "FileItem.h"
 #import "FileBrowserNotifications.h"
 
 typedef enum {
@@ -26,10 +26,10 @@ typedef enum {
 -(void)refresh;
 -(void)sortListByOrder:(FileBrowserDataSourceOrder)order;
 -(void)hideMenu;
--(void)removeFileItem:(FileListItem*)item;
+-(void)removeFileItem:(FileItem*)item;
 
--(FileListItem*)objectAtIndexPath:(NSIndexPath*)indexPath;
--(NSIndexPath*)indexPathOfObject:(FileListItem*)item;
+-(FileItem*)objectAtIndexPath:(NSIndexPath*)indexPath;
+-(NSIndexPath*)indexPathOfObject:(FileItem*)item;
 -(NSIndexPath*)menuIndex;
 
 -(void)setFilterKeyword:(NSString*)keyword;
