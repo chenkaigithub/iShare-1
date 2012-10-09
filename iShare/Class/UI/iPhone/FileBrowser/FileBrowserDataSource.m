@@ -14,11 +14,21 @@
 
 //comparators
 static NSComparator SortBlockByType = ^(FileItem* item1, FileItem* item2) {
-    if ([[item1.attributes fileType] isEqualToString:NSFileTypeDirectory]){
+    if ([[item1.attributes fileType] isEqualToString:NSFileTypeDirectory] && [[item2.attributes fileType] isEqualToString:NSFileTypeDirectory] == NO){
         return NSOrderedAscending;
+    }else if ([[item1.attributes fileType] isEqualToString:NSFileTypeDirectory] == NO && [[item2.attributes fileType] isEqualToString:NSFileTypeDirectory]){
+        return NSOrderedDescending;
+    }else if ([[item1.attributes fileType] isEqualToString:NSFileTypeDirectory] && [[item2.attributes fileType] isEqualToString:NSFileTypeDirectory]){
+        return (NSInteger)[[item1.filePath lowercaseString] compare:[item2.filePath lowercaseString]];
     }
     
-    return (NSInteger)[[item1.filePath pathExtension] compare:[item2.filePath pathExtension]];
+    NSComparisonResult result = [[item1.filePath pathExtension] compare:[item2.filePath pathExtension]];
+    
+    if (result == NSOrderedSame){
+        result = [[item1.filePath lowercaseString] compare:[item2.filePath lowercaseString]];
+    }
+    
+    return (NSInteger)result;
 };
 
 static NSComparator SortBlockByName = ^(FileItem* item1, FileItem* item2) {

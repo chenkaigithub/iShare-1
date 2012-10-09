@@ -16,7 +16,7 @@
 @interface FilePickerViewController ()
 
 @property (nonatomic, copy) NSString* filePath;
-@property (nonatomic, assign) FilePickerType pickerType;
+@property (nonatomic, assign) FileContentType filterType;
 @property (nonatomic, strong) UINavigationController* contentNavigation;
 
 @end
@@ -27,11 +27,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
--(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type{
+-(id)initWithFilePath:(NSString*)filePath filterType:(FileContentType)type;{
     self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil];
     if (self){
         self.filePath = filePath;
-        self.pickerType = type;
+        self.filterType = type;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doneActionReceived:) name:NOTIFICATION_PICKERCONTENT_DONE object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelActionReceived:) name:NOTIFICATION_PICKERCONTENT_CANCEL object:nil];
@@ -44,7 +44,7 @@
 {
     [super viewDidLoad];
     
-    FilePickerContentController* content = [[FilePickerContentController alloc] initWithFilePath:self.filePath pickerType:self.pickerType];
+    FilePickerContentController* content = [[FilePickerContentController alloc] initWithFilePath:self.filePath filterType:self.filterType];
     self.contentNavigation = [[UINavigationController alloc] initWithRootViewController:content];
     self.contentNavigation.delegate = self;
     [self.pathScroll addSubview:self.pathLabel];
@@ -86,7 +86,7 @@
 #pragma mark - notification
 -(void)doneActionReceived:(NSNotification*)notification{
     NSArray* pathArray = nil;
-    if (self.pickerType == FilePickerTypeDirectory){
+    if (self.filterType == FileContentTypeDirectory){
         pathArray = @[[self currentDirectory]];
     }else{
         pathArray = [self selectedFiles];

@@ -70,7 +70,7 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlTogglePlayPause");
         
-        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        AVAudioPlayer* player = [[JJAudioPlayerManager sharedManager] currentPlayer];
         if (player.isPlaying){
             [player stop];
         }else{
@@ -83,7 +83,7 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlPlay");
         
-        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        AVAudioPlayer* player = [[JJAudioPlayerManager sharedManager] currentPlayer];
         [player play];
         
     }
@@ -92,7 +92,7 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlPause");
         
-        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        AVAudioPlayer* player = [[JJAudioPlayerManager sharedManager] currentPlayer];
         [player stop];
         
     }
@@ -101,7 +101,7 @@
         
         //NSLog(@"UIEventSubtypeRemoteControlStop");
         
-        AVAudioPlayer* player = [JJAudioPlayerManager currentPlayer];
+        AVAudioPlayer* player = [[JJAudioPlayerManager sharedManager] currentPlayer];
         [player stop];
         
     }

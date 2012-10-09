@@ -16,6 +16,7 @@
 "btn_title_selectall" = "全选";
 "btn_title_disconnect" = "断开连接";
 "btn_title_unlink" = "注销";
+"btn_title_nowplaying" = "正在播放";
 
 "title_receivedfrombluetooth" = "接收自蓝牙";
 
@@ -97,6 +98,8 @@
 "cell_title_authpassword" = "密码";
 
 "cell_title_notconnected" = "未连接";
+"cell_title_addsong" = "轻触此处添加歌曲";
+"cell_title_removefromplaylist" = "移除";
 
 "config_title_appearence" = "外观";
 "config_title_enableThumbnail" = "启用缩略图";
@@ -114,3 +117,7 @@
 "menu_title_download" = "下载到...";
 
 "newimagename_template" = "新图片%@";
+
+"refresh_title" = "下拉刷新";
+"refresh_readytitle" = "放开刷新";
+"refresh_refreshtitle" = "刷新中...";

@@ -1,4 +1,3 @@
-
 //
 //  JJAudioPlayerManager.m
 //  iShare
@@ -9,13 +8,18 @@
 
 #import "JJAudioPlayerManager.h"
 #import "MDAudioFile.h"
+#import <MediaPlayer/MediaPlayer.h>
 
-@interface JJAudioPlayerManager()
+#define PlayListStoreFolder @"PlayListStoreFolder"
+#define DefaultPlayListStoreFile @"DefaultPlayListStoreFile"
+#define OtherPlayListStoreFile @"OtherPlayListStoreFile"
+
+@interface JJAudioPlayerManager(){
+    NSArray* _currentPlayList;
+}
 
 @property (nonatomic, strong) AVAudioPlayer* currentPlayer;
-
-@property (nonatomic, strong) NSArray* musicItems;
-@property (nonatomic, assign) NSInteger currentIndex;
+@property (nonatomic, strong) NSMutableArray* defaultPlayList;
 
 @end
 
@@ -48,18 +52,12 @@
     self = [super init];
     if (self){
         self.playerMode = JJAudioPlayerModeSequence;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+        //restore play list
+        [self restoreDefaultPlayList];
     }
     
     return self;
-}
-
--(AVAudioPlayer*)playerWithMusicItems:(NSArray*)musicItems Index:(NSInteger)index{
-    self.musicItems = musicItems;
-    self.currentIndex = index;
-    
-    MDAudioFile* musicItem = [self.musicItems objectAtIndex:index];
-    
-    return [self playerWithContentOfURL:musicItem.filePath error:NULL];
 }
 
 -(AVAudioPlayer*)playerWithContentOfURL:(NSURL*)URL error:(NSError**)error{
@@ -88,29 +86,92 @@
 
 #pragma mark -
 
+-(NSArray*)defaultList{
+    return [NSArray arrayWithArray:self.defaultPlayList];
+}
+
+-(void)removeAudioFilFromPlayList:(MDAudioFile*)audioFile{
+    __block NSInteger index = -1;
+    
+    if ([[self.currentPlayer.url absoluteString] isEqualToString:[audioFile.filePath absoluteString]]){
+        [self.currentPlayer stop];
+        self.currentPlayer = nil;
+    }
+    
+    [self.defaultPlayList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(MDAudioFile* audio, NSUInteger idx, BOOL* stop){
+        if ([[audioFile.filePath absoluteString] isEqualToString:[audio.filePath absoluteString]]){
+            index = idx;
+            *stop = YES;
+        }
+    }];
+    
+    if (index >= 0){
+        [self.defaultPlayList removeObjectAtIndex:index];
+    }
+}
+
+-(void)addToDefaultPlayList:(MDAudioFile*)audioFile playNow:(BOOL)playNow{
+    //search
+    NSUInteger existsIndex = -1;
+    BOOL exists = [self audioFile:audioFile existsInPlayList:self.defaultPlayList index:&existsIndex];
+    
+    if (exists == NO){
+        existsIndex = [self.defaultPlayList count];
+        [self.defaultPlayList addObject:audioFile];
+    }
+    
+    if (playNow){
+        _currentPlayList = self.defaultPlayList;
+        AVAudioPlayer* player = [self playerForMusicAtIndex:existsIndex inPlayList:self.defaultPlayList];
+        if ([player isPlaying] == NO){
+            [player play];
+        }
+    }
+}
+
+-(AVAudioPlayer*)playerForMusicAtIndex:(NSInteger)index inPlayList:(NSArray*)playList{
+    if (index < 0 || index >= [playList count]){
+        return nil;
+    }
+    
+    self.currentIndex = index;
+    [self.currentPlayer stop];
+    MDAudioFile* audioFile = [playList objectAtIndex:self.currentIndex];
+    self.currentPlayer = [self playerWithContentOfURL:audioFile.filePath error:NULL];
+    
+    if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
+        NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+        [dict setObject:audioFile.title forKey:MPMediaItemPropertyTitle];
+        [dict setObject:audioFile.artist forKey:MPMediaItemPropertyArtist];
+        [dict setObject:audioFile.album forKey:MPMediaItemPropertyAlbumTitle];
+        [dict setObject:audioFile.filePath forKey:MPMediaItemPropertyAssetURL];
+        
+        MPMediaItemArtwork * mArt = [[MPMediaItemArtwork alloc] initWithImage:audioFile.coverImage];
+        [dict setObject:mArt forKey:MPMediaItemPropertyArtwork];
+        [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:dict];
+    }
+    
+    return self.currentPlayer;
+}
+
 -(AVAudioPlayer*)playerForNextMusic{
-    if (self.currentIndex+1 >= [self.musicItems count]){
+    if (self.currentIndex+1 >= [self.currentPlayList count]){
         return nil;
     }
     
     NSUInteger newIndex = 0;
 	
     if (self.playerMode & JJAudioPlayerModeShuffle){
-        newIndex = rand() % [self.musicItems count];
+        newIndex = rand() % [self.currentPlayList count];
     }else if (self.playerMode & JJAudioPlayerModeRepeatOne){
         newIndex = self.currentIndex;
     }else if (self.playerMode & JJAudioPlayerModeSequence){
-        newIndex = (self.currentIndex + 1)>=[self.musicItems count]?self.currentIndex:self.currentIndex+1;
+        newIndex = (self.currentIndex + 1)>=[self.currentPlayList count]?self.currentIndex:self.currentIndex+1;
     }else if (self.playerMode & JJAudioPlayerModeSequenceLoop){
-        newIndex = (self.currentIndex + 1)>=[self.musicItems count]?0:self.currentIndex+1;
+        newIndex = (self.currentIndex + 1)>=[self.currentPlayList count]?0:self.currentIndex+1;
     }
 	
-    self.currentIndex = newIndex;
-    
-    [self.currentPlayer stop];
-    self.currentPlayer = [[self class] playerWithContentOfURL:[self.musicItems objectAtIndex:self.currentIndex] error:NULL];
-    
-    return self.currentPlayer;
+    return [self playerForMusicAtIndex:newIndex inPlayList:self.currentPlayList];
 }
 
 -(AVAudioPlayer*)playerForPreviousMusic{
@@ -121,7 +182,7 @@
     NSUInteger newIndex = 0;
 	
     if (self.playerMode & JJAudioPlayerModeShuffle){
-        newIndex = rand() % [self.musicItems count];
+        newIndex = rand() % [self.currentPlayList count];
     }else if (self.playerMode & JJAudioPlayerModeRepeatOne){
         newIndex = self.currentIndex;
     }else if (self.playerMode & JJAudioPlayerModeSequence){
@@ -130,22 +191,70 @@
         newIndex = (self.currentIndex - 1)<0?0:self.currentIndex-1;
     }
     
-    self.currentIndex = newIndex;
-    [self.currentPlayer stop];
-    self.currentPlayer = [[self class] playerWithContentOfURL:[self.musicItems objectAtIndex:self.currentIndex] error:NULL];
-    
-    return self.currentPlayer;
+    return [self playerForMusicAtIndex:newIndex inPlayList:self.currentPlayList];
 }
 
 -(BOOL)canGoNextTrack{
-    return !(self.currentIndex + 1 == [self.musicItems count]);
+    return !(self.currentIndex + 1 == [self.currentPlayList count]);
 }
 
 -(BOOL)canGoPreviouseTrack{
     return !(self.currentIndex == 0);
 }
 
-#pragma mark - avaudioplayer delegate
+#pragma mark - notifications
+-(void)willResignActive:(NSNotification*)notification{
+    //will resign active
+    [self storeDefaultPlayList];
+}
 //-(void)
+
+#pragma mark - play list
+
+-(BOOL)audioFile:(MDAudioFile*)audioFile existsInPlayList:(NSArray*)playList index:(NSUInteger*)index{
+    __block BOOL exists = NO;
+    __block NSUInteger existsIndex = -1;
+    [playList enumerateObjectsUsingBlock:^(MDAudioFile* item, NSUInteger index, BOOL* stop){
+        if ([[item.filePath absoluteString] isEqualToString:[audioFile.filePath absoluteString]]){
+            exists = YES;
+            existsIndex = index;
+            *stop = YES;
+        }
+    }];
+
+    *index = existsIndex;
+    return exists;
+}
+
+-(NSArray*)currentPlayList{
+    return _currentPlayList;
+}
+
+-(void)restoreDefaultPlayList{
+    self.defaultPlayList = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithFile:[self defaultPlayListFilePath]]];
+    if (self.defaultPlayList == nil){
+        self.defaultPlayList = [NSMutableArray array];
+    }
+
+}
+
+-(void)storeDefaultPlayList{
+    
+    BOOL result = [NSKeyedArchiver archiveRootObject:self.defaultPlayList toFile:[self defaultPlayListFilePath]];
+
+    if (result == NO){
+        NSLog(@"default play list store failed");
+    }
+}
+
+-(NSString*)defaultPlayListFilePath{
+    NSString* folder = [[NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:PlayListStoreFolder];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:folder] == NO){
+        [[NSFileManager defaultManager] createDirectoryAtPath:folder withIntermediateDirectories:NO attributes:nil error:NULL];
+    }
+    
+    return [folder stringByAppendingPathComponent:DefaultPlayListStoreFile];
+}
 
 @end

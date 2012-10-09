@@ -7,17 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-
-typedef enum {
-    FilePickerTypeFile,
-    FilePickerTypeDirectory,
-} FilePickerType;
+#import "FileOperationWrap.h"
 
 @interface FilePickerDataSource : NSObject<UITableViewDataSource>
 
-@property (nonatomic, assign) FilePickerType pickerType;
+@property (nonatomic, assign) FileContentType filterType;
 
--(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type;
+-(id)initWithFilePath:(NSString*)filePath filterType:(FileContentType)type;
 -(void)refresh;
 
 -(id)objectAtIndexPath:(NSIndexPath*)indexPath;

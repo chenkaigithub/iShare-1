@@ -16,6 +16,7 @@
 "btn_title_selectall" = "Select all";
 "btn_title_disconnect" = "Disconect";
 "btn_title_unlink" = "Unlink";
+"btn_title_nowplaying" = "Now playing";
 
 "title_receivedfrombluetooth" = "Received from Bluetooth";
 
@@ -98,6 +99,9 @@
 
 "cell_title_notconnected" = "Not connected";
 
+"cell_title_addsong" = "Tap here to add songs";
+"cell_title_removefromplaylist" = "Remove";
+
 "config_title_appearence" = "Appearence";
 "config_title_enableThumbnail" = "Enable thumbnail";
 "config_title_security" = "Security";
@@ -114,4 +118,8 @@
 "menu_title_download" = "Download to...";
 
 "newimagename_template" = "New image %@";
+
+"refresh_title" = "Pull to refresh";
+"refresh_readytitle" = "Release to refresh";
+"refresh_refreshtitle" = "Refreshing";
 

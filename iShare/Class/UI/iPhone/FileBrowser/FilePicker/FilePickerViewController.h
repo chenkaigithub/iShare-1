@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FilePickerDataSource.h"
+#import "FileOperationWrap.h"
 
 typedef void(^FilePickerCompletionBlock)(NSArray*);
 typedef void(^FilePickerCancellationBlock)(void);
@@ -24,7 +25,7 @@ typedef void(^FilePickerCancellationBlock)(void);
 
 @interface FilePickerViewController : UIViewController<UITableViewDelegate, UINavigationControllerDelegate>
 
--(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type;
+-(id)initWithFilePath:(NSString*)filePath filterType:(FileContentType)type;
 
 @property (nonatomic, strong) IBOutlet UIScrollView* pathScroll;
 @property (nonatomic, strong) IBOutlet UILabel* pathLabel;

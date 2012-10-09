@@ -188,7 +188,7 @@ static NSInteger BufferLength = 4096;//limit is 4k
     //data receiveing handler
     //check package head
     NSUInteger length = [data length];
-    UInt8 *buff = (UInt8*)[data bytes];
+    UInt8 *buff = (UInt8*)[data bytes]; 
     
     if (buff[0] == 0 && buff[1] == 0){
         //start

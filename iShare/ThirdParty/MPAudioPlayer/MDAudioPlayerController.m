@@ -9,7 +9,6 @@
 #import "MDAudioPlayerController.h"
 #import "MDAudioFile.h"
 #import "MDAudioPlayerTableViewCell.h"
-#import "JJAudioPlayerManager.h"
 
 @interface MDAudioPlayerController (){
     BOOL _previousNavigationBarHidden;
@@ -25,9 +24,6 @@
 
 static const CGFloat kDefaultReflectionFraction = 0.65;
 static const CGFloat kDefaultReflectionOpacity = 0.40;
-
-@synthesize soundFiles;
-@synthesize soundFilesPath;
 
 @synthesize player;
 @synthesize gradientLayer;
@@ -64,7 +60,6 @@ static const CGFloat kDefaultReflectionOpacity = 0.40;
 @synthesize repeatOne;
 @synthesize shuffle;
 
-
 void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 {
 	MDAudioPlayerController *vc = (__bridge MDAudioPlayerController *)userData;
@@ -74,27 +69,29 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 		vc.interrupted = NO;
 }
 
--(void)updateCurrentTimeForPlayer:(AVAudioPlayer *)p
+-(void)updateCurrentTime:(NSTimeInterval)curTime duration:(NSTimeInterval)durTime
 {
-	NSString *current = [NSString stringWithFormat:@"%d:%02d", (int)p.currentTime / 60, (int)p.currentTime % 60, nil];
-	NSString *dur = [NSString stringWithFormat:@"-%d:%02d", (int)((int)(p.duration - p.currentTime)) / 60, (int)((int)(p.duration - p.currentTime)) % 60, nil];
-	duration.text = dur;
-	currentTime.text = current;
-	progressSlider.value = p.currentTime;
+    NSString *current = [NSString stringWithFormat:@"%d:%02d", (int)curTime / 60, (int)curTime % 60, nil];
+    NSString *dur = [NSString stringWithFormat:@"-%d:%02d", (int)((int)(durTime - curTime)) / 60, (int)((int)(durTime - curTime)) % 60, nil];
+    duration.text = dur;
+    currentTime.text = current;
+    progressSlider.value = curTime;
 }
 
 - (void)updateCurrentTime
 {
-	[self updateCurrentTimeForPlayer:self.player];
+    if (SliderValueIsChanging == NO){
+        [self updateCurrentTime:self.player.currentTime duration:self.player.duration];
+    }
 }
 
 - (void)updateViewForPlayerState:(AVAudioPlayer *)p
 {
-	titleLabel.text = [[soundFiles objectAtIndex:selectedIndex] title];
-	artistLabel.text = [[soundFiles objectAtIndex:selectedIndex] artist];
-	albumLabel.text = [[soundFiles objectAtIndex:selectedIndex] album];
+	titleLabel.text = [[self.playList objectAtIndex:selectedIndex] title];
+	artistLabel.text = [[self.playList objectAtIndex:selectedIndex] artist];
+	albumLabel.text = [[self.playList objectAtIndex:selectedIndex] album];
 	
-	[self updateCurrentTimeForPlayer:p];
+	[self updateCurrentTime:p.currentTime duration:p.duration];
 	
 	if (updateTimer) 
 		[updateTimer invalidate];
@@ -114,7 +111,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	
 	if (![songTableView superview]) 
 	{
-		[artworkView setImage:[[soundFiles objectAtIndex:selectedIndex] coverImage] forState:UIControlStateNormal];
+		[artworkView setImage:[[self.playList objectAtIndex:selectedIndex] coverImage] forState:UIControlStateNormal];
 		reflectionView.image = [self reflectedImage:artworkView withHeight:artworkView.bounds.size.height * kDefaultReflectionFraction];
 	}
 	
@@ -128,7 +125,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 -(void)updateViewForPlayerInfo:(AVAudioPlayer*)p
 {
 	duration.text = [NSString stringWithFormat:@"%d:%02d", (int)p.duration / 60, (int)p.duration % 60, nil];
-	indexLabel.text = [NSString stringWithFormat:@"%d of %d", (selectedIndex + 1), [soundFiles count]];
+	indexLabel.text = [NSString stringWithFormat:@"%d of %d", (selectedIndex + 1), [self.playList count]];
 	progressSlider.maximumValue = p.duration;
 	if ([[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"])
 		volumeSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:@"PlayerVolume"];
@@ -138,25 +135,24 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 
 -(void)dealloc{
     self.player.delegate = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs atPath:(NSString *)path andSelectedIndex:(int)index
-{
-	if (self = [super init]) 
-	{
-		self.soundFiles = songs;
-		self.soundFilesPath = path;
-		selectedIndex = index;
-				
-		self.player = [self audioPlayerForMusicAtIndex:selectedIndex];
-		[self.player setNumberOfLoops:0];
-		self.player.delegate = self;
-				
-		[self updateViewForPlayerInfo:player];
+-(MDAudioPlayerController*)initWithAudioPlayerManager:(JJAudioPlayerManager*)playerManager{
+    self = [super init];
+    if (self){
+        self.player = [playerManager currentPlayer];
+        self.player.delegate = self;
+        self.playList = [NSMutableArray arrayWithArray:playerManager.currentPlayList];
+        selectedIndex = playerManager.currentIndex;
+        
+        [self updateViewForPlayerInfo:player];
 		[self updateViewForPlayerState:player];
-	}
-	
-	return self;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    }
+    
+    return self;
 }
 
 - (void)viewDidLoad
@@ -166,7 +162,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	self.view.backgroundColor = [UIColor blackColor];
     self.hidesBottomBarWhenPushed = YES;
 	
-	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
+//	[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:YES];
 	
 	updateTimer = nil;
 	
@@ -200,7 +196,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 //	UInt32 sessionCategory = kAudioSessionCategory_MediaPlayback;
 //	AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(sessionCategory), &sessionCategory);	
 	
-	MDAudioFile *selectedSong = [self.soundFiles objectAtIndex:selectedIndex];
+	MDAudioFile *selectedSong = [self.playList objectAtIndex:selectedIndex];
 	  
 	self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 14, 195, 12)];
 	titleLabel.text = [selectedSong title];
@@ -403,7 +399,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	if ([songTableView superview])
 	{
 		[self.songTableView removeFromSuperview];
-		[self.artworkView setImage:[[soundFiles objectAtIndex:selectedIndex] coverImage] forState:UIControlStateNormal];
+		[self.artworkView setImage:[[self.playList objectAtIndex:selectedIndex] coverImage] forState:UIControlStateNormal];
 		[self.containerView addSubview:reflectionView];
 		
 		[gradientLayer removeFromSuperlayer];
@@ -437,6 +433,9 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 		[progressSlider setMaximumTrackImage:[[UIImage imageNamed:@"AudioPlayerScrubberRight"] stretchableImageWithLeftCapWidth:5 topCapHeight:3]
 								  forState:UIControlStateNormal];
 		[progressSlider addTarget:self action:@selector(progressSliderMoved:) forControlEvents:UIControlEventValueChanged];
+        [progressSlider addTarget:self action:@selector(startChangeSliderValue:) forControlEvents:UIControlEventTouchDown];
+        [progressSlider addTarget:self action:@selector(endChangeSliderValue:) forControlEvents:UIControlEventTouchUpInside];
+        [progressSlider addTarget:self action:@selector(cancelChangeSliderValue:) forControlEvents:UIControlEventTouchUpOutside];
 		progressSlider.maximumValue = player.duration;
 		progressSlider.minimumValue = 0.0;	
 		[overlayView addSubview:progressSlider];
@@ -595,6 +594,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	[self.player setNumberOfLoops:0];
 	[self playMusic];
 	
+    selectedIndex = [[JJAudioPlayerManager sharedManager] currentIndex];
 	[self updateViewForPlayerInfo:player];
 	[self updateViewForPlayerState:player];	
 }
@@ -612,6 +612,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	[self.player setNumberOfLoops:0];
 	[self playMusic];
 	
+    selectedIndex = [[JJAudioPlayerManager sharedManager] currentIndex];
 	[self updateViewForPlayerInfo:player];
 	[self updateViewForPlayerState:player];
 }
@@ -622,12 +623,28 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 	[[NSUserDefaults standardUserDefaults] setFloat:[sender value] forKey:@"PlayerVolume"];
 }
 
+static BOOL SliderValueIsChanging = NO;
+
 - (void)progressSliderMoved:(UISlider *)sender
 {
-	self.player.currentTime = sender.value;
-	[self updateCurrentTimeForPlayer:player];
+	[self updateCurrentTime:sender.value duration:self.player.duration];
 }
 
+-(void)startChangeSliderValue:(UISlider*)sender{
+    SliderValueIsChanging = YES;
+}
+
+-(void)endChangeSliderValue:(UISlider*)sender{
+    self.player.currentTime = sender.value;
+	[self updateCurrentTime:self.player.currentTime duration:self.player.duration];
+    SliderValueIsChanging = NO;
+}
+
+-(void)cancelChangeSliderValue:(UISlider*)sender{
+    self.player.currentTime = sender.value;
+	[self updateCurrentTime:self.player.currentTime duration:self.player.duration];
+    SliderValueIsChanging = NO;
+}
 
 #pragma mark -
 #pragma mark AVAudioPlayer delegate
@@ -696,7 +713,7 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)aTableView numberOfRowsInSection:(NSInteger)section 
 {	
-    return [soundFiles count];
+    return [self.playList count];
 }
 
 
@@ -711,9 +728,9 @@ void interruptionListenerCallback (void *userData, UInt32 interruptionState)
         cell = [[MDAudioPlayerTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
 	}
 	
-	cell.title = [[soundFiles objectAtIndex:indexPath.row] title];
+	cell.title = [[self.playList objectAtIndex:indexPath.row] title];
 	cell.number = [NSString stringWithFormat:@"%d.", (indexPath.row + 1)];
-	cell.duration = [[soundFiles objectAtIndex:indexPath.row] durationInMinutes];
+	cell.duration = [[self.playList objectAtIndex:indexPath.row] durationInMinutes];
 
 	cell.isEven = indexPath.row % 2;
 	
@@ -844,7 +861,7 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
 }
 
 -(AVAudioPlayer*)audioPlayerForMusicAtIndex:(NSInteger)index{
-    AVAudioPlayer* audioPlayer = [[JJAudioPlayerManager sharedManager] playerWithMusicItems:self.soundFiles Index:index];
+    AVAudioPlayer* audioPlayer = [[JJAudioPlayerManager sharedManager] playerForMusicAtIndex:index inPlayList:self.playList];
     audioPlayer.delegate = self;
     return audioPlayer;
 }
@@ -879,4 +896,16 @@ CGContextRef MyCreateBitmapContext(int pixelsWide, int pixelsHigh)
     NSLog(@"%@ %@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
 }
 
+#pragma mark - notification
+-(void)didBecomeActive:(NSNotification*)notification{
+    JJAudioPlayerManager* audioManager = [JJAudioPlayerManager sharedManager];
+    self.player = [audioManager currentPlayer];
+    self.playList = [NSMutableArray arrayWithArray:[audioManager currentPlayList]];
+    selectedIndex = [audioManager currentIndex];
+    
+    [self updateViewForPlayerInfo:self.player];
+    [self updateViewForPlayerState:self.player];
+}
+
 @end
+    

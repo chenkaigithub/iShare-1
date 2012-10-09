@@ -8,19 +8,15 @@
 
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import <AVFoundation/AVFoundation.h>
 
+@interface MDAudioFile : NSObject <NSCoding>
 
-@interface MDAudioFile : NSObject 
-{
-	NSURL			*filePath;
-	NSDictionary	*fileInfoDict;
-}
-
-@property (nonatomic, retain) NSURL *filePath;
-@property (nonatomic, retain) NSDictionary *fileInfoDict;
+@property (nonatomic, strong) NSURL *filePath;
+@property (nonatomic, strong) NSDictionary *fileInfoDict;
+@property (nonatomic, retain) AVURLAsset* asset;
 
 - (MDAudioFile *)initWithPath:(NSURL *)path;
-- (NSDictionary *)songID3Tags;
 - (NSString *)title;
 - (NSString *)artist;
 - (NSString *)album;

@@ -9,6 +9,7 @@
 #import "ISShareServiceBaseDataSource.h"
 #import "ISShareServiceTableViewCell.h"
 #import "FileShareServiceItem.h"
+#import "FileOperationWrap.h"
 
 @interface ISShareServiceBaseDataSource ()
 
@@ -94,6 +95,12 @@
     FileShareServiceItem* item = [self.items objectAtIndex:indexPath.row];
     
     cell.textLabel.text = [item.filePath lastPathComponent];
+    
+    if ([FileOperationWrap fileTypeWithFilePath:item.filePath] == FileContentTypeDirectory){
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }else{
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
     
     return cell;
 }

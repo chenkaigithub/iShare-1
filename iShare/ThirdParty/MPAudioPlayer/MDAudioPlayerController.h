@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import <QuartzCore/QuartzCore.h>
+#import "JJAudioPlayerManager.h"
 
 @interface MDAudioPlayerController : UIViewController <AVAudioPlayerDelegate, AVAudioSessionDelegate, UITableViewDelegate, UITableViewDataSource>
 {
-	NSMutableArray		*soundFiles;
 	NSString			*soundFilesPath;
 	NSUInteger			selectedIndex;
 	
@@ -51,11 +51,8 @@
 	BOOL				shuffle;
 }
 
-@property (nonatomic, retain) NSMutableArray *soundFiles;
-@property (nonatomic, copy) NSString *soundFilesPath;
-
 @property (nonatomic, retain) AVAudioPlayer *player;
-
+@property (nonatomic, retain) NSMutableArray* playList;
 @property (nonatomic, retain) CAGradientLayer *gradientLayer;
 
 @property (nonatomic, retain) UIButton *playButton;
@@ -90,7 +87,8 @@
 @property (nonatomic, assign) BOOL repeatOne;
 @property (nonatomic, assign) BOOL shuffle;
 
-- (MDAudioPlayerController *)initWithSoundFiles:(NSMutableArray *)songs atPath:(NSString *)path andSelectedIndex:(int)index;
+-(MDAudioPlayerController*)initWithAudioPlayerManager:(JJAudioPlayerManager*)playerManager;
+
 - (void)dismissAudioPlayer;
 - (void)showSongFiles;
 - (void)showOverlayView;

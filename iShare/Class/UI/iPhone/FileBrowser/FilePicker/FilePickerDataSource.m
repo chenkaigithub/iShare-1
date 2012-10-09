@@ -20,12 +20,12 @@
 
 @implementation FilePickerDataSource
 
--(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type{
+-(id)initWithFilePath:(NSString*)filePath filterType:(FileContentType)type{
     self = [super init];
     
     if (self){
         self.filePath = filePath;
-        self.pickerType = type;
+        self.filterType = type;
     }
     
     return self;
@@ -35,11 +35,14 @@
     NSArray* fileItems = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:self.filePath error:NULL];
     NSMutableArray* allItems = [NSMutableArray array];
     [fileItems enumerateObjectsUsingBlock:^(NSString* filename, NSUInteger idx, BOOL* stop){
+        if ([filename hasPrefix:@"."]){
+            return;
+        }
         FileItem* item = [[FileItem alloc] init];
         item.filePath = [self.filePath stringByAppendingPathComponent:filename];
         item.type = FileItemTypeFilePath;
         
-        if (!(self.pickerType == FilePickerTypeDirectory && [[item.attributes fileType] isEqualToString:NSFileTypeDirectory] == NO)){
+        if (self.filterType & [FileOperationWrap fileTypeWithFilePath:item.filePath]){
             [allItems addObject:item];
         }
     }];

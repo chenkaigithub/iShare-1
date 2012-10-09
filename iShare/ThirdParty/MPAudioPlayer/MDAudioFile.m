@@ -8,29 +8,34 @@
 
 #import "MDAudioFile.h"
 
+@interface MDAudioFile ()
+
+@end
 
 @implementation MDAudioFile
-
-@synthesize filePath;
-@synthesize fileInfoDict;
 
 - (MDAudioFile *)initWithPath:(NSURL *)path
 {
 	if (self = [super init]) 
 	{
 		self.filePath = path;
-		self.fileInfoDict = [self songID3Tags];
+        [self setupMusicInfoWithPath:self.filePath];
 	}
 	
 	return self;
 }
 
-- (NSDictionary *)songID3Tags
-{	
+-(void)setupMusicInfoWithPath:(NSURL*)filePath{
+    self.fileInfoDict = [self songID3TagsWithFilePathURL:filePath];
+    self.asset = [AVURLAsset assetWithURL:filePath];
+}
+
+- (NSDictionary *)songID3TagsWithFilePathURL:(NSURL*)filePathURL
+{
 	AudioFileID fileID = nil;
 	OSStatus error = noErr;
 	
-	error = AudioFileOpenURL((__bridge CFURLRef)self.filePath, kAudioFileReadPermission, 0, &fileID);
+	error = AudioFileOpenURL((__bridge CFURLRef)filePathURL, kAudioFileReadPermission, 0, &fileID);
 	if (error != noErr) {
         NSLog(@"AudioFileOpenURL failed");
     }
@@ -96,12 +101,12 @@
 
 - (NSString *)title
 {
-	if ([fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Title]]) {
-		return [fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Title]];
+	if ([self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Title]]) {
+		return [self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Title]];
 	}
 	
 	else {
-		NSString *url = [filePath absoluteString];
+		NSString *url = [self.filePath absoluteString];
 		NSArray *parts = [url componentsSeparatedByString:@"/"];
 		return [parts objectAtIndex:[parts count]-1];
 	}
@@ -111,24 +116,24 @@
 
 - (NSString *)artist
 {
-	if ([fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Artist]])
-		return [fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Artist]];
+	if ([self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Artist]])
+		return [self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Artist]];
 	else
 		return @"";
 }
 
 - (NSString *)album
 {
-	if ([fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Album]])
-		return [fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Album]];
+	if ([self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Album]])
+		return [self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_Album]];
 	else
 		return @"";
 }
 
 - (float)duration
 {
-	if ([fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]])
-		return [[fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]] floatValue];
+	if ([self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]])
+		return [[self.fileInfoDict objectForKey:[NSString stringWithUTF8String:kAFInfoDictionary_ApproximateDurationInSeconds]] floatValue];
 	else
 		return 0;
 }
@@ -140,7 +145,31 @@
 
 - (UIImage *)coverImage
 {
-	return [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNoArtwork" ofType:@"png"]];
+    UIImage* artwork = nil;
+    for (NSString* format in [self.asset availableMetadataFormats]){
+        for (AVMetadataItem* metaData in [self.asset metadataForFormat:format]){
+            if ([metaData.commonKey isEqualToString:@"artwork"]){
+                artwork = [UIImage imageWithData:[(NSDictionary*)metaData.value objectForKey:@"data"]];
+            }
+        }
+    }
+	return (artwork)?artwork:[UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AudioPlayerNoArtwork" ofType:@"png"]];
+}
+
+
+#pragma mark - encoding and decoding
+-(void)encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeObject:self.filePath forKey:@"filePath"];
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    self = [super init];
+    if (self){
+        self.filePath = [aDecoder decodeObjectForKey:@"filePath"];
+        [self setupMusicInfoWithPath:self.filePath];
+    }
+    
+    return self;
 }
 
 @end

@@ -13,13 +13,13 @@
 @interface FilePickerContentController ()
 
 @property (nonatomic, strong) FilePickerDataSource* dataSource;
-@property (nonatomic, assign) FilePickerType type;
+@property (nonatomic, assign) FileContentType type;
 
 @end
 
 @implementation FilePickerContentController
 
--(id)initWithFilePath:(NSString*)filePath pickerType:(FilePickerType)type{
+-(id)initWithFilePath:(NSString*)filePath filterType:(FileContentType)type{
     self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil];
     
     if (self){
@@ -44,14 +44,12 @@
     [super viewDidLoad];
 
     switch (self.type) {
-        case FilePickerTypeDirectory:
+        case FileContentTypeDirectory:
             self.tableView.allowsMultipleSelection = NO;
             break;
-        case FilePickerTypeFile:
+        default:
             self.tableView.allowsMultipleSelectionDuringEditing = YES;
             self.tableView.editing = YES;
-            break;
-        default:
             break;
     }
 
@@ -61,7 +59,7 @@
     
     self.navigationItem.rightBarButtonItems = @[self.doneButton, self.cancelButton];
     
-    self.dataSource = [[FilePickerDataSource alloc] initWithFilePath:self.filePath pickerType:self.type];
+    self.dataSource = [[FilePickerDataSource alloc] initWithFilePath:self.filePath filterType:self.type];
     [self.dataSource refresh];
     self.tableView.dataSource = self.dataSource;
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 60, 0);
@@ -90,7 +88,7 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     FileItem* item = [self.dataSource objectAtIndexPath:indexPath];
     if ([[item.attributes fileType] isEqualToString:NSFileTypeDirectory]){
-        FilePickerContentController* controller = [[FilePickerContentController alloc] initWithFilePath:item.filePath pickerType:self.type];
+        FilePickerContentController* controller = [[FilePickerContentController alloc] initWithFilePath:item.filePath filterType:self.type];
         [self.navigationController pushViewController:controller animated:YES];
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     }

@@ -83,7 +83,7 @@
 }
 
 -(IBAction)showFilePickerButtonClicked:(id)sender{
-    FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeFile];
+    FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil filterType:FileContentTypeAll];
     filePicker.delegate = self;
     [self presentViewController:filePicker animated:YES completion:NULL];
 }

@@ -45,7 +45,7 @@
 {
     [super viewDidLoad];
     
-//    [CustomUIComponents customizeButtonWithFixedBackgroundImages:self.unlinkButton];
+    [CustomUIComponents customizeButtonWithFixedBackgroundImages:self.unlinkButton];
     
     [self.unlinkButton setTitle:NSLocalizedString(@"btn_title_unlink", nil) forState:UIControlStateNormal];
     self.unlinkButton.titleLabel.font = [UIFont boldSystemFontOfSize:14];

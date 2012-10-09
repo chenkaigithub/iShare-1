@@ -43,6 +43,19 @@
 //    [[UITableView appearance] setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_texture"]]];
 }
 
++(void)customizeSegmentedControl{
+    
+    UIEdgeInsets insets = UIEdgeInsetsMake(0, 4, 0, 4);
+    
+    UIImage* backgroundNormal = [[UIImage imageNamed:@"btn_tool_bar_dark_segment_default"]resizableImageWithCapInsets:insets];
+    UIImage* backgroundSelected = [[UIImage imageNamed:@"btn_tool_bar_dark_segment_selected"] resizableImageWithCapInsets:insets];
+    UIImage* seperatorImage = [UIImage imageNamed:@"btn_tool_bar_dark_segment_separator"];
+    
+    [[UISegmentedControl appearance] setBackgroundImage:backgroundNormal forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    [[UISegmentedControl appearance] setBackgroundImage:backgroundSelected forState:UIControlStateSelected barMetrics:UIBarMetricsDefault];
+    [[UISegmentedControl appearance] setDividerImage:seperatorImage forLeftSegmentState:UIControlStateNormal rightSegmentState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+}
+
 +(void)customizeButton{
     UIEdgeInsets btnInsets = UIEdgeInsetsMake(4, 5, 4, 5);
     
@@ -69,6 +82,7 @@
 
 +(void)customizeUI{
 //    [self customizeButton];
+    [self customizeSegmentedControl];
     [self customizeBackButton];
     [self customizeBarButton];
     [self customizeNavigationBar];

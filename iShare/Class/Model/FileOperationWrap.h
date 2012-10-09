@@ -11,16 +11,17 @@
 typedef void(^FileOperationCompletionBlock)(BOOL);
 
 typedef enum{
-    FileContentTypeDirectory,
-    FileContentTypeImage,
-    FileContentTypeMovie,
-    FileContentTypeMusic,
-    FileContentTypeText,
-    FileContentTypePDF,
-    FileContentTypeDocument,
-    FileContentTypeCompress,
-    FileContentTypeSourceCode,
-    FileContentTypeOther
+    FileContentTypeDirectory = 1 << 0,
+    FileContentTypeImage = 1 << 1,
+    FileContentTypeMovie = 1 << 2,
+    FileContentTypeMusic = 1 << 3,
+    FileContentTypeText = 1 << 4,
+    FileContentTypePDF = 1 << 5,
+    FileContentTypeDocument = 1 << 6,
+    FileContentTypeCompress = 1 << 7,
+    FileContentTypeSourceCode = 1 << 8,
+    FileContentTypeOther = 1 << 9,
+    FileContentTypeAll = (1 << 10) - 1
 } FileContentType;
 
 @interface FileOperationWrap : NSObject

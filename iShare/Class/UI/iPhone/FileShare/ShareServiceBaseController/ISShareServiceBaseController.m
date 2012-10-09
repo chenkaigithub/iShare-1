@@ -239,7 +239,7 @@
 }
 
 -(void)uploadButtonClicked:(id)sender{
-    FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeFile];
+    FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil filterType:FileContentTypeAll];
     filePicker.delegate = self;
     
     [self presentViewController:filePicker animated:YES completion:NULL];
@@ -307,7 +307,7 @@
 
 -(void)downloadAction:(id)sender{
     //show file picker first
-    FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
+    FilePickerViewController* filePicker = [[FilePickerViewController alloc] initWithFilePath:nil filterType:FileContentTypeDirectory];
     self.selectedIndexPath = [self.tableView indexPathForSelectedRow];
     filePicker.completionBlock = ^(NSArray* selectedFolder){
         [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_startdownloadingfile", nil) maskType:SVProgressHUDMaskTypeClear];

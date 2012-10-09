@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MessageUI/MessageUI.h>
+#import "TableHeaderRefreshView.h"
 #import "ReaderViewController.h"
 #import "QuadCurveMenu.h"
 
@@ -24,6 +25,8 @@
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* deleteButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* duplicateButton;
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* selectAllButton;
+
+@property (nonatomic, strong) TableHeaderRefreshView* refreshView;
 
 -(id)initWithFilePath:(NSString*)filePath;
 

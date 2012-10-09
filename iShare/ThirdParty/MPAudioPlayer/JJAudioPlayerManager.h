@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVFoundation.h>
+#import "MDAudioFile.h"
 
 typedef enum {
     JJAudioPlayerModeSequence = 1,
@@ -19,14 +20,17 @@ typedef enum {
 
 @interface JJAudioPlayerManager : NSObject<AVAudioSessionDelegate>
 
+@property (nonatomic, readonly) NSArray* currentPlayList;
+@property (nonatomic, assign) NSInteger currentIndex;
 @property (nonatomic, assign) JJAudioPlayerMode playerMode;
 
 +(JJAudioPlayerManager*)sharedManager;
 
-+(AVAudioPlayer*)currentPlayer;
-+(NSInteger)currentIndex;
-
--(AVAudioPlayer*)playerWithMusicItems:(NSArray*)musicItems Index:(NSInteger)index;
+-(NSArray*)defaultList;
+-(void)addToDefaultPlayList:(MDAudioFile*)audioFile playNow:(BOOL)playNow;
+-(void)removeAudioFilFromPlayList:(MDAudioFile*)audioFile;
+-(AVAudioPlayer*)currentPlayer;
+-(AVAudioPlayer*)playerForMusicAtIndex:(NSInteger)index inPlayList:(NSArray*)playList;
 -(AVAudioPlayer*)playerForNextMusic;
 -(AVAudioPlayer*)playerForPreviousMusic;
 -(BOOL)canGoNextTrack;

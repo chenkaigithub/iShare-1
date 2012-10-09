@@ -116,7 +116,17 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
     
-//    self.tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
+    self.refreshView = [[[NSBundle mainBundle] loadNibNamed:@"TableHeaderRefreshView" owner:nil options:nil] objectAtIndex:0];
+    self.refreshView.backgroundColor = [UIColor clearColor];
+    self.refreshView.title = NSLocalizedString(@"refresh_title", nil);
+    self.refreshView.readyTitle = NSLocalizedString(@"refresh_readytitle", nil);
+    self.refreshView.refreshTitle = NSLocalizedString(@"refresh_refreshtitle", nil);
+    self.refreshView.textLabel.textColor = [UIColor grayColor];
+    self.refreshView.textLabel.shadowColor = [UIColor whiteColor];
+    self.refreshView.textLabel.shadowOffset = CGSizeMake(0, 1);
+    self.refreshView.textLabel.font = [UIFont boldSystemFontOfSize:14];
+    
+    [self.tableView addSubview:self.refreshView];
 
     self.tableView.dataSource = self.dataSource;
     [self.tableView reloadData];
@@ -153,6 +163,10 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     frame.origin.y = self.view.bounds.size.height - frame.size.height;
     
     self.pathMenu.frame = frame;
+    
+    frame = self.refreshView.frame;
+    frame.origin.y = -frame.size.height;
+    self.refreshView.frame = frame;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -216,16 +230,16 @@ static CGFloat kMessageTransitionDuration = 1.5f;
                 break;
             case FileContentTypeMusic:
             {
-                NSArray* allFiles = [FileOperationWrap allFilesWithFileContentType:FileContentTypeMusic inFolder:self.filePath];
-                NSMutableArray* songs = [NSMutableArray array];
-                [allFiles enumerateObjectsUsingBlock:^(NSString* filePath, NSUInteger idx, BOOL* stop){
-                    [songs addObject:[[MDAudioFile alloc] initWithPath:[NSURL fileURLWithPath:filePath]]];
-                }];
                 
-                MDAudioPlayerController* musicPlayer = [[MDAudioPlayerController alloc] initWithSoundFiles:songs atPath:self.filePath andSelectedIndex:[allFiles indexOfObject:item.filePath]];
-//                [self.navigationController presentModalViewController:musicPlayer animated:YES];
+                MDAudioFile* audioFile = [[MDAudioFile alloc] initWithPath:[NSURL fileURLWithPath:item.filePath]];
+                
+                JJAudioPlayerManager* manager = [JJAudioPlayerManager sharedManager];
+                
+                [manager addToDefaultPlayList:audioFile playNow:YES];
+                
+                MDAudioPlayerController* musicPlayer = [[MDAudioPlayerController alloc] initWithAudioPlayerManager:manager];
+                
                 [self.navigationController pushViewController:musicPlayer animated:YES];
-//                [self presentViewController:musicPlayer animated:YES completion:NULL];
             }
                 break;
             case FileContentTypeText:
@@ -283,8 +297,21 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     if (self.dataSource.menuIsShown){
         [self.dataSource hideMenu];
     }
+    //
+    if (self.tableView.contentOffset.y <  -self.refreshView.frame.size.height){
+        [self.refreshView changeToRefreshStatus:TableHeaderRefreshViewStatusReady];
+    }else{
+        [self.refreshView changeToRefreshStatus:TableHeaderRefreshViewStatusNormal];
+    }
 }
 
+-(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
+    if (self.refreshView.status == TableHeaderRefreshViewStatusReady){
+        //start refresh
+        [self.dataSource refresh];
+        [self.tableView reloadData];
+    }
+}
 
 #pragma mark - button action
 -(IBAction)actionButtonIsClicked:(id)sender{
@@ -311,7 +338,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(IBAction)moveButtonClicked:(id)sender{
-    FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
+    FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil filterType:FileContentTypeDirectory];
     picker.completionBlock = ^(NSArray* selectedPaths){
         NSString* toPath = [selectedPaths lastObject];
         if ([self.filePath isEqualToString:toPath] == NO && toPath.length > 0){
@@ -342,7 +369,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 -(IBAction)duplicateButtonClicked:(id)sender{
-    FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil pickerType:FilePickerTypeDirectory];
+    FilePickerViewController* picker = [[FilePickerViewController alloc] initWithFilePath:nil filterType:FileContentTypeDirectory];
     picker.completionBlock = ^(NSArray* selectedPaths){
         NSString* toPath = [selectedPaths lastObject];
         if ([self.filePath isEqualToString:toPath] == NO && toPath.length > 0){
@@ -690,8 +717,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 
     [self setupDocumentInteractionWithURL:URL];
 
-    UIWindow* window = [UIApplication sharedApplication].keyWindow;
-    BOOL result = [self.documentInteractionController presentOpenInMenuFromRect:window.frame inView:window animated:YES];
+    UIViewController* rootController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    BOOL result = [self.documentInteractionController presentOpenInMenuFromRect:rootController.view.bounds inView:rootController.view animated:YES];
     if (result == NO){
         UIAlertView* alert = [[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"alert_message_nosuitableapp", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil];
         [alert show];
