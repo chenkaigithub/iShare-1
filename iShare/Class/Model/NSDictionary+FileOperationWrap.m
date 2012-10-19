@@ -13,20 +13,24 @@
 -(NSString*)normalizedFileSize{
     double size = [self fileSize];
     if (size <= 999){
-        return [NSString stringWithFormat:@"%.0fB", size];
+        return [NSString stringWithFormat:@"%.0f B", size];
     }else if (size > 999 && size <= 999999){
-        return [NSString stringWithFormat:@"%.1fKB", size/1000];
+        return [NSString stringWithFormat:@"%.1f KB", size/1000];
     }else if (size > 999999 && size <= 999999999){
-        return [NSString stringWithFormat:@"%.2fMB", size/1000000];
+        return [NSString stringWithFormat:@"%.2f MB", size/1000000];
     }else{
-        return [NSString stringWithFormat:@"%.2fGB", size/1000000000];
+        return [NSString stringWithFormat:@"%.2f GB", size/1000000000];
     }
 }
 
 -(NSString*)shortLocalizedModificationDate{
+    return [self modificationDateWithFormate:@"yyyy-MM-dd HH:mm:ss"];
+}
+
+-(NSString*)modificationDateWithFormate:(NSString*)formate{
     NSDate* date = [self fileModificationDate];
     NSDateFormatter* format = [[NSDateFormatter alloc] init];
-    [format setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    [format setDateFormat:formate];
     return [format stringFromDate:date];
 }
 

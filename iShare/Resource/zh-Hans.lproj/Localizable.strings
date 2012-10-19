@@ -17,6 +17,13 @@
 "btn_title_disconnect" = "断开连接";
 "btn_title_unlink" = "注销";
 "btn_title_nowplaying" = "正在播放";
+"btn_title_showimagepicker" = "相簿中的照片";
+"btn_title_showfilepicker" = "本地文件";
+"btn_title_back" = "返回";
+
+"label_title_choosecontent" = "选择你想要分享的内容";
+"label_title_sending" = "发送中";
+"label_title_receiving" = "接收中";
 
 "title_receivedfrombluetooth" = "接收自蓝牙";
 
@@ -26,7 +33,7 @@
 "tab_title_share" = "分享";
 "tab_title_config" = "设置";
 
-"nav_title_connected" = "已连接";
+"nav_title_connectedwith" = "已与%@连接";
 "nav_title_bluetooth" = "蓝牙共享";
 "nav_title_wificontrol" = "HTTP共享";
 

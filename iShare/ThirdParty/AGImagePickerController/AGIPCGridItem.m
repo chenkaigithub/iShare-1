@@ -25,6 +25,8 @@ static NSUInteger numberOfSelectedGridItems = 0;
 
 @implementation AGIPCGridItem
 
+@synthesize asset = _asset;
+
 #pragma mark - Properties
 
 - (void)setSelected:(BOOL)isSelected
@@ -90,11 +92,11 @@ static NSUInteger numberOfSelectedGridItems = 0;
 {
     @synchronized (self)
     {
-        if (asset != theAsset)
+        if (_asset != theAsset)
         {
-            asset = theAsset;
+            _asset = theAsset;
             
-            self.thumbnailImageView.image = [UIImage imageWithCGImage:asset.thumbnail];
+            self.thumbnailImageView.image = [UIImage imageWithCGImage:_asset.thumbnail];
         }
     }
 }
@@ -105,7 +107,7 @@ static NSUInteger numberOfSelectedGridItems = 0;
     
     @synchronized (self)
     {
-        ret = asset;
+        ret = _asset;
     }
     
     return ret;

@@ -54,6 +54,8 @@
 
 #pragma mark - Properties
 
+@synthesize assetsGroup = _assetsGroup;
+
 - (BOOL)toolbarHidden
 {
     return YES;
@@ -68,10 +70,10 @@
 {
     @synchronized (self)
     {
-        if (assetsGroup != theAssetsGroup)
+        if (_assetsGroup != theAssetsGroup)
         {
-            assetsGroup = theAssetsGroup;
-            [assetsGroup setAssetsFilter:[ALAssetsFilter allPhotos]];
+            _assetsGroup = theAssetsGroup;
+            [_assetsGroup setAssetsFilter:[ALAssetsFilter allPhotos]];
 
             [self reloadData];
         }
@@ -84,7 +86,7 @@
     
     @synchronized (self)
     {
-        ret = assetsGroup;
+        ret = _assetsGroup;
     }
     
     return ret;

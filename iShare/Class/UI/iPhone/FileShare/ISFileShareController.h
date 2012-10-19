@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ISFileShareController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface ISFileShareController : UIViewController<UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) IBOutlet UITableView* tableView;
 

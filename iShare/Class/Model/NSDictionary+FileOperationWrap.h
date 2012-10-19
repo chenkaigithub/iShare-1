@@ -12,5 +12,6 @@
 
 -(NSString*)normalizedFileSize;
 -(NSString*)shortLocalizedModificationDate;
+-(NSString*)modificationDateWithFormate:(NSString*)formate;
 
 @end

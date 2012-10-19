@@ -35,7 +35,8 @@
 }
 
 +(void)customizeNavigationBar{
-    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg_title_bar"] forBarMetrics:UIBarMetricsDefault];
+    UIImage* bg = [UIImage imageNamed:@"bg_title_bar"];
+    [[UINavigationBar appearance] setBackgroundImage:bg forBarMetrics:UIBarMetricsDefault];
 }
 
 +(void)customizeTableView{
@@ -78,6 +79,10 @@
     
     [button setBackgroundImage:resizableNormal forState:UIControlStateNormal];
     [button setBackgroundImage:resizablePressed forState:UIControlStateHighlighted];
+    
+    [button setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+    [button setTitleShadowColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    button.titleLabel.shadowOffset = CGSizeMake(0, 1);
 }
 
 +(void)customizeUI{

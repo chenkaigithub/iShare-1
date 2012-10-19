@@ -115,6 +115,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     self.tableView.tableHeaderView = self.tableHeaderView;
     self.tableView.allowsMultipleSelectionDuringEditing = YES;
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 50, 0);
+    self.tableView.rowHeight = 55.0f;
     
     self.refreshView = [[[NSBundle mainBundle] loadNibNamed:@"TableHeaderRefreshView" owner:nil options:nil] objectAtIndex:0];
     self.refreshView.backgroundColor = [UIColor clearColor];
@@ -178,6 +179,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
 }
 
 #pragma mark - tableview delegate
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     [self.searchField resignFirstResponder];
     if (tableView.editing == NO){

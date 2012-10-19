@@ -29,17 +29,10 @@
 @interface AGIPCGridItem : UIView
 {
 	BOOL selected;
-    ALAsset *asset;
-    
-    UIImageView *thumbnailImageView;
-    UIView *selectionView;
-    UIImageView *checkmarkImageView;
-    
-    id<AGIPCGridItemDelegate> delegate;
 }
 
 @property (assign) BOOL selected;
-@property (retain) ALAsset *asset;
+@property (nonatomic, retain) ALAsset *asset;
 
 @property (nonatomic, assign) id<AGIPCGridItemDelegate> delegate;
 

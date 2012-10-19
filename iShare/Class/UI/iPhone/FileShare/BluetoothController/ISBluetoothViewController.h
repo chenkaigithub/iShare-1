@@ -12,11 +12,15 @@
 #import "AGImagePickerController.h"
 #import "FilePickerViewController.h"
 
-@interface ISBluetoothViewController : UIViewController <GKPeerPickerControllerDelegate, JJBTFileSharerDelegate, AGImagePickerControllerDelegate, FilePickerViewControllerDelegate>
+@interface ISBluetoothViewController : UIViewController <GKPeerPickerControllerDelegate, JJBTFileSharerDelegate, AGImagePickerControllerDelegate, FilePickerViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) IBOutlet UIBarButtonItem* disconnectButton;
 @property (nonatomic, strong) IBOutlet UIButton* showImagePickerButton;
 @property (nonatomic, strong) IBOutlet UIButton* showFilePickerButton;
+@property (nonatomic, strong) IBOutlet UILabel* titleLabel;
+
+@property (nonatomic, strong) IBOutlet UITableView* sendingFilesTableView;
+@property (nonatomic, strong) IBOutlet UITableView* receivingFilesTableView;
 
 -(IBAction)disconnectButtonClicked:(id)sender;
 -(IBAction)showImagePickerButtonClicked:(id)sender;

@@ -16,8 +16,6 @@ typedef BOOL (^AGIPCAssetIsSelectedBlock)(NSUInteger index, ALAsset *asset);
 
 @interface AGIPCToolbarItem : NSObject
 {
-    AGIPCAssetIsSelectedBlock assetIsSelectedBlock;
-    UIBarButtonItem *barButtonItem;
 }
 
 @property (retain) UIBarButtonItem *barButtonItem;

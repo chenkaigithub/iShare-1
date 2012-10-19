@@ -96,10 +96,13 @@
     
     cell.textLabel.text = [item.filePath lastPathComponent];
     
-    if ([FileOperationWrap fileTypeWithFilePath:item.filePath] == FileContentTypeDirectory){
+//    if ([FileOperationWrap fileTypeWithFilePath:item.filePath] == FileContentTypeDirectory){
+    if (item.isDirectory){
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        cell.imageView.image = [UIImage imageNamed:@"fileicon_folder"];
     }else{
         cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.imageView.image = nil;
     }
     
     return cell;

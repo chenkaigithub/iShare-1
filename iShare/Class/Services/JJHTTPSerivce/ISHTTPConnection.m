@@ -35,7 +35,8 @@ typedef enum {
 @property (nonatomic, strong) NSMutableData* cacheData;
 
 @property (nonatomic, assign) PostMethodType postType;
-@property (nonatomic, assign) CFWriteStreamRef writeStream;
+//@property (nonatomic, assign) CFWriteStreamRef writeStream;
+@property (nonatomic, retain) NSOutputStream* writeStream;
 
 @end
 
@@ -271,40 +272,25 @@ static NSString* CurrentFilePath = @"";
 #pragma mark - stream methods
 
 -(void)createWriteStreamWithFilePath:(NSString*)filePath{
-    [[self streamLock] lock];
-    if (self.writeStream != NULL){
-        CFRelease(self.writeStream);
-        self.writeStream = NULL;
-    }
     [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
-    CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (__bridge CFStringRef)filePath, kCFURLPOSIXPathStyle, false);
-    self.writeStream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, fileURL);
-    CFWriteStreamOpen(self.writeStream);
-    CFRelease(fileURL);
-    [[self streamLock] unlock];
+    self.writeStream = [NSOutputStream outputStreamToFileAtPath:filePath append:NO];
+    [self.writeStream open];
 }
 
 -(void)writeStreamWithData:(NSData*)data{
     NSUInteger length = [data length];
     UInt8 *buff = (UInt8*)[data bytes];
     
-//    [[self streamLock] lock];
-    
-    CFIndex writeLength = CFWriteStreamWrite(self.writeStream, buff, length);
+    NSInteger writeLength = [self.writeStream write:buff maxLength:length];
     if (writeLength < 0){
-        CFStreamError error = CFWriteStreamGetError(self.writeStream);
+        NSError* error = [self.writeStream streamError];
         //report error
     }
-    
-//    [[self streamLock] unlock];
 }
 
 -(void)closeStream{
-    [[self streamLock] lock];
-    CFWriteStreamClose(self.writeStream);
-    CFRelease(self.writeStream);
-    self.writeStream = NULL;
-    [[self streamLock] unlock];
+    [self.writeStream close];
+    self.writeStream = nil;
 }
 
 -(NSLock*)streamLock{

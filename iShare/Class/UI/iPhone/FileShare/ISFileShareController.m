@@ -25,6 +25,8 @@
 
 @interface ISFileShareController ()
 
+@property (nonatomic, strong) UIImage* navBg;
+
 @end
 
 @implementation ISFileShareController
@@ -66,10 +68,29 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+    
+    self.navigationController.delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [self.tableView reloadData];
+}
+
+#pragma mark - navigation controller delegate
+-(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    if ([viewController isKindOfClass:[ISBluetoothViewController class]]){
+        self.navBg = [navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
+        [navigationController.navigationBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
+        navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+    }
+}
+
+-(void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
+    if ([viewController isKindOfClass:[ISBluetoothViewController class]] == NO){
+        if (self.navBg){
+            [navigationController.navigationBar setBackgroundImage:self.navBg forBarMetrics:UIBarMetricsDefault];
+        }
+    }
 }
 
 #pragma mark - tableview delegate
@@ -185,11 +206,13 @@
     
     if (cell == nil){
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentitier];
+        cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
     }
     
     cell.accessoryView = nil;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.detailTextLabel.text = nil;
+    cell.imageView.image = nil;
     
     switch (indexPath.section) {
         case kLocalShareSection:
@@ -202,6 +225,7 @@
                     wifiSwitch.on = [JJHTTPSerivce isServiceRunning];
                     cell.textLabel.text = NSLocalizedString(@"cell_title_wifishare", nil);
                     cell.accessoryView = wifiSwitch;
+                    cell.imageView.image = [UIImage imageNamed:@"wifi"];
                     if ([JJHTTPSerivce isServiceRunning]){
                         cell.detailTextLabel.text = [[JJHTTPSerivce sharedSerivce] fullURLString];
                     }
@@ -217,6 +241,7 @@
                     NSString* peerName = [[JJBTFileSharer defaultSharer] nameOfPair];
                     cell.detailTextLabel.text = (peerName.length > 0)?peerName:NSLocalizedString(@"cell_title_notconnected", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    cell.imageView.image = [UIImage imageNamed:@"bluetooth"];
                 }
                     break;
                 default:
@@ -228,10 +253,12 @@
             switch (indexPath.row) {
                 case 0:
                     cell.textLabel.text = @"iCloud";
+                    cell.imageView.image = [UIImage imageNamed:@"icloud"];
                     break;
                 case 1:
                 {
                     cell.textLabel.text = @"Dropbox";
+                    cell.imageView.image = [UIImage imageNamed:@"dropbox"];
                     if ([[DBSession sharedSession] isLinked]){
                         //add unlink button
                         cell.accessoryView = self.unlinkButton;

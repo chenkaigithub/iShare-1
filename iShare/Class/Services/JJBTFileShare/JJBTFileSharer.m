@@ -7,7 +7,13 @@
 //
 
 #import "JJBTFileSharer.h"
+#import "JJBTFileSender.h"
+#import "JJBTPhotoSender.h"
+#import "FileItem.h"
 #import "FileOperationWrap.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+
+#define BundleHeadListSeperator @"&&&&"
 
 typedef enum {
     PackageTypeStart,
@@ -15,11 +21,13 @@ typedef enum {
     PackageTypeData
 } PackageType;
 
-@interface JJBTFileSharer ()
+@interface JJBTFileSharer (){
+    JJBTFileSharerStatus _status;
+}
 
 @property (nonatomic, strong) GKSession* session;
-@property (nonatomic, copy) NSString* storePath;
-@property (nonatomic, assign) CFWriteStreamRef currentWriteStream;
+@property (nonatomic, readonly) NSString* storePath;
+@property (nonatomic, strong) NSOutputStream* writeStream;
 
 @property (nonatomic, retain) NSOperationQueue* sendingQueue;
 
@@ -27,13 +35,12 @@ typedef enum {
 
 @implementation JJBTFileSharer
 
-static NSInteger BufferLength = 4096;//limit is 4k
-
 -(id)init{
     self = [super init];
     if (self){
         self.sendingQueue = [[NSOperationQueue alloc] init];
         self.sendingQueue.maxConcurrentOperationCount = 1;
+        [self.sendingQueue addObserver:self forKeyPath:@"operationCount" options:NSKeyValueObservingOptionOld context:nil];
     }
     
     return self;
@@ -53,6 +60,7 @@ static NSInteger BufferLength = 4096;//limit is 4k
     JJBTFileSharer* sharer = [self defaultSharer];
     session.delegate = sharer;
     sharer.session = session;
+    [sharer.session setDataReceiveHandler:sharer withContext:NULL];
 }
 
 -(NSString*)nameOfPair{
@@ -60,16 +68,20 @@ static NSInteger BufferLength = 4096;//limit is 4k
     return [self.session displayNameForPeer:[peers lastObject]];
 }
 
--(void)setStoreFolder:(NSString*)folderPath{
-    if (folderPath.length == 0){
-        folderPath = [[FileOperationWrap homePath] stringByAppendingPathComponent:NSLocalizedString(@"title_receivedfrombluetooth", nil)];
-    }
-    
-    self.storePath = folderPath;
+-(BOOL)isConnected{
+    return [self nameOfPair].length > 0;
+}
+
+-(NSString*)storePath{
+    return [[FileOperationWrap homePath] stringByAppendingPathComponent:NSLocalizedString(@"title_receivedfrombluetooth", nil)];
 }
 
 -(void)cancelSending{
     [self.sendingQueue cancelAllOperations];
+}
+
+-(void)cancelReceiving{
+    
 }
 
 -(void)endSession{
@@ -78,158 +90,251 @@ static NSInteger BufferLength = 4096;//limit is 4k
 }
 
 -(void)sendFiles:(NSArray*)files{
-    _currentTransferingFiles = files;
+    _status = JJBTFileSharerStatusSending;
     
-    [self.delegate sharer:self willSendingFiles:files];
-    [self.session setDataReceiveHandler:self withContext:NULL];
+    //send bundle head
+    NSMutableArray* filePaths = [NSMutableArray array];
+    [files enumerateObjectsUsingBlock:^(FileItem* file, NSUInteger idx, BOOL* stop){
+        NSString* filename = [file.filePath lastPathComponent];
+        NSString* size = [NSString stringWithFormat:@"%lld", [file.attributes fileSize]];
+        [filePaths addObject:@{@"filename" : filename, @"size":size}];
+    }];
+    [self sendBundleHeadWithType:BTSenderTypeFile list:filePaths];
+    
     
     //tell that will send bunch of files
-    
-    [files enumerateObjectsUsingBlock:^(NSString* file, NSUInteger idx, BOOL* stop){
-        NSInvocationOperation* sendOperation = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(sendFile:) object:file];
-        [self.sendingQueue addOperation:sendOperation];
+    [files enumerateObjectsUsingBlock:^(FileItem* file, NSUInteger idx, BOOL* stop){
+        JJBTFileSender* fileSender = [[JJBTFileSender alloc] init];
+        fileSender.delegate = self;
+        fileSender.session = self.session;
+        fileSender.sendingObj = file.filePath;
+        [self.sendingQueue addOperation:fileSender];
     }];
-
     
 }
 
--(void)sendFile:(NSString*)file{
-    _currentTransferingFile = file;
-    [self.delegate sharer:self willStartSendingFile:file];
-    //每个数据包之前有2位的长度:
-    //00 文件开始传输，后跟文件名
-    //11 文件结束传输
-    //01 文件内容块，后跟文件名
-    NSInteger codeLenth = 2;
-//send header
-    UInt8 header[BufferLength];
-    [self constructPackage:header withType:PackageTypeStart bytes:[file cStringUsingEncoding:NSUTF8StringEncoding] length:[file lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
-    [self sendDataInBuffer:header length:[file lengthOfBytesUsingEncoding:NSUTF8StringEncoding] + codeLenth error:NULL];
-//prepare reading stream
-    CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (__bridge CFStringRef)file, kCFURLPOSIXPathStyle, false);
-    CFReadStreamRef myReadStream = CFReadStreamCreateWithFile(kCFAllocatorDefault, fileURL);
-    CFRelease(fileURL);
-    
-    //assume it won't fail
-    CFReadStreamOpen(myReadStream);
-    
-    CFIndex numBytesRead;
-    
-    do {
-
-        UInt8 buf[BufferLength]; // define myReadBufferSize as desired
-        buf[0] = 0;
-        buf[1] = 1;
-        numBytesRead = CFReadStreamRead(myReadStream, buf+codeLenth, sizeof(buf) - codeLenth);
-        if( numBytesRead > 0 ) {
-            NSError* error;
-            if ([self sendDataInBuffer:buf length:numBytesRead+codeLenth error:&error] == NO){
-                //error happend
-                if (error){
-#pragma mark - add error handler code
-                    break;
-                    CFReadStreamClose(myReadStream);
-                    CFRelease(myReadStream);
-                    myReadStream = NULL;
-                }
-            };
-        } else if( numBytesRead < 0 ) {
-            //error happened
-            CFStreamError error = CFReadStreamGetError(myReadStream);
-//            reportError(error);
-        }
-        //wait a little while
-        [NSThread sleepForTimeInterval:0.01];
-    } while( numBytesRead > 0 );
-    CFReadStreamClose(myReadStream);
-    CFRelease(myReadStream);
-    myReadStream = NULL;
-    
-//send tail
-    UInt8 tail[BufferLength];
-    [self constructPackage:tail withType:PackageTypeEnd bytes:[file cStringUsingEncoding:NSUTF8StringEncoding] length:[file lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
-    [self sendDataInBuffer:tail length:[file lengthOfBytesUsingEncoding:NSUTF8StringEncoding] + codeLenth error:NULL];
-    
-    [self.delegate sharer:self finishedSendingFile:file];
-}
-
--(void)constructPackage:(UInt8*)package withType:(PackageType)type bytes:(const void *)bytes length:(NSUInteger)length{
-    
-    memset(package, 0, BufferLength);
-    
-    switch (type) {
-        case PackageTypeData:
-            package[0] = 0;
-            package[1] = 1;
-            break;
-        case PackageTypeEnd:
-            package[0] = 1;
-            package[1] = 1;
-            break;
-        case PackageTypeStart:
-            package[0] = 0;
-            package[1] = 0;
-            break;
-        default:
-            break;
-    }
-    
-    if (length > 0){
-        memcpy(package+2, bytes, length);
-    }
-}
-
--(BOOL)sendDataInBuffer:(UInt8*)buffer length:(NSUInteger)length error:(NSError **)error;{
-    NSData* data = [NSData dataWithBytes:buffer length:length];
-    return [self.session sendDataToAllPeers:data withDataMode:GKSendDataReliable error:error];
+-(NSArray*)allSenders{
+    return [self.sendingQueue operations];
 }
 
 - (void) receiveData:(NSData *)data fromPeer:(NSString *)peer inSession: (GKSession *)session context:(void *)context{
     //data receiveing handler
     //check package head
+    DebugLog(@"reveiving data");
+    
     NSUInteger length = [data length];
-    UInt8 *buff = (UInt8*)[data bytes]; 
-    
-    if (buff[0] == 0 && buff[1] == 0){
-        //start
-        NSString* orignalFilename = [NSString stringWithCString:(const void*)(buff+2) encoding:NSUTF8StringEncoding];
-        _currentTransferingFile = orignalFilename;
-    
-        [self.delegate sharer:self willStartReceivingFile:orignalFilename];
-        NSString* destFilename = [FileOperationWrap validFilePathForFilename:[orignalFilename lastPathComponent] atPath:self.storePath];
-        CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (__bridge CFStringRef)destFilename, kCFURLPOSIXPathStyle, false);
-        self.currentWriteStream = CFWriteStreamCreateWithFile(kCFAllocatorDefault, fileURL);
-        CFRelease(fileURL);
-        //create a write stream
-    }else if (buff[0] == 1 && buff[1] == 1){
-        //end
-        //close the write stream
-        CFWriteStreamClose(self.currentWriteStream);
-        CFRelease(self.currentWriteStream);
-        self.currentWriteStream = NULL;
-        NSString* orignalFilename = [NSString stringWithCString:(const void*)(buff+2) encoding:NSUTF8StringEncoding];
+    UInt8 *buff = (UInt8*)[data bytes];
 
-        _currentTransferingFile = nil;
-        [self.delegate sharer:self finishedReceivingFile:orignalFilename savingPath:nil];
-        
-    }else if (buff[0] == 0 && buff[1] == 1){
-        //data
-        //write data
-        if (CFWriteStreamWrite(self.currentWriteStream, buff + 2, length - 2) == -1){
-            //error happened
-        };
+    NSData* contentData = [NSData dataWithBytes:buff+BTBlockHeadSize length:length-BTBlockHeadSize];
+    
+    switch (buff[0]) {
+        case BTTransitionBlockTypeHead:
+            [self startReceiving:contentData];
+            break;
+        case BTTransitionBlockTypeTail:
+            [self finishedReceiving:contentData];
+            break;
+        case BTTransitionBlockTypeBody:
+            [self receivedData:contentData];
+            break;
+        case BTTransitionBlockTypeError:
+            [self receivingErrorHappened:contentData];
+            break;
+        case BTTransitionBlockTypeBundleHead:
+            [self receivedBundleHead:contentData];
+            break;
+        case BTTransitionBlockTypeBundleTail:
+            [self receivedBundleTail:contentData];
+            break;
+        default:
+            break;
     }
+}
+
+-(void)cancelAllTransitions{
+    [self cancelSending];
+    [self cancelReceiving];
+}
+
+#pragma mark - content receiving handler
+-(void)receivedBundleHead:(NSData*)bundleHead{
+    NSDictionary* bundleContent = [NSJSONSerialization JSONObjectWithData:bundleHead options:NSJSONReadingAllowFragments error:NULL];
+    
+    if ([self.delegate respondsToSelector:@selector(sharerDidStartReceiving:headContent:)]){
+        [self.delegate sharerDidStartReceiving:self headContent:bundleContent];
+    }
+}
+
+-(void)receivedBundleTail:(NSData*)bundleTail{
+    if ([self.delegate respondsToSelector:@selector(sharerDidEndReceiving:)]){
+        [self.delegate sharerDidEndReceiving:self];
+    }
+}
+
+-(void)startReceiving:(NSData*)head{
+    NSDictionary* headContent = [NSJSONSerialization JSONObjectWithData:head options:NSJSONReadingAllowFragments error:NULL];
+
+    BTSenderType type = [[headContent objectForKey:@"type"] intValue];
+    NSString* name = [headContent objectForKey:@"name"];
+//    long long size = [[headContent objectForKey:@"size"] longLongValue];
+    
+    switch (type) {
+        case BTSenderTypeFile:
+            [self startReceivingFile:name];
+            break;
+        case BTSenderTypePhoto:
+            break;
+        case BTSenderTypeUnknown:
+            break;
+        default:
+            break;
+    }
+}
+
+-(void)finishedReceiving:(NSData*)tail{
+    [self.writeStream close];
+    [self photoReceivingFinished];
+}
+
+-(void)receivedData:(NSData*)data{
+    dispatch_async(dispatch_get_current_queue(), ^{
+        [self.writeStream write:[data bytes] maxLength:[data length]];
+    });
+}
+
+-(void)receivingErrorHappened:(NSData*)data{
+    [self.writeStream close];
+}
+
+#pragma mark - receiving file
+-(void)startReceivingFile:(NSString*)name{
+    NSString* filePath = [FileOperationWrap validFilePathForFilename:name atPath:self.storePath];
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:self.storePath] == NO){
+        [[NSFileManager defaultManager] createDirectoryAtPath:self.storePath withIntermediateDirectories:NO attributes:nil error:NULL];
+    }
+    
+    [[NSFileManager defaultManager] createFileAtPath:filePath contents:nil attributes:nil];
+    
+    self.writeStream = [NSOutputStream outputStreamToFileAtPath:filePath append:NO];
+    [self.writeStream open];
+}
+
+#pragma mark - receiving photo
+-(void)photoReceivingFinished{
+    //save photo to album
+}
+
+#pragma mark - send photos
+-(void)sendPhotos:(NSArray*)photos{
+    //send photots
+    [photos enumerateObjectsUsingBlock:^(ALAsset* asset, NSUInteger idx, BOOL* stop){
+        JJBTPhotoSender* photoSender = [[JJBTPhotoSender alloc] init];
+        photoSender.sendingObj = asset;
+    }];
 }
 
 #pragma mark - gk session delegate
 -(void)session:(GKSession *)session peer:(NSString *)peerID didChangeState:(GKPeerConnectionState)state{
-    if ([[self.session peersWithConnectionState:GKPeerStateConnected] count] == 0){
+    if ([[self.session peersWithConnectionState:GKPeerStateConnected] count] == 0 && state == GKPeerStateDisconnected){
+        //cancel all trancision tasks
+        [self cancelAllTransitions];
+        //tell delegate that i'm failed
         [self.delegate sharerIsDisconnectedWithPair:self];
     }
 }
 
 -(void)session:(GKSession *)session didFailWithError:(NSError *)error{
+    [self cancelAllTransitions];
     [self.delegate sharerIsDisconnectedWithPair:self];
+}
+
+#pragma mark - BT sender delegate
+-(void)btSenderStartedSending:(JJBTSender*)sender{
+    DebugLog(@"staring sending");
+}
+
+-(void)btSender:(JJBTSender*)sender finishedBytes:(long long)finishedBytes{
+    DebugLog(@"finished bytes %lld", finishedBytes);
+    if ([self.delegate respondsToSelector:@selector(sharer:didReceiveBytes:ofFile:)]){
+//        self.delegate sharer:self didReceivePersentage:<#(CGFloat)#> ofFile:sender.sending
+    }
+}
+
+-(void)btSenderFinishedSending:(JJBTSender*)sender{
+    DebugLog(@"finished sending sender %@", [sender description]);
+    [self updateSharerStatus];
+}
+
+-(void)btSenderCancelledSending:(JJBTSender*)sender{
+    DebugLog(@"cancelled sending sender %@", [sender description]);
+    [self updateSharerStatus];
+}
+
+-(void)btSender:(JJBTSender *)sender failedWithError:(NSError*)error{
+    DebugLog(@"failed sending sender %@ with error %@", [sender description], [error localizedDescription]);
+    [self updateSharerStatus];
+}
+
+#pragma mark - status
+-(JJBTFileSharerStatus)status{
+    return _status;
+}
+
+-(void)updateSharerStatus{
+    if ([self.sendingQueue operationCount] <= 1){
+        _status = JJBTFileSharerStatusStandBy;
+    }
+}
+
+-(NSInteger)countOfSendingFiles{
+    return [self.sendingQueue operationCount];
+}
+
+-(NSInteger)countOfReceivingFiles{
+    return 0;
+}
+
+#pragma mark - key value observer
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context{
+    if (object == self.sendingQueue && [keyPath isEqualToString:@"operationCount"]){
+        NSInteger newCount = [self.sendingQueue operationCount];
+        NSInteger oldCount = [[change objectForKey:NSKeyValueChangeOldKey] intValue];
+        if (newCount > 0 && oldCount == 0){
+            //start sending
+            if ([self.delegate respondsToSelector:@selector(sharerDidStartSending:)]){
+                [self.delegate sharerDidStartSending:self];
+            }
+        }else if (oldCount > 0 && newCount == 0){
+            //end sending
+            if ([self.delegate respondsToSelector:@selector(sharerDidEndSending:)]){
+                [self.delegate sharerDidEndSending:self];
+            }
+            
+            [self sendBundleTailWithType:BTTransitionBlockTypeBundleTail];
+        }
+    }
+}
+
+#pragma mark - send bunch head
+-(void)sendBundleHeadWithType:(BTTransitionBlockType)type list:(NSArray*)list{
+    
+    NSDictionary* headContent = @{@"type" : [NSString stringWithFormat:@"%d", type], @"list":list};
+    
+    NSData* contentData = [NSJSONSerialization dataWithJSONObject:headContent options:NSJSONReadingAllowFragments error:NULL];
+    
+    JJBTSender* sender = [[JJBTSender alloc] init];
+    
+    NSData* sendBlock = [sender blockWithType:BTTransitionBlockTypeBundleHead data:contentData];
+    
+    [self.session sendDataToAllPeers:sendBlock withDataMode:GKSendDataReliable error:NULL];
+}
+
+-(void)sendBundleTailWithType:(BTTransitionBlockType)type{
+    JJBTSender* sender = [[JJBTSender alloc] init];
+    NSData* sendBlock = [sender blockWithType:BTTransitionBlockTypeBundleTail data:[NSData data]];
+    
+    [self.session sendDataToAllPeers:sendBlock withDataMode:GKSendDataReliable error:NULL];
 }
 
 @end

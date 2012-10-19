@@ -16,10 +16,7 @@
 
 @interface AGIPCAssetsController : UIViewController<UITableViewDataSource, UITableViewDelegate, AGIPCGridItemDelegate>
 {
-    UITableView *tableView;
-    ALAssetsGroup *assetsGroup;
-    
-    NSMutableArray *assets;
+
 }
 
 @property (retain) ALAssetsGroup *assetsGroup;

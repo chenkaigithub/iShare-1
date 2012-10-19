@@ -104,12 +104,43 @@
 }
 
 +(UIImage*)thumbnailForFile:(NSString*)filePath previewEnabled:(BOOL)previewEnabled{
-    if (previewEnabled){
-        
-        return nil;
+
+    NSString* namePreview = @"fileicon_";
+    UIImage* thumbnail = nil;
+    
+    FileContentType type = [self fileTypeWithFilePath:filePath];
+    NSString* ext = [[filePath pathExtension] lowercaseString];
+    if (type == FileContentTypeDirectory){
+        thumbnail = [UIImage imageNamed:@"fileicon_folder"];
     }else{
-        return nil;
+        UIImage* image = [UIImage imageNamed:[namePreview stringByAppendingString:ext]];
+        if (image == nil){
+            switch (type) {
+                case FileContentTypeCompress:
+                    image = [UIImage imageNamed:@"fileicon_compressed"];
+                    break;
+                case FileContentTypeImage:
+                    image = [UIImage imageNamed:@"fileicon_image"];
+                    break;
+                case FileContentTypeMovie:
+                    image = [UIImage imageNamed:@"fileicon_movie"];
+                    break;
+                case FileContentTypeMusic:
+                    image = [UIImage imageNamed:@"fileicon_music"];
+                    break;
+                case FileContentTypeText:
+                    image = [UIImage imageNamed:@"fileicon_txt"];
+                    break;
+                default:
+                    image = [UIImage imageNamed:@"fileicon_bg"];
+                    break;
+            }
+        }
+        
+        thumbnail = image;
     }
+    
+    return thumbnail;
 }
 
 +(NSString*)validFilePathForFilename:(NSString*)filename atPath:(NSString*)path{
@@ -187,8 +218,8 @@
         return FileContentTypeText;
     }
     
-    if (UTTypeConformsTo((__bridge CFStringRef)(document.fileType), (CFStringRef)kUTTypeDirectory)){
-        return FileContentTypeDirectory;
+    if (UTTypeConformsTo((__bridge CFStringRef)(document.fileType), (CFStringRef)kUTTypeInkText)){
+        return FileContentTypeDocument;
     }
     
     if (UTTypeConformsTo((__bridge CFStringRef)(document.fileType), (CFStringRef)@"com.pkware.zip-archive")){

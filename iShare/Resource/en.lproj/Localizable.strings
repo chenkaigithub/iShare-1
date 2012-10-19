@@ -17,6 +17,13 @@
 "btn_title_disconnect" = "Disconect";
 "btn_title_unlink" = "Unlink";
 "btn_title_nowplaying" = "Now playing";
+"btn_title_showimagepicker" = "Photos in album";
+"btn_title_showfilepicker" = "Local files";
+"btn_title_back" = "Back";
+
+"label_title_choosecontent" = "Choose content that you want to share";
+"label_title_sending" = "Sending";
+"label_title_receiving" = "Receiving";
 
 "title_receivedfrombluetooth" = "Received from Bluetooth";
 
@@ -26,7 +33,7 @@
 "tab_title_share" = "Share";
 "tab_title_config" = "Config";
 
-"nav_title_connected" = "Connected";
+"nav_title_connectedwith" = "Connected with %@";
 "nav_title_bluetooth" = "Bluetooth share";
 "nav_title_wificontrol" = "HTTP Share";
 

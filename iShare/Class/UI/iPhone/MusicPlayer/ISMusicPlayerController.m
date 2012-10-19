@@ -188,7 +188,7 @@
         
         cell.textLabel.text = [audioFile title];
         cell.detailTextLabel.text = [audioFile artist];
-//        cell.imageView.image = [audioFile coverImage];
+        cell.imageView.image = [audioFile coverImage];
         
         return cell;
     }

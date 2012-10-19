@@ -8,29 +8,32 @@
 
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
+#import "JJBTSender.h"
 
 typedef enum {
-    JJBTFileSharerStatusConnected,
+    JJBTFileSharerStatusStandBy,
     JJBTFileSharerStatusSending,
-    JJBTFileSharerStatusReceiving,
-    JJBTFileSharerStatusNotConnected
+    JJBTFileSharerStatusReceiving
 } JJBTFileSharerStatus;
 
 @class JJBTFileSharer;
 
-@protocol JJBTFileSharerDelegate
+@protocol JJBTFileSharerDelegate <NSObject>
 
 //配对失败
 //-(void)sharerPairFailed:(JJBTFileSharer*)sharer withError:(NSError*)error;
 //配对成功
 //-(void)sharerPairSucceeded:(JJBTFileSharer*)sharer;
 //文件发送状态
--(void)sharer:(JJBTFileSharer*)sharer willSendingFiles:(NSArray*)files;
--(void)sharer:(JJBTFileSharer*)sharer willReceiveFiles:(NSArray*)files;
+-(void)sharerDidStartSending:(JJBTFileSharer*)sharer;
+-(void)sharerDidEndSending:(JJBTFileSharer*)sharer;
+-(void)sharerDidStartReceiving:(JJBTFileSharer*)sharer headContent:(NSDictionary*)headContent;
+-(void)sharerDidEndReceiving:(JJBTFileSharer*)sharer;
+
 -(void)sharer:(JJBTFileSharer*)sharer willStartSendingFile:(NSString*)filePath;
 -(void)sharer:(JJBTFileSharer*)sharer willStartReceivingFile:(NSString*)filePath;
--(void)sharer:(JJBTFileSharer*)sharer didSendPersentage:(CGFloat)persentage ofFile:(NSString*)filePath;
--(void)sharer:(JJBTFileSharer *)sharer didReceivePersentage:(CGFloat)persentage ofFile:(NSString *)filePath;
+-(void)sharer:(JJBTFileSharer*)sharer didSendBytes:(long long)bytes ofFile:(NSString*)filePath;
+-(void)sharer:(JJBTFileSharer *)sharer didReceiveBytes:(long long)bytes ofFile:(NSString *)filePath;
 -(void)sharer:(JJBTFileSharer*)sharer finishedSendingFile:(NSString*)filePath;
 -(void)sharer:(JJBTFileSharer*)sharer finishedReceivingFile:(NSString*)filePath savingPath:(NSString*)savingPath;
 
@@ -41,7 +44,7 @@ typedef enum {
 
 @end
 
-@interface JJBTFileSharer : NSObject<GKSessionDelegate>
+@interface JJBTFileSharer : NSObject<GKSessionDelegate, JJBTSenderDelegate>
 
 @property (nonatomic, weak) id<JJBTFileSharerDelegate> delegate;
 @property (nonatomic, readonly) JJBTFileSharerStatus status;
@@ -51,16 +54,19 @@ typedef enum {
 +(id)defaultSharer;
 +(void)setDefaultGKSession:(GKSession*)session;
 
--(void)setStoreFolder:(NSString*)folderPath;
+-(NSArray*)allSenders;
+
 -(BOOL)isConnected;
 -(NSString*)nameOfPair;
-//双方握手确定协议 -- not necessary
 //-(void)shakingHands;
 -(void)sendFiles:(NSArray*)files;
+-(void)sendPhotos:(NSArray*)photos;
 
 -(void)cancelSending;
 -(void)endSession;
 //
-
+-(JJBTFileSharerStatus)status;
+-(NSInteger)countOfSendingFiles;
+-(NSInteger)countOfReceivingFiles;
 
 @end

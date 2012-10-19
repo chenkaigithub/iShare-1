@@ -11,4 +11,6 @@
 
 @interface ISFileBrowserCell : UITableViewCell<ISFileBrowserCellInterface>
 
+@property (nonatomic, strong) IBOutlet UILabel* sizeLabel;
+
 @end
