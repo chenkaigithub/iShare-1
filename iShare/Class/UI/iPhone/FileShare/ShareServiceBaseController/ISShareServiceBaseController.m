@@ -41,7 +41,7 @@
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     
     self.addDirectoryButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addDirectoryButtonClicked:)];
-    self.uploadButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(uploadButtonClicked:)];
+    self.uploadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon_upload"] style:UIBarButtonItemStylePlain target:self action:@selector(uploadButtonClicked:)];
 }
 
 - (void)viewDidLoad
@@ -252,6 +252,7 @@
 
 -(void)filePicker:(FilePickerViewController *)filePicker finishedWithPickedPaths:(NSArray *)pickedPaths{
     [SVProgressHUD showWithStatus:NSLocalizedString(@"progress_message_uploadingfiles", nil) maskType:SVProgressHUDMaskTypeClear];
+    [filePicker dismissViewControllerAnimated:YES completion:NULL];
     [self uploadSelectedFiles:pickedPaths];
 }
 

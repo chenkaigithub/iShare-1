@@ -36,6 +36,7 @@
 "nav_title_connectedwith" = "已与%@连接";
 "nav_title_bluetooth" = "蓝牙共享";
 "nav_title_wificontrol" = "HTTP共享";
+"nav_title_passcodesetting" = "密码保护";
 
 "alert_message_filealreadyexists" = "同名文件已存在，想要覆盖它吗？";
 "alert_title_inputdirectoryname" = "请输入新文件夹的名字";
@@ -90,6 +91,9 @@
 "progress_message_downloadfailed" = "文件下载失败";
 "progress_message_noicloudsetup" = "这台设备上没有iCloud支持";
 "progress_message_dropboxunlinked" = "Dropbox已解除绑定";
+"progress_message_passcodeisenabled" = "密码已启用";
+"progress_message_passcodeischanged" = "密码已修改";
+"progress_message_passcodeisdisabled" = "密码已禁用";
 
 "section_title_localshare" = "本地分享";
 "section_title_cloudstorageservice" = "云存储服务";
@@ -111,10 +115,14 @@
 "cell_title_addsong" = "轻触此处添加歌曲";
 "cell_title_removefromplaylist" = "移除";
 
+"cell_title_disablepasscode" = "关闭密码保护";
+"cell_title_enablepasscode" = "启用密码保护";
+"cell_title_changepasscode" = "更改密码";
+
 "config_title_appearence" = "外观";
 "config_title_enableThumbnail" = "启用缩略图";
 "config_title_security" = "安全性";
-"config_title_enablepassword" = "启动密码";
+"config_title_enablepassword" = "密码保护";
 "config_title_rememberwifishare" = "记住WIFI共享状态";
 
 "search_placeholder" = "搜索";

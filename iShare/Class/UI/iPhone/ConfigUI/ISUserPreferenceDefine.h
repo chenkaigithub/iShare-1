@@ -22,7 +22,9 @@
 +(NSUInteger)httpSharePort;
 +(void)setHttpSharePort:(NSUInteger)port;
 +(void)setHttpShareStarted:(BOOL)started;
-
 +(BOOL)shouldAutoStartHTTPShare;
++(BOOL)passcodeEnabled;
++(NSString*)passcode;
++(void)setPasscode:(NSString*)passcode;
 
 @end

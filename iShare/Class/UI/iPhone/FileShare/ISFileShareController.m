@@ -38,7 +38,7 @@
         // Custom initialization
         self.title = NSLocalizedString(@"tab_title_share", nil);
         self.tabBarItem.title = NSLocalizedString(@"tab_title_share", nil);
-        self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_profile"];
+        self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_share"];
     }
     return self;
 }
@@ -67,12 +67,15 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
     
     self.navigationController.delegate = self;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault animated:NO];
     [self.tableView reloadData];
 }
 

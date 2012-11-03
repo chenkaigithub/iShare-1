@@ -24,13 +24,13 @@
 		<array>
 			<dict>
 				<key>identifier</key>
-				<string>enablePasswordProtection</string>
+				<string>passcodeEnabled</string>
 				<key>name</key>
 				<string>config_title_enablepassword</string>
 				<key>type</key>
 				<string>more</string>
 				<key>next</key>
-				<string>ISPasswordViewController</string>
+				<string>ISPasscodeProtectionController</string>
 			</dict>
 			<dict>
 				<key>identifier</key>

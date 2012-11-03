@@ -36,6 +36,7 @@
 "nav_title_connectedwith" = "Connected with %@";
 "nav_title_bluetooth" = "Bluetooth share";
 "nav_title_wificontrol" = "HTTP Share";
+"nav_title_passcodesetting" = "Passcode protection";
 
 "alert_title_inputdirectoryname" = "Please input name of new folder";
 "alert_title_inputtextfilename" = "Please input name of new text file";
@@ -90,6 +91,9 @@
 "progress_message_downloadfinished" = "File donwloading finished";
 "progress_message_noicloudsetup" = "No iCloud support in this device";
 "progress_message_dropboxunlinked" = "Dropbox is unlinked";
+"progress_message_passcodeisenabled" = "Passcode is enabled";
+"progress_message_passcodeischanged" = "Passcode is changed";
+"progress_message_passcodeisdisabled" = "Passcode is disabled";
 
 "section_title_localshare" = "Local Share";
 "section_title_cloudstorageservice" = "Cloud Storage Services";
@@ -112,11 +116,15 @@
 "cell_title_addsong" = "Tap here to add songs";
 "cell_title_removefromplaylist" = "Remove";
 
+"cell_title_disablepasscode" = "Disable passcode";
+"cell_title_enablepasscode" = "Enable passcode";
+"cell_title_changepasscode" = "Change passcode";
+
 "config_title_appearence" = "Appearence";
 "config_title_enableThumbnail" = "Enable thumbnail";
 "config_title_security" = "Security";
-"config_title_enablepassword" = "Login password";
-"config_title_rememberwifishare" = "Remember status of Wifi share";
+"config_title_enablepassword" = "Passcode protection";
+"config_title_rememberwifishare" = "Remember status of WIFI share";
 
 "search_placeholder" = "Search";
 

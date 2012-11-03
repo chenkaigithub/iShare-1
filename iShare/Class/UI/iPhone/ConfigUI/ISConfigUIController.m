@@ -21,7 +21,7 @@
         // Custom initialization
         self.title = NSLocalizedString(@"tab_title_config", nil);
         self.tabBarItem.title = NSLocalizedString(@"tab_title_config", nil);
-        self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_profile"];
+        self.tabBarItem.image = [UIImage imageNamed:@"ic_tab_config"];
     }
     return self;
 }

@@ -15,8 +15,18 @@
 #define kHTTPShareUsername @"httpShareUsername"
 #define kHTTPSharePassword @"httpSharePassword"
 #define kHTTPSharePort @"httpSharePort"
+#define kPasscodeEnabled @"passcodeEnabled"
+#define kEnteredPasscode @"enteredPasscode"
 
 @implementation ISUserPreferenceDefine
+
++(NSString*)passcode{
+    return [self valueForIdentifier:kEnteredPasscode];
+}
+
++(void)setPasscode:(NSString*)passcode{
+    [self valueChangedForIdentifier:kEnteredPasscode value:passcode];
+}
 
 +(BOOL)enableThumbnail{
     return [self boolValueForIdentifier:kEnableThumbnail];
@@ -68,6 +78,10 @@
 
 +(void)setHttpShareStarted:(BOOL)started{
     [self valueChangedForIdentifier:kWifiShareIsEnabled value:[NSNumber numberWithBool:started]];
+}
+
++(BOOL)passcodeEnabled{
+    return [self passcode].length != 0;
 }
 
 @end

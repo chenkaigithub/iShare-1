@@ -20,6 +20,8 @@
     
     [[UIBarButtonItem appearance] setBackgroundImage:resizableNormal forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [[UIBarButtonItem appearance] setBackgroundImage:resizablePressed forState:UIControlStateHighlighted barMetrics:UIBarMetricsDefault];
+    
+    [[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setBackButtonBackgroundImage:nil forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
 }
 
 +(void)customizeBackButton{

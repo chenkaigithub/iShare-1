@@ -26,6 +26,9 @@
 #define TEXTFIELD_MARGIN 8
 #define SLIDE_DURATION  0.3
 
+#define PALocalizedString(key, comment) \
+[[NSBundle mainBundle] localizedStringForKey:(key) value:@"" table:@"PAPasscodeLocalizable"]
+
 @interface PAPasscodeViewController ()
 - (void)cancel:(id)sender;
 - (void)handleFailedAttempt;
@@ -44,21 +47,21 @@
         _action = action;
         switch (action) {
             case PasscodeActionSet:
-                self.title = NSLocalizedString(@"Set Passcode", nil);
-                _enterPrompt = NSLocalizedString(@"Enter a passcode", nil);
-                _confirmPrompt = NSLocalizedString(@"Re-enter your passcode", nil);
+                self.title = PALocalizedString(@"Set Passcode", nil);
+                _enterPrompt = PALocalizedString(@"Enter a passcode", nil);
+                _confirmPrompt = PALocalizedString(@"Re-enter your passcode", nil);
                 break;
                 
             case PasscodeActionEnter:
-                self.title = NSLocalizedString(@"Enter Passcode", nil);
-                _enterPrompt = NSLocalizedString(@"Enter your passcode", nil);
+                self.title = PALocalizedString(@"Enter Passcode", nil);
+                _enterPrompt = PALocalizedString(@"Enter your passcode", nil);
                 break;
                 
             case PasscodeActionChange:
-                self.title = NSLocalizedString(@"Change Passcode", nil);
-                _changePrompt = NSLocalizedString(@"Enter your old passcode", nil);
-                _enterPrompt = NSLocalizedString(@"Enter your new passcode", nil);
-                _confirmPrompt = NSLocalizedString(@"Re-enter your new passcode", nil);
+                self.title = PALocalizedString(@"Change Passcode", nil);
+                _changePrompt = PALocalizedString(@"Enter your old passcode", nil);
+                _enterPrompt = PALocalizedString(@"Enter your new passcode", nil);
+                _confirmPrompt = PALocalizedString(@"Re-enter your new passcode", nil);
                 break;
         }
         self.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -173,10 +176,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if (_simple) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
-    } else {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
+    if (self.noCancel == NO){
+        if (_simple) {
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
+        } else {
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancel:)];
+        }
     }
 
     if (_failedAttempts > 0) {
@@ -196,6 +201,9 @@
 
 - (void)cancel:(id)sender {
     [_delegate PAPasscodeViewControllerDidCancel:self];
+    if (self.didCancelBlock){
+        self.didCancelBlock();
+    }
 }
 
 #pragma mark - implementation helpers
@@ -213,9 +221,12 @@
                     if ([_delegate respondsToSelector:@selector(PAPasscodeViewControllerDidSetPasscode:)]) {
                         [_delegate PAPasscodeViewControllerDidSetPasscode:self];
                     }
+                    if (self.didSetBlock){
+                        self.didSetBlock();
+                    }
                 } else {
                     [self showScreenForPhase:0 animated:YES];
-                    messageLabel.text = NSLocalizedString(@"Passcodes did not match. Try again.", nil);
+                    messageLabel.text = PALocalizedString(@"Passcodes did not match. Try again.", nil);
                 }
             }
             break;
@@ -225,6 +236,10 @@
                 [self resetFailedAttempts];
                 if ([_delegate respondsToSelector:@selector(PAPasscodeViewControllerDidEnterPasscode:)]) {
                     [_delegate PAPasscodeViewControllerDidEnterPasscode:self];
+                }
+                
+                if (self.didEnterBlock){
+                    self.didEnterBlock();
                 }
             } else {
                 [self handleFailedAttempt];
@@ -250,9 +265,13 @@
                     if ([_delegate respondsToSelector:@selector(PAPasscodeViewControllerDidChangePasscode:)]) {
                         [_delegate PAPasscodeViewControllerDidChangePasscode:self];
                     }
+                    
+                    if (self.didChangeBlock){
+                        self.didChangeBlock();
+                    }
                 } else {
                     [self showScreenForPhase:1 animated:YES];
-                    messageLabel.text = NSLocalizedString(@"Passcodes did not match. Try again.", nil);
+                    messageLabel.text = PALocalizedString(@"Passcodes did not match. Try again.", nil);
                 }
             }
             break;
@@ -264,6 +283,10 @@
     [self showFailedAttempts];
     if ([_delegate respondsToSelector:@selector(PAPasscodeViewController:didFailToEnterPasscode:)]) {
         [_delegate PAPasscodeViewController:self didFailToEnterPasscode:_failedAttempts];
+    }
+    
+    if (self.didFailedAttemptBlock){
+        self.didFailedAttemptBlock(_failedAttempts);
     }
 }
 
@@ -279,9 +302,9 @@
     failedImageView.hidden = NO;
     failedAttemptsLabel.hidden = NO;
     if (_failedAttempts == 1) {
-        failedAttemptsLabel.text = NSLocalizedString(@"1 Failed Passcode Attempt", nil);
+        failedAttemptsLabel.text = PALocalizedString(@"1 Failed Passcode Attempt", nil);
     } else {
-        failedAttemptsLabel.text = [NSString stringWithFormat:NSLocalizedString(@"%d Failed Passcode Attempts", nil), _failedAttempts];
+        failedAttemptsLabel.text = [NSString stringWithFormat:PALocalizedString(@"%d Failed Passcode Attempts", nil), _failedAttempts];
     }
     [failedAttemptsLabel sizeToFit];
     CGFloat bgWidth = failedAttemptsLabel.bounds.size.width + FAILED_MARGIN*2;
@@ -330,7 +353,7 @@
         if (finalScreen) {
             self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(handleCompleteField)];
         } else {
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Next", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(handleCompleteField)];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:PALocalizedString(@"Next", nil) style:UIBarButtonItemStyleBordered target:self action:@selector(handleCompleteField)];
         }
         self.navigationItem.rightBarButtonItem.enabled = NO;
     }

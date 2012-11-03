@@ -111,9 +111,14 @@
     NSString* type = [[config objectForKey:@"type"] lowercaseString];
     if ([type isEqualToString:@"more"]){
         NSString* next = [config objectForKey:@"next"];
+        NSString* mode = [config objectForKey:@"mode"];
         id controller = [[NSClassFromString(next) alloc] initWithNibName:next bundle:nil];
         if (controller){
-            [self.navigationController pushViewController:controller animated:YES];
+            if ([mode isEqualToString:@"pop"]){
+                [self presentViewController:controller animated:YES completion:NULL];
+            }else{
+                [self.navigationController pushViewController:controller animated:YES];
+            }
         }
     }else if([type isEqualToString:@"pick"]){
         self.pickerData = [config objectForKey:@"values"];

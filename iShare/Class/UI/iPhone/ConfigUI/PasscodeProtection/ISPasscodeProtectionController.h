@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PAPasscodeViewController.h"
 
-@interface ISPasscodeProtectionController : UIViewController
+@interface ISPasscodeProtectionController : UIViewController<PAPasscodeViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+
+@property (nonatomic, retain) IBOutlet UITableView* tableView;
 
 @end

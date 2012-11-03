@@ -120,6 +120,7 @@
                     image = [UIImage imageNamed:@"fileicon_compressed"];
                     break;
                 case FileContentTypeImage:
+                    if (previewEnabled)
                     image = [UIImage imageNamed:@"fileicon_image"];
                     break;
                 case FileContentTypeMovie:

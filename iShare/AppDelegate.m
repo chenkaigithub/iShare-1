@@ -13,6 +13,7 @@
 #import "JJAudioPlayerManager.h"
 #import "ISUserPreferenceDefine.h"
 #import "JJHTTPSerivce.h"
+#import "PAPasscodeViewController.h"
 #import <DropboxSDK/DropboxSDK.h>
 
 @implementation AppDelegate
@@ -47,6 +48,19 @@
     return YES;
 }
 
+
+-(void)applicationDidBecomeActive:(UIApplication *)application{
+    if ([ISUserPreferenceDefine passcodeEnabled]){
+        PAPasscodeViewController* passcodeController = [[PAPasscodeViewController alloc] initForAction:PasscodeActionEnter];
+        passcodeController.noCancel = YES;
+        passcodeController.passcode = [ISUserPreferenceDefine passcode];
+        passcodeController.didEnterBlock = ^{
+            [self.window.rootViewController dismissViewControllerAnimated:YES completion:NULL];
+        };
+        
+        [self.window.rootViewController presentViewController:passcodeController animated:NO completion:NULL];
+    }
+}
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
 	if ([[DBSession sharedSession] handleOpenURL:url]) {
