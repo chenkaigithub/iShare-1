@@ -80,13 +80,13 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">bg_swipe_inner_shadow.png</string>
+							<string key="NSResourceName">bg_menu@2x.png</string>
 						</object>
 					</object>
 					<object class="IBUIButton" id="1031722786">
 						<reference key="NSNextResponder" ref="941416483"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{200, 8}, {40, 40}}</string>
+						<string key="NSFrame">{{200, 6}, {40, 40}}</string>
 						<reference key="NSSuperview" ref="941416483"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="862889521"/>
@@ -95,7 +95,6 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">rename</string>
 						<object class="NSColor" key="IBUIHighlightedTitleColor" id="770834175">
 							<int key="NSColorSpace">3</int>
@@ -108,6 +107,10 @@
 						<object class="NSColor" key="IBUINormalTitleShadowColor" id="408121827">
 							<int key="NSColorSpace">3</int>
 							<bytes key="NSWhite">MC41AA</bytes>
+						</object>
+						<object class="NSCustomResource" key="IBUINormalImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">icon_rename@2x.png</string>
 						</object>
 						<object class="IBUIFontDescription" key="IBUIFontDescription" id="475283388">
 							<int key="type">2</int>
@@ -131,7 +134,6 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">zip</string>
 						<reference key="IBUIHighlightedTitleColor" ref="770834175"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
@@ -154,7 +156,6 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">del</string>
 						<reference key="IBUIHighlightedTitleColor" ref="770834175"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
@@ -162,6 +163,10 @@
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="408121827"/>
+						<object class="NSCustomResource" key="IBUINormalImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">icon_delete.png</string>
+						</object>
 						<reference key="IBUIFontDescription" ref="475283388"/>
 						<reference key="IBUIFont" ref="450272060"/>
 					</object>
@@ -177,7 +182,6 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">share</string>
 						<reference key="IBUIHighlightedTitleColor" ref="770834175"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
@@ -191,7 +195,7 @@
 					<object class="IBUIButton" id="622783518">
 						<reference key="NSNextResponder" ref="941416483"/>
 						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{140, 8}, {40, 40}}</string>
+						<string key="NSFrame">{{140, 6}, {40, 40}}</string>
 						<reference key="NSSuperview" ref="941416483"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="1031722786"/>
@@ -200,7 +204,6 @@
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 						<int key="IBUIContentHorizontalAlignment">0</int>
 						<int key="IBUIContentVerticalAlignment">0</int>
-						<int key="IBUIButtonType">1</int>
 						<string key="IBUINormalTitle">mail</string>
 						<reference key="IBUIHighlightedTitleColor" ref="770834175"/>
 						<object class="NSColor" key="IBUINormalTitleColor">
@@ -208,6 +211,10 @@
 							<bytes key="NSRGB">MC4xOTYwNzg0MzQ2IDAuMzA5ODAzOTMyOSAwLjUyMTU2ODY1NgA</bytes>
 						</object>
 						<reference key="IBUINormalTitleShadowColor" ref="408121827"/>
+						<object class="NSCustomResource" key="IBUINormalImage">
+							<string key="NSClassName">NSImage</string>
+							<string key="NSResourceName">icon_mail@2x.png</string>
+						</object>
 						<reference key="IBUIFontDescription" ref="475283388"/>
 						<reference key="IBUIFont" ref="450272060"/>
 					</object>
@@ -492,10 +499,12 @@
 		</object>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
-		<object class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
-			<string key="NS.key.0">bg_swipe_inner_shadow.png</string>
-			<string key="NS.object.0">{5, 20}</string>
-		</object>
+		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
+			<string key="bg_menu@2x.png">{640, 180}</string>
+			<string key="icon_delete.png">{16, 16}</string>
+			<string key="icon_mail@2x.png">{80, 80}</string>
+			<string key="icon_rename@2x.png">{80, 80}</string>
+		</dictionary>
 		<string key="IBCocoaTouchPluginVersion">1926</string>
 	</data>
 </archive>

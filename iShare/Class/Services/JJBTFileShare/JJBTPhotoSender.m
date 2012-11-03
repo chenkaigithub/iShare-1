@@ -9,27 +9,65 @@
 #import "JJBTPhotoSender.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
+@interface JJBTPhotoSender(){
+    long long _size;
+}
+
+@end
+
 @implementation JJBTPhotoSender
 
--(long long)sizeOfObject{
-    ALAsset* asset = self.sendingObj;
-    id URLs = [asset valueForProperty:ALAssetPropertyURLs];
-    DebugLog(@"%@", URLs);
+-(id)init{
+    self = [super init];
+    if (self){
+        _size = -1;
+    }
     
-    return 0;
+    return self;
+}
+
+-(long long)sizeOfObject{
+    if (_size < 0){
+        ALAsset* asset = self.sendingObj;
+        ALAssetRepresentation *rep = [asset defaultRepresentation];
+        _size = [rep size];
+    }
+
+    return _size;
 }
 
 -(NSInputStream*)readStream{
+    
+    static const NSInteger BufferSize = 1024*1024;
+    
     ALAsset* asset = self.sendingObj;
     ALAssetRepresentation *rep = [asset defaultRepresentation];
-    UIImage* image = [UIImage imageWithCGImage:[rep fullResolutionImage]];
-    NSData* pngData = UIImagePNGRepresentation(image);
     
-    return [NSInputStream inputStreamWithData:pngData];
+    long long totalSize = [rep size];
+    long long offset = 0;
+    NSMutableData* imageData = [NSMutableData data];
+    uint8_t *buffer = calloc(BufferSize, sizeof(*buffer));
+    
+    while (offset < totalSize) {
+        NSUInteger read = [rep getBytes:buffer fromOffset:offset length:BufferSize error:NULL];
+        [imageData appendBytes:buffer length:read];
+        offset += read;
+    }
+    
+    free(buffer);
+    
+    return [NSInputStream inputStreamWithData:imageData];
 }
 
 -(BTSenderType)type{
     return BTSenderTypePhoto;
+}
+
+-(NSString*)name{
+    ALAsset* asset = self.sendingObj;
+    ALAssetRepresentation *rep = [asset defaultRepresentation];
+    
+    return [rep filename];
 }
 
 @end

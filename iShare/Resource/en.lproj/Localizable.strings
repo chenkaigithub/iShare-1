@@ -50,6 +50,9 @@
 "alert_message_nomailaccount" = "No mail account found in your device";
 "alert_message_renamefailed" = "Renaming failed";
 "alert_message_shareserviceerror" = "There is something wrong...";
+"alert_message_filereceivingfinished" = "Files are saved to \"Received from Bluetooth\" folder";
+"alert_message_photoreceivingfinished" = "Photos are saved to album";
+"alert_message_sendingfinished" = "Sending finished";
 "btn_title_iknow" = "I know";
 
 "status_message_newfoldercreated" = "Folder is created";

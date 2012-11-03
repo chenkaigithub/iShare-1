@@ -10,6 +10,8 @@
 #import <GameKit/GameKit.h>
 #import "JJBTSender.h"
 
+#define CurrentVersion @"1.0"
+
 typedef enum {
     JJBTFileSharerStatusStandBy,
     JJBTFileSharerStatusSending,
@@ -30,12 +32,12 @@ typedef enum {
 -(void)sharerDidStartReceiving:(JJBTFileSharer*)sharer headContent:(NSDictionary*)headContent;
 -(void)sharerDidEndReceiving:(JJBTFileSharer*)sharer;
 
--(void)sharer:(JJBTFileSharer*)sharer willStartSendingFile:(NSString*)filePath;
--(void)sharer:(JJBTFileSharer*)sharer willStartReceivingFile:(NSString*)filePath;
--(void)sharer:(JJBTFileSharer*)sharer didSendBytes:(long long)bytes ofFile:(NSString*)filePath;
--(void)sharer:(JJBTFileSharer *)sharer didReceiveBytes:(long long)bytes ofFile:(NSString *)filePath;
--(void)sharer:(JJBTFileSharer*)sharer finishedSendingFile:(NSString*)filePath;
--(void)sharer:(JJBTFileSharer*)sharer finishedReceivingFile:(NSString*)filePath savingPath:(NSString*)savingPath;
+-(void)sharer:(JJBTFileSharer*)sharer willStartSendingWithIdentifier:(NSString*)identifier;
+-(void)sharer:(JJBTFileSharer*)sharer willStartReceivingWithIdentifier:(NSString*)identifier;
+-(void)sharer:(JJBTFileSharer*)sharer didSendBytes:(long long)bytes identifier:(NSString*)identifier;
+-(void)sharer:(JJBTFileSharer *)sharer didReceiveBytes:(long long)bytes identifier:(NSString *)identifier;
+-(void)sharer:(JJBTFileSharer*)sharer finishedSendingWithIdentifier:(NSString*)identifier;
+-(void)sharer:(JJBTFileSharer*)sharer finishedReceivingWithIdentifier:(NSString*)identifier;
 
 -(void)sharer:(JJBTFileSharer*)sharer currentTransitionFailed:(NSError*)error;
 -(void)sharerTransitionCancelled:(JJBTFileSharer*)sharer;

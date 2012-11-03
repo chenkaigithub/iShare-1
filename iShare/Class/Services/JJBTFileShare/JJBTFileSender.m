@@ -8,17 +8,35 @@
 
 #import "JJBTFileSender.h"
 
+@interface JJBTFileSender(){
+    long long _size;
+}
+
+@end
+
 @implementation JJBTFileSender
+
+-(id)init{
+    self = [super init];
+    if (self){
+        _size = -1;
+    }
+    
+    return self;
+}
 
 -(NSInputStream*)readStream{
     return [NSInputStream inputStreamWithFileAtPath:self.sendingObj];
 }
 
 -(long long)sizeOfObject{
-    NSString* filePath = self.sendingObj;
-    NSDictionary* attributes = [[NSFileManager defaultManager] attributesOfFileSystemForPath:filePath error:NULL];
     
-    return [attributes fileSize];
+    if (_size < 0){
+        NSString* filePath = self.sendingObj;
+        NSDictionary* attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath error:NULL];
+        _size = [attributes fileSize];
+    }
+    return _size;
 }
 
 -(BTSenderType)type{
@@ -28,7 +46,6 @@
 -(NSString*)name{
     return [self.sendingObj lastPathComponent];
 }
-
 
 
 @end

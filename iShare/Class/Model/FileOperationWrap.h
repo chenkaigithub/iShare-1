@@ -49,4 +49,6 @@ typedef enum{
 +(void)openFileItemAtPath:(NSString*)filePath withController:(UIViewController*)controller;
 +(void)clearTempFolder;
 
++(NSString*)normalizedSize:(long long)size;
+
 @end

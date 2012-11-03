@@ -259,4 +259,16 @@
     }
 }
 
++(NSString*)normalizedSize:(long long)size{
+    
+    if (size <= 999){
+        return [NSString stringWithFormat:@"%.0f B", (double)size];
+    }else if (size > 999 && size <= 999999){
+        return [NSString stringWithFormat:@"%.1f KB", ((double)size)/1000];
+    }else if (size > 999999 && size <= 999999999){
+        return [NSString stringWithFormat:@"%.2f MB", ((double)size)/1000000];
+    }else{
+        return [NSString stringWithFormat:@"%.2f GB", ((double)size)/1000000000];
+    }
+}
 @end

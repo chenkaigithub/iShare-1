@@ -50,6 +50,9 @@
 "alert_message_nomailaccount" = "在您的设备上没有可用的邮件帐号，无法发送邮件";
 "alert_message_renamefailed" = "重命名失败";
 "alert_message_shareserviceerror" = "好像有哪里不对劲";
+"alert_message_filereceivingfinished" = "文件保存到了\"接收自蓝牙\"文件夹";
+"alert_message_photoreceivingfinished" = "照片保存到了相册中";
+"alert_message_sendingfinished" = "发送结束";
 "btn_title_iknow" = "知道了";
 
 "status_message_newfoldercreated" = "文件夹创建成功";

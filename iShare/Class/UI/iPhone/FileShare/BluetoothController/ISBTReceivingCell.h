@@ -10,4 +10,10 @@
 
 @interface ISBTReceivingCell : UITableViewCell
 
+@property (nonatomic, copy) NSString* identifier;
+
+-(void)configCell:(NSDictionary*)receivingFileItem;
+
+-(void)setReceivedBytes:(long long)bytes;
+
 @end

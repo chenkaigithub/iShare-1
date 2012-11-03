@@ -8,6 +8,12 @@
 
 #import "JJBTSender.h"
 
+@interface JJBTSender(){
+    __strong NSString* _identifier;
+}
+
+@end
+
 @implementation JJBTSender
 
 -(long long)sizeOfObject{
@@ -35,8 +41,10 @@
     @autoreleasepool {
         //get png data
         NSInputStream* readStream = [self readStream];
-        
         [readStream open];
+        
+        self.finishedSize = 0;
+        
         @try {      
             NSError* error = nil;
             if ([self.delegate respondsToSelector:@selector(btSenderStartedSending:)]){
@@ -71,9 +79,12 @@
                         if ([self.delegate respondsToSelector:@selector(btSender:finishedBytes:)]){
                             [self.delegate btSender:self finishedBytes:total];
                         }
+                        
+                        self.finishedSize = total;
                     }
                 }
-                [NSThread sleepForTimeInterval:0.02];
+                
+                [NSThread sleepForTimeInterval:0.03];
             }
             
             //send tail block
@@ -95,11 +106,11 @@
 }
 
 //BTTransitionBlockTypeHead开始
-//后面跟传输类型（文件，照片），名称，大小
+//后面跟传输类型（文件，照片），名称，大小，统一标识符
 //限制在一个block长度(8K)之内
 -(NSData*)headBlock{
     
-    NSDictionary* parameters = @{@"type" : [NSString stringWithFormat:@"%d", self.type], @"name":self.name, @"size":[NSString stringWithFormat:@"%lld", self.sizeOfObject]};
+    NSDictionary* parameters = @{@"type" : [NSString stringWithFormat:@"%d", self.type], @"name":self.name, @"size":[NSString stringWithFormat:@"%llu", self.sizeOfObject], @"identifier":[self identifier], @"version":[[self class] version]};
     
     NSData* paramData = [NSJSONSerialization dataWithJSONObject:parameters options:NSJSONReadingAllowFragments error:NULL];
     
@@ -137,6 +148,20 @@
 
 -(NSException*)exceptionWithMessage:(NSString*)message{
     return [NSException exceptionWithName:@"BT Transimission Exception" reason:message userInfo:nil];
+}
+
+-(NSString*)identifier{
+    if (_identifier == nil){
+        NSTimeInterval interval = [[NSDate date] timeIntervalSince1970];
+        _identifier = [NSString stringWithFormat:@"%.0f%d", interval, (NSInteger)self];
+    }
+    
+    return _identifier;
+}
+
++(NSString*)version{
+    //version of protocol
+    return @"1.0";
 }
 
 @end

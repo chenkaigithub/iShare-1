@@ -106,7 +106,7 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     [self.typeSegmented setTitle:NSLocalizedString(@"seg_title_name", nil) forSegmentAtIndex:0];
     [self.typeSegmented setTitle:NSLocalizedString(@"seg_title_date", nil) forSegmentAtIndex:1];
     [self.typeSegmented setTitle:NSLocalizedString(@"seg_title_type", nil) forSegmentAtIndex:2];
-    
+    self.typeSegmented.selectedSegmentIndex = 2;
     //view background color
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
     //table view
@@ -130,7 +130,8 @@ static CGFloat kMessageTransitionDuration = 1.5f;
     [self.tableView addSubview:self.refreshView];
 
     self.tableView.dataSource = self.dataSource;
-    [self.tableView reloadData];
+    
+    [self typeSegmentClicked:self.typeSegmented];
 
     // Do any additional setup after loading the view from its nib.
 }

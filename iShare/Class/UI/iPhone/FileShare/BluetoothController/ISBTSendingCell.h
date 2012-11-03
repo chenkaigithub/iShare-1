@@ -7,7 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "JJBTSender.h"
 
 @interface ISBTSendingCell : UITableViewCell
+
+@property (nonatomic, strong) IBOutlet UILabel* titleLabel;
+@property (nonatomic, strong) IBOutlet UILabel* sizeLabel;
+@property (nonatomic, copy) NSString* identifier;
+
+-(void)configCell:(JJBTSender*)sender;
+-(void)updateCell;
 
 @end

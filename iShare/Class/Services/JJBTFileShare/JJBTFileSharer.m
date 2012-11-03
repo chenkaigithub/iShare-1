@@ -13,8 +13,6 @@
 #import "FileOperationWrap.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
-#define BundleHeadListSeperator @"&&&&"
-
 typedef enum {
     PackageTypeStart,
     PackageTypeEnd,
@@ -29,7 +27,9 @@ typedef enum {
 @property (nonatomic, readonly) NSString* storePath;
 @property (nonatomic, strong) NSOutputStream* writeStream;
 
-@property (nonatomic, retain) NSOperationQueue* sendingQueue;
+@property (nonatomic, strong) NSOperationQueue* sendingQueue;
+
+@property (nonatomic, copy) NSString* receivingIdentifier;
 
 @end
 
@@ -81,7 +81,9 @@ typedef enum {
 }
 
 -(void)cancelReceiving{
-    
+    self.receivingIdentifier = nil;
+    ReceivedBytes = 0;
+    ReceivingType = BTSenderTypeUnknown;
 }
 
 -(void)endSession{
@@ -91,18 +93,8 @@ typedef enum {
 
 -(void)sendFiles:(NSArray*)files{
     _status = JJBTFileSharerStatusSending;
-    
-    //send bundle head
-    NSMutableArray* filePaths = [NSMutableArray array];
-    [files enumerateObjectsUsingBlock:^(FileItem* file, NSUInteger idx, BOOL* stop){
-        NSString* filename = [file.filePath lastPathComponent];
-        NSString* size = [NSString stringWithFormat:@"%lld", [file.attributes fileSize]];
-        [filePaths addObject:@{@"filename" : filename, @"size":size}];
-    }];
-    [self sendBundleHeadWithType:BTSenderTypeFile list:filePaths];
-    
-    
     //tell that will send bunch of files
+    [self.sendingQueue setSuspended:YES];
     [files enumerateObjectsUsingBlock:^(FileItem* file, NSUInteger idx, BOOL* stop){
         JJBTFileSender* fileSender = [[JJBTFileSender alloc] init];
         fileSender.delegate = self;
@@ -111,6 +103,17 @@ typedef enum {
         [self.sendingQueue addOperation:fileSender];
     }];
     
+    NSMutableArray* filePaths = [NSMutableArray array];
+    NSArray* senders = [self.sendingQueue operations];
+    [senders enumerateObjectsUsingBlock:^(JJBTSender* sender, NSUInteger idx, BOOL* stop){
+        NSString* name = [sender name];
+        NSString* size = [NSString stringWithFormat:@"%llu", [sender sizeOfObject]];
+        NSString* identifier = [sender identifier];
+        [filePaths addObject:@{@"name" : name, @"size":size, @"identifier":identifier}];
+    }];
+    [self sendBundleHeadWithType:BTSenderTypeFile list:filePaths];
+    
+    [self.sendingQueue setSuspended:NO];
 }
 
 -(NSArray*)allSenders{
@@ -157,8 +160,12 @@ typedef enum {
 }
 
 #pragma mark - content receiving handler
+
+static long long ReceivedBytes = 0;
+static BTSenderType ReceivingType = BTSenderTypeUnknown;
+
 -(void)receivedBundleHead:(NSData*)bundleHead{
-    NSDictionary* bundleContent = [NSJSONSerialization JSONObjectWithData:bundleHead options:NSJSONReadingAllowFragments error:NULL];
+    NSMutableDictionary* bundleContent = [NSJSONSerialization JSONObjectWithData:bundleHead options:NSJSONReadingMutableContainers error:NULL];
     
     if ([self.delegate respondsToSelector:@selector(sharerDidStartReceiving:headContent:)]){
         [self.delegate sharerDidStartReceiving:self headContent:bundleContent];
@@ -172,17 +179,27 @@ typedef enum {
 }
 
 -(void)startReceiving:(NSData*)head{
+    ReceivedBytes = 0;
     NSDictionary* headContent = [NSJSONSerialization JSONObjectWithData:head options:NSJSONReadingAllowFragments error:NULL];
 
-    BTSenderType type = [[headContent objectForKey:@"type"] intValue];
+    ReceivingType = [[headContent objectForKey:@"type"] intValue];
     NSString* name = [headContent objectForKey:@"name"];
+    NSString* version = [headContent objectForKey:@"version"];
+    NSString* identifier = [headContent objectForKey:@"identifier"];
+    if ([version isEqualToString:CurrentVersion]){
+        self.receivingIdentifier = identifier;
+    }else{
+        self.receivingIdentifier = nil;
+        return;
+    }
 //    long long size = [[headContent objectForKey:@"size"] longLongValue];
     
-    switch (type) {
+    switch (ReceivingType) {
         case BTSenderTypeFile:
             [self startReceivingFile:name];
             break;
         case BTSenderTypePhoto:
+            [self startReceivingPhoto];
             break;
         case BTSenderTypeUnknown:
             break;
@@ -192,18 +209,33 @@ typedef enum {
 }
 
 -(void)finishedReceiving:(NSData*)tail{
-    [self.writeStream close];
-    [self photoReceivingFinished];
+    if (ReceivingType == BTSenderTypeFile){
+        [self fileReceivingFinished];
+    }else if (ReceivingType == BTSenderTypePhoto){
+        [self photoReceivingFinished];
+    }
+    
+    if ([self.delegate respondsToSelector:@selector(sharer:finishedReceivingWithIdentifier:)]){
+        [self.delegate sharer:self finishedReceivingWithIdentifier:self.receivingIdentifier];
+    }
 }
 
 -(void)receivedData:(NSData*)data{
-    dispatch_async(dispatch_get_current_queue(), ^{
-        [self.writeStream write:[data bytes] maxLength:[data length]];
-    });
+    NSUInteger length = [data length];
+    ReceivedBytes += length;
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.writeStream write:[data bytes] maxLength:length];
+        //当前传输的块属于哪个传输事务？
+        //finished size notification
+        if ([self.delegate respondsToSelector:@selector(sharer:didReceiveBytes:identifier:)]){
+            [self.delegate sharer:self didReceiveBytes:ReceivedBytes identifier:self.receivingIdentifier];
+            }
+//    });
 }
 
 -(void)receivingErrorHappened:(NSData*)data{
     [self.writeStream close];
+    self.writeStream = nil;
 }
 
 #pragma mark - receiving file
@@ -220,18 +252,67 @@ typedef enum {
     [self.writeStream open];
 }
 
+-(void)fileReceivingFinished{
+    [self.writeStream close];
+    self.writeStream = nil;
+}
+
 #pragma mark - receiving photo
+-(void)startReceivingPhoto{
+    //create temp file
+    NSString* tempFile = [[FileOperationWrap tempFolder] stringByAppendingPathComponent:@"receivingImage"];
+    [[NSFileManager defaultManager] removeItemAtPath:tempFile error:NULL];
+    [[NSFileManager defaultManager] createFileAtPath:tempFile contents:nil attributes:nil];
+    
+    self.writeStream = [NSOutputStream outputStreamToFileAtPath:tempFile append:NO];
+    [self.writeStream open];
+}
+
 -(void)photoReceivingFinished{
     //save photo to album
+    [self.writeStream close];
+    self.writeStream = nil;
+    
+    NSString* tempFile = [[FileOperationWrap tempFolder] stringByAppendingPathComponent:@"receivingImage"];
+    NSData* imageData = [NSData dataWithContentsOfFile:tempFile];
+    UIImage* image = [UIImage imageWithData:imageData];
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
+    //saved
+    if (error){
+        DebugLog(@"error happened: %@", [error localizedDescription]);
+    }
 }
 
 #pragma mark - send photos
 -(void)sendPhotos:(NSArray*)photos{
     //send photots
+    
+    _status = JJBTFileSharerStatusSending;
+    //tell that will send bunch of files
+    [self.sendingQueue setSuspended:YES];
     [photos enumerateObjectsUsingBlock:^(ALAsset* asset, NSUInteger idx, BOOL* stop){
         JJBTPhotoSender* photoSender = [[JJBTPhotoSender alloc] init];
+        photoSender.delegate = self;
+        photoSender.session = self.session;
         photoSender.sendingObj = asset;
+        [self.sendingQueue addOperation:photoSender];
     }];
+    
+    NSMutableArray* sendingInfo = [NSMutableArray array];
+    NSArray* senders = [self.sendingQueue operations];
+    [senders enumerateObjectsUsingBlock:^(JJBTSender* sender, NSUInteger idx, BOOL* stop){
+        NSString* name = [sender name];
+        NSString* size = [NSString stringWithFormat:@"%llu", [sender sizeOfObject]];
+        NSString* identifier = [sender identifier];
+        [sendingInfo addObject:@{@"name" : name, @"size":size, @"identifier":identifier}];
+    }];
+    
+    [self sendBundleHeadWithType:BTSenderTypePhoto list:sendingInfo];
+    
+    [self.sendingQueue setSuspended:NO];
 }
 
 #pragma mark - gk session delegate
@@ -255,14 +336,17 @@ typedef enum {
 }
 
 -(void)btSender:(JJBTSender*)sender finishedBytes:(long long)finishedBytes{
-    DebugLog(@"finished bytes %lld", finishedBytes);
-    if ([self.delegate respondsToSelector:@selector(sharer:didReceiveBytes:ofFile:)]){
-//        self.delegate sharer:self didReceivePersentage:<#(CGFloat)#> ofFile:sender.sending
+    DebugLog(@"finished bytes %llu", finishedBytes);
+    if ([self.delegate respondsToSelector:@selector(sharer:didSendBytes:identifier:)]){
+        [self.delegate sharer:self didSendBytes:finishedBytes identifier:[sender identifier]];
     }
 }
 
 -(void)btSenderFinishedSending:(JJBTSender*)sender{
     DebugLog(@"finished sending sender %@", [sender description]);
+    if ([self.delegate respondsToSelector:@selector(sharer:finishedSendingWithIdentifier:)]){
+        [self.delegate sharer:self finishedSendingWithIdentifier:[sender identifier]];
+    }
     [self updateSharerStatus];
 }
 
@@ -317,9 +401,9 @@ typedef enum {
 }
 
 #pragma mark - send bunch head
--(void)sendBundleHeadWithType:(BTTransitionBlockType)type list:(NSArray*)list{
+-(void)sendBundleHeadWithType:(BTSenderType)type list:(NSArray*)list{
     
-    NSDictionary* headContent = @{@"type" : [NSString stringWithFormat:@"%d", type], @"list":list};
+    NSDictionary* headContent = @{@"type" : [NSString stringWithFormat:@"%d", type], @"list":list, @"version":[JJBTSender version]};
     
     NSData* contentData = [NSJSONSerialization dataWithJSONObject:headContent options:NSJSONReadingAllowFragments error:NULL];
     

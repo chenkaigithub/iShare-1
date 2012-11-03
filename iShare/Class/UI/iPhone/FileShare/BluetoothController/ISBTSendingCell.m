@@ -7,6 +7,13 @@
 //
 
 #import "ISBTSendingCell.h"
+#import "FileOperationWrap.h"
+
+@interface ISBTSendingCell ()
+
+@property (nonatomic, strong) JJBTSender* sender;
+
+@end
 
 @implementation ISBTSendingCell
 
@@ -24,6 +31,23 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+-(void)configCell:(JJBTSender*)sender{
+    self.sender = sender;
+    self.textLabel.text = [sender name];
+    self.identifier = [sender identifier];
+    [self updateCell];
+//    self.detailTextLabel.text = [sender]
+    //finished size and totle size
+}
+
+-(void)updateCell{
+    if ([self.sender isExecuting]){
+        self.detailTextLabel.text = [NSString stringWithFormat:@"%@/%@", [FileOperationWrap normalizedSize:self.sender.finishedSize], [FileOperationWrap normalizedSize:[self.sender sizeOfObject]]];
+    }else{
+        self.detailTextLabel.text = [NSString stringWithFormat:@"%@", [FileOperationWrap normalizedSize:[self.sender sizeOfObject]]];
+    }
 }
 
 @end

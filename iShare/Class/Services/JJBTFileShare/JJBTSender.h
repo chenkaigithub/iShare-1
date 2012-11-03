@@ -41,24 +41,30 @@ typedef enum {
 
 @protocol JJBTSenderProtocol <NSObject>
 
+@optional
 -(NSInputStream*)readStream;
 -(NSData*)headBlock;
 -(NSData*)tailBlock;
 -(NSData*)errorBlock;
+-(NSString*)name;
+-(long long)sizeOfObject;
+-(BTSenderType)type;
 
 @end
 
 @interface JJBTSender : NSOperation<JJBTSenderProtocol>
 
 @property (nonatomic, weak) id<JJBTSenderDelegate> delegate;
-@property (nonatomic, readonly) BTSenderType type;
-@property (nonatomic, readonly) NSString* name;
-@property (nonatomic, readonly) long long sizeOfObject;
 @property (nonatomic, strong) id sendingObj;
 @property (nonatomic, strong) GKSession* session;
+@property (nonatomic, assign) long long finishedSize;
+
++(NSString*)version;
 
 -(BOOL)sendDataInBuffer:(UInt8*)buffer length:(NSUInteger)length error:(NSError **)error;
 -(NSData*)blockWithType:(BTTransitionBlockType)type data:(NSData*)data;
 -(NSData*)blockWithType:(BTTransitionBlockType)type buff:(const void*)buff length:(NSUInteger)length;
+
+-(NSString*)identifier;
 
 @end
